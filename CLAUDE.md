@@ -15,24 +15,32 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 ## 🏗️ Architecture Decisions
 
 ### Authentication System
-- **Current**: Mock authentication in `AuthProvider.tsx` for demo purposes
-- **Production**: Will use real InstantDB auth with magic links
-- **Mock User**: `{ id: 'demo-user', email: 'demo@acrokit.com' }`
-- **File**: `/src/components/AuthProvider.tsx` - Switch mock to real `db.useAuth()` for production
+- **Current**: Real InstantDB authentication with magic codes (6-digit verification)
+- **Implementation**: Uses `db.useAuth()` for real-time auth state
+- **Auth Flow**: Email → Magic code → 6-digit verification → Sign in
+- **File**: `/src/components/AuthProvider.tsx` - Real InstantDB auth integrated
 
 ### Data Flow
 ```
 Sample Data (sampleData.ts) 
   → FlowBuilder state 
-  → LocalStorage (demo) 
-  → Future: InstantDB real-time
+  → InstantDB real-time database
+  → Toast notifications for user feedback
 ```
 
 ### State Management
 - **Flow Building**: Local React state in `FlowBuilder.tsx`
-- **Auth**: React Context in `AuthProvider.tsx`
-- **Persistence**: Currently localStorage, future InstantDB
-- **Page Routing**: Simple state-based routing in `App.tsx`
+- **Auth**: React Context in `AuthProvider.tsx` with real InstantDB integration
+- **Persistence**: InstantDB real-time database with optimistic updates
+- **Page Routing**: Simple state-based routing in `App.tsx` with shared flow support
+- **Notifications**: Global ToastProvider for user feedback
+
+### InstantDB Integration
+- **Database**: Real-time database with optimistic updates and real auth
+- **App ID**: `63c65c15-20c2-418f-b504-a823ecadb2d0` (production)
+- **Schema**: Poses, transitions, and flows with proper relationships
+- **Documentation**: Check `INSTANT.md` for InstantDB API reference, syntax, and best practices
+- **Key Features**: Magic code auth, real-time queries, transactions, proper error handling
 
 ## 🧪 Testing Strategy
 
