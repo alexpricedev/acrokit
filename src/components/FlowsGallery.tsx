@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Flow, FlowStep } from '../lib/instant'
+import { Flow, FlowStep, db } from '../lib/instant'
 import { useAuth } from './AuthProvider'
+import { useToast } from './ToastProvider'
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[]) => void
@@ -9,71 +10,71 @@ interface FlowsGalleryProps {
 
 export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [flows, setFlows] = useState<Flow[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Simulate fetching flows - in real app this would use InstantDB query
-  useEffect(() => {
-    if (!user) return
-
-    const loadFlows = () => {
-      try {
-        const savedFlows = localStorage.getItem('acrokit-saved-flows')
-        if (savedFlows) {
-          const parsedFlows = JSON.parse(savedFlows)
-          // Convert old format to new format if needed
-          const convertedFlows = parsedFlows.map((flow: any) => ({
-            id: flow.id,
-            name: flow.name,
-            description: flow.description,
-            isPublic: flow.isPublic || false,
-            userId: user.id,
-            stepsData: JSON.stringify(flow.steps || []),
-            createdAt: flow.createdAt,
-            updatedAt: flow.createdAt
-          }))
-          setFlows(convertedFlows)
+  // Load flows from InstantDB
+  const { isLoading: dbLoading, data } = db.useQuery({
+    flows: {
+      $: {
+        where: {
+          userId: user?.id
         }
-      } catch (error) {
-        console.error('Error loading flows:', error)
-      } finally {
-        setIsLoading(false)
       }
     }
+  })
 
-    loadFlows()
-  }, [user])
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false)
+      return
+    }
+    
+    if (!dbLoading && data?.flows) {
+      setFlows(data.flows as Flow[])
+      setIsLoading(false)
+    }
+  }, [user, dbLoading, data])
 
   const handleLoadFlow = (flow: Flow) => {
     try {
       const steps = JSON.parse(flow.stepsData) as FlowStep[]
       onLoadFlow(steps)
-      onPageChange('builder')
+      // Don't call onPageChange - onLoadFlow already handles page navigation
     } catch (error) {
       console.error('Error loading flow:', error)
     }
   }
 
-  const handleDeleteFlow = (flowId: string) => {
-    const updatedFlows = flows.filter(flow => flow.id !== flowId)
-    setFlows(updatedFlows)
-    localStorage.setItem('acrokit-saved-flows', JSON.stringify(updatedFlows.map(flow => ({
-      ...flow,
-      steps: JSON.parse(flow.stepsData)
-    }))))
+  const handleDeleteFlow = async (flowId: string) => {
+    try {
+      await db.transact(
+        db.tx.flows[flowId].delete()
+      )
+      // The flows will be automatically updated through the real-time subscription
+    } catch (error) {
+      console.error('Error deleting flow:', error)
+      showToast('Error deleting flow. Please try again.', 'error')
+    }
   }
 
-  const togglePublic = (flowId: string) => {
-    const updatedFlows = flows.map(flow => 
-      flow.id === flowId 
-        ? { ...flow, isPublic: !flow.isPublic, updatedAt: Date.now() }
-        : flow
-    )
-    setFlows(updatedFlows)
-    localStorage.setItem('acrokit-saved-flows', JSON.stringify(updatedFlows.map(flow => ({
-      ...flow,
-      steps: JSON.parse(flow.stepsData)
-    }))))
+  const togglePublic = async (flowId: string) => {
+    try {
+      const flow = flows.find(f => f.id === flowId)
+      if (!flow) return
+      
+      await db.transact(
+        db.tx.flows[flowId].update({
+          isPublic: !flow.isPublic,
+          updatedAt: Date.now()
+        })
+      )
+      // The flows will be automatically updated through the real-time subscription
+    } catch (error) {
+      console.error('Error updating flow:', error)
+      showToast('Error updating flow. Please try again.', 'error')
+    }
   }
 
   const getFlowPreview = (stepsData: string) => {
@@ -88,9 +89,10 @@ export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
   const shareFlow = (flow: Flow) => {
     const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${flow.id}`
     navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Shareable link copied to clipboard!')
+      showToast('Shareable link copied to clipboard!', 'success')
     }).catch(() => {
-      prompt('Copy this link to share:', shareUrl)
+      showToast('Failed to copy to clipboard. Check console for link.', 'error')
+      console.log('Share link:', shareUrl)
     })
   }
 

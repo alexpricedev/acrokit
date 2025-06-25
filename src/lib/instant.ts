@@ -1,6 +1,39 @@
 import { init } from '@instantdb/react'
 
-// Database schema definition
+// Database schema definition for InstantDB
+export const schema = {
+  entities: {
+    poses: {
+      name: { type: 'string' },
+      description: { type: 'string' },
+      difficulty: { type: 'string' },
+      imageUrl: { type: 'string' },
+      baseImageUrl: { type: 'string' },
+      flyerImageUrl: { type: 'string' },
+      createdAt: { type: 'number' }
+    },
+    transitions: {
+      name: { type: 'string' },
+      description: { type: 'string' },
+      fromPoseId: { type: 'string' },
+      toPoseId: { type: 'string' },
+      createdAt: { type: 'number' }
+    },
+    flows: {
+      name: { type: 'string' },
+      description: { type: 'string' },
+      isPublic: { type: 'boolean' },
+      userId: { type: 'string' },
+      stepsData: { type: 'string' },
+      createdAt: { type: 'number' },
+      updatedAt: { type: 'number' }
+    }
+  },
+  links: {},
+  rooms: {}
+} as const
+
+// TypeScript types derived from schema
 export type Schema = {
   poses: {
     id: string
@@ -26,20 +59,14 @@ export type Schema = {
     description?: string
     isPublic: boolean
     userId: string
-    stepsData: string // JSON serialized flow steps
+    stepsData: string
     createdAt: number
     updatedAt: number
   }
-  users: {
-    id: string
-    email: string
-    createdAt: number
-  }
 }
 
-// For demo purposes, we'll use a placeholder app ID
-// In production, you'd get this from InstantDB dashboard
-const APP_ID = 'acrokit-demo-app-id'
+// Real InstantDB app ID
+const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 
 export const db = init({
   appId: APP_ID,
@@ -48,7 +75,11 @@ export const db = init({
 export type Pose = Schema['poses']
 export type Transition = Schema['transitions']
 export type Flow = Schema['flows']
-export type User = Schema['users']
+export type User = {
+  id: string
+  email: string
+  createdAt: number
+}
 
 // Local flow step interface for the builder
 export interface FlowStep {

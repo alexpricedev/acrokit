@@ -1,36 +1,34 @@
-import { createContext, useContext, ReactNode, useState } from 'react'
+import { createContext, useContext, ReactNode } from 'react'
 import { db } from '../lib/instant'
 
 interface AuthContextType {
   user: any | null
   isLoading: boolean
   signInWithEmail: (email: string) => Promise<void>
+  verifyCode: (email: string, code: string) => Promise<void>
   signOut: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // For demo purposes, we'll mock the auth state
-  // In production, this would use: const { user, isLoading } = db.useAuth()
-  const [mockUser, setMockUser] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  // Use real InstantDB auth
+  const { user, isLoading } = db.useAuth()
 
   const signInWithEmail = async (email: string) => {
-    // Mock authentication for demo
-    setIsLoading(true)
-    setTimeout(() => {
-      setMockUser({ id: 'demo-user', email })
-      setIsLoading(false)
-    }, 1000)
+    await db.auth.sendMagicCode({ email })
+  }
+
+  const verifyCode = async (email: string, code: string) => {
+    await db.auth.signInWithMagicCode({ email, code })
   }
 
   const signOut = () => {
-    setMockUser(null)
+    db.auth.signOut()
   }
 
   return (
-    <AuthContext.Provider value={{ user: mockUser, isLoading, signInWithEmail, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signInWithEmail, verifyCode, signOut }}>
       {children}
     </AuthContext.Provider>
   )

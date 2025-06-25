@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { FlowStep } from '../lib/instant'
+import { FlowStep, db } from '../lib/instant'
+import { id } from '@instantdb/react'
+import { useToast } from './ToastProvider'
 
 interface FlowSaveModalProps {
   isOpen: boolean
@@ -13,6 +15,7 @@ export function FlowSaveModal({ isOpen, onClose, currentFlow, user }: FlowSaveMo
   const [flowDescription, setFlowDescription] = useState('')
   const [isPublic, setIsPublic] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const { showToast } = useToast()
 
   const getFlowPreview = (steps: FlowStep[]) => {
     return steps.map(step => step.pose.name).join(' → ')
@@ -24,20 +27,27 @@ export function FlowSaveModal({ isOpen, onClose, currentFlow, user }: FlowSaveMo
     setIsSaving(true)
     
     try {
-      const newFlow = {
-        id: `flow-${Date.now()}`,
+      const flowId = id() // Generate proper InstantDB ID
+      const now = Date.now()
+      
+      const flowData = {
         name: flowName.trim(),
         description: flowDescription.trim() || undefined,
-        steps: currentFlow,
         isPublic,
         userId: user.id,
-        createdAt: Date.now()
+        stepsData: JSON.stringify(currentFlow),
+        createdAt: now,
+        updatedAt: now
       }
 
-      // Save to localStorage for now (in real app, this would be InstantDB)
-      const savedFlows = JSON.parse(localStorage.getItem('acrokit-saved-flows') || '[]')
-      const updatedFlows = [...savedFlows, newFlow]
-      localStorage.setItem('acrokit-saved-flows', JSON.stringify(updatedFlows))
+      console.log('Saving flow to InstantDB:', { id: flowId, ...flowData })
+
+      // Save to InstantDB using correct syntax
+      const result = await db.transact(
+        db.tx.flows[flowId].update(flowData)
+      )
+      
+      console.log('Flow saved successfully:', result)
 
       // Reset form and close
       setFlowName('')
@@ -45,10 +55,10 @@ export function FlowSaveModal({ isOpen, onClose, currentFlow, user }: FlowSaveMo
       setIsPublic(false)
       onClose()
       
-      alert('Flow saved successfully!')
+      showToast('Flow saved successfully!', 'success')
     } catch (error) {
       console.error('Error saving flow:', error)
-      alert('Error saving flow. Please try again.')
+      showToast('Error saving flow. Please try again.', 'error')
     } finally {
       setIsSaving(false)
     }

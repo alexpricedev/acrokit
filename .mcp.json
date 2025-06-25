@@ -8,6 +8,10 @@
         "@modelcontextprotocol/server-puppeteer"
       ],
       "env": {}
+    },
+    "instant": {
+      "type": "http",
+      "url": "https://mcp.instantdb.com/mcp"
     }
   }
 }

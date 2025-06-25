@@ -81,9 +81,9 @@ export function FlowSaveLoad({ currentFlow, onLoadFlow }: FlowSaveLoadProps) {
   const shareFlow = (flow: SavedFlow) => {
     const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${flow.id}`
     navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Shareable link copied to clipboard!')
+      console.log('Shareable link copied to clipboard!')
     }).catch(() => {
-      prompt('Copy this link to share:', shareUrl)
+      console.log('Share link:', shareUrl)
     })
   }
 

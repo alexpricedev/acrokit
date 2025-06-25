@@ -3,6 +3,7 @@ import { Pose, Transition, FlowStep } from '../lib/instant'
 import { PoseCard } from './PoseCard'
 import { FlowSaveModal } from './FlowSaveModal'
 import { useAuth } from './AuthProvider'
+import { useToast } from './ToastProvider'
 import { samplePoses, sampleTransitions } from '../data/sampleData'
 
 interface FlowBuilderProps {
@@ -11,6 +12,7 @@ interface FlowBuilderProps {
 
 export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || [])
   const [availablePoses, setAvailablePoses] = useState<Pose[]>([])
   const [availableTransitions, setAvailableTransitions] = useState<Transition[]>([])
@@ -85,7 +87,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
 
   const handleSaveFlow = () => {
     if (!user) {
-      alert('Please sign in to save flows')
+      showToast('Please sign in to save flows', 'info')
       return
     }
     setShowSaveModal(true)
