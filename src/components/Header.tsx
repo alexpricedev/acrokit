@@ -74,7 +74,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 onClick={() => setShowLoginModal(true)}
                 className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-medium"
               >
-                Sign in
+                Create a free account
               </button>
             )}
           </nav>

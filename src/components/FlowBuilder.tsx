@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Pose, Transition, FlowStep } from '../lib/instant'
 import { PoseCard } from './PoseCard'
 import { FlowSaveModal } from './FlowSaveModal'
+import { RandomFlowModal } from './RandomFlowModal'
 import { useAuth } from './AuthProvider'
 import { useToast } from './ToastProvider'
 import { samplePoses, sampleTransitions } from '../data/sampleData'
@@ -18,6 +19,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
   const [availableTransitions, setAvailableTransitions] = useState<Transition[]>([])
   const [isStartingPose, setIsStartingPose] = useState(true)
   const [showSaveModal, setShowSaveModal] = useState(false)
+  const [showRandomModal, setShowRandomModal] = useState(false)
 
   // Initialize with sample data for demo
   useEffect(() => {
@@ -93,6 +95,51 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
     setShowSaveModal(true)
   }
 
+  const generateRandomFlow = async (moveCount: number) => {
+    try {
+      // Clear existing flow
+      setCurrentFlow([])
+      setIsStartingPose(true)
+      
+      const newFlow: FlowStep[] = []
+      let currentPoseOptions = availablePoses.filter(pose => 
+        availableTransitions.some(t => t.fromPoseId === 'shin-to-shin' && t.toPoseId === pose.id)
+      )
+      
+      for (let i = 0; i < moveCount; i++) {
+        if (currentPoseOptions.length === 0) break
+        
+        // Select random pose from valid options
+        const randomPose = currentPoseOptions[Math.floor(Math.random() * currentPoseOptions.length)]
+        
+        // Find transition for this pose (if not the first pose)
+        let transition: Transition | undefined
+        if (newFlow.length > 0) {
+          const lastPose = newFlow[newFlow.length - 1].pose
+          transition = availableTransitions.find(t => 
+            t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
+          )
+        }
+        
+        // Add to flow
+        newFlow.push({ pose: randomPose, transition })
+        
+        // Get next valid poses for the next iteration
+        currentPoseOptions = availablePoses.filter(pose => 
+          availableTransitions.some(t => t.fromPoseId === randomPose.id && t.toPoseId === pose.id)
+        )
+      }
+      
+      setCurrentFlow(newFlow)
+      setIsStartingPose(newFlow.length === 0)
+      
+      showToast(`Generated random flow with ${newFlow.length} moves!`, 'success')
+    } catch (error) {
+      console.error('Error generating random flow:', error)
+      showToast('Error generating random flow. Please try again.', 'error')
+    }
+  }
+
   const validOptions = getValidNextPoses()
 
   return (
@@ -133,6 +180,13 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
             
             {/* Action Buttons */}
             <div className="mt-6 space-y-3">
+              <button
+                onClick={() => setShowRandomModal(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                🎲 Create random flow
+              </button>
+              
               <button
                 onClick={handleSaveFlow}
                 disabled={currentFlow.length === 0}
@@ -228,6 +282,12 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
         onClose={() => setShowSaveModal(false)}
         currentFlow={currentFlow}
         user={user}
+      />
+      
+      <RandomFlowModal
+        isOpen={showRandomModal}
+        onClose={() => setShowRandomModal(false)}
+        onGenerate={generateRandomFlow}
       />
     </div>
   )
