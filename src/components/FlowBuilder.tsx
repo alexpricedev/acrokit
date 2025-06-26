@@ -180,17 +180,19 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
             
             {/* Action Buttons */}
             <div className="mt-6 space-y-3">
-              <button
-                onClick={() => setShowRandomModal(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                🎲 Create random flow
-              </button>
+              {currentFlow.length === 0 && (
+                <button
+                  onClick={() => setShowRandomModal(true)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+                >
+                  Create random flow
+                </button>
+              )}
               
               <button
                 onClick={handleSaveFlow}
                 disabled={currentFlow.length === 0}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
