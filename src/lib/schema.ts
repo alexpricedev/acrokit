@@ -31,8 +31,8 @@ export const schema = i.schema({
   }
 })
 
-// App configuration - get from environment variable
-export const APP_ID = import.meta.env.VITE_INSTANT_APP_ID
+// App configuration - public APP_ID (safe to inline)
+export const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 
 // TypeScript types derived from schema
 export type Schema = {
