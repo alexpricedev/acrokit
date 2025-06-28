@@ -10,7 +10,7 @@ const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 const db = init({
   appId: APP_ID,
   schema,
-  adminToken: process.env.INSTANT_ADMIN_TOKEN
+  adminToken: 'your_admin_token_here'
 })
 
 console.log('🌱 Starting database seeding...')
@@ -232,16 +232,5 @@ async function seedDatabase() {
   }
 }
 
-// Check if admin token is provided
-if (!process.env.INSTANT_ADMIN_TOKEN) {
-  console.error('❌ INSTANT_ADMIN_TOKEN environment variable is required')
-  console.log('🔧 To seed the database:')
-  console.log('   1. Get your admin token from https://www.instantdb.com/dash')
-  console.log('   2. Set environment variable in .env:')
-  console.log('      INSTANT_ADMIN_TOKEN=your_token_here')
-  console.log('   3. Run: npm run seed')
-  process.exit(1)
-}
-
-console.log('✅ Admin token found, starting seeding...')
+console.log('✅ Starting seeding with inlined configuration...')
 seedDatabase()
