@@ -1,61 +1,17 @@
 #!/usr/bin/env node
 
-import { init, i } from '@instantdb/admin'
+import { init } from '@instantdb/admin'
 import { randomUUID } from 'crypto'
-import { readFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { schema, APP_ID } from '../src/lib/schema.ts'
 
-// Get the directory of this script
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-// Read the shared schema configuration
-const schemaConfigPath = join(__dirname, '../src/lib/schema.ts')
-const schemaConfigFile = readFileSync(schemaConfigPath, 'utf8')
-
-// Extract APP_ID from the shared config
-const appIdMatch = schemaConfigFile.match(/export const APP_ID = ['"`]([^'"`]+)['"`]/)
-if (!appIdMatch) {
-  throw new Error('Could not extract APP_ID from schema.ts')
+// Validate environment variables
+if (!APP_ID) {
+  throw new Error('INSTANT_APP_ID environment variable is required')
 }
-const APP_ID = appIdMatch[1]
-
-// Recreate the schema using the admin SDK
-// This uses the same structure as defined in src/lib/schema.ts
-const _schema = i.schema({
-  entities: {
-    poses: i.entity({
-      name: i.string(),
-      description: i.string(),
-      difficulty: i.string(),
-      imageUrl: i.string().optional(),
-      baseImageUrl: i.string().optional(),
-      flyerImageUrl: i.string().optional(),
-      createdAt: i.number()
-    }),
-    transitions: i.entity({
-      name: i.string(),
-      description: i.string().optional(),
-      fromPoseId: i.string(),
-      toPoseId: i.string(),
-      createdAt: i.number()
-    }),
-    flows: i.entity({
-      name: i.string(),
-      description: i.string().optional(),
-      isPublic: i.boolean(),
-      userId: i.string(),
-      stepsData: i.string(),
-      createdAt: i.number(),
-      updatedAt: i.number()
-    })
-  }
-})
 
 const db = init({
   appId: APP_ID,
-  schema: _schema,
+  schema,
   adminToken: process.env.INSTANT_ADMIN_TOKEN
 })
 
@@ -283,7 +239,9 @@ if (!process.env.INSTANT_ADMIN_TOKEN) {
   console.error('❌ INSTANT_ADMIN_TOKEN environment variable is required')
   console.log('🔧 To seed the database:')
   console.log('   1. Get your admin token from https://www.instantdb.com/dash')
-  console.log('   2. Set it as an environment variable: export INSTANT_ADMIN_TOKEN=your_token_here')
+  console.log('   2. Set environment variables in .env:')
+  console.log('      INSTANT_APP_ID=your_app_id_here')
+  console.log('      INSTANT_ADMIN_TOKEN=your_token_here')
   console.log('   3. Run: npm run seed')
   process.exit(1)
 }
