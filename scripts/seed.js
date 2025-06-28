@@ -1,18 +1,30 @@
-// Browser-based seeding script
-// Copy and paste this into the browser console at http://localhost:3000
+#!/usr/bin/env node
 
-console.log('🌱 Starting browser-based database seeding...')
+import { init } from '@instantdb/admin'
+import { randomUUID } from 'crypto'
+import { schema } from '../src/lib/schema.ts'
 
-// Generate unique IDs using crypto API (available in browser)
+// App configuration - public APP_ID (safe to inline)
+const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
+
+const db = init({
+  appId: APP_ID,
+  schema,
+  adminToken: 'your_admin_token_here'
+})
+
+console.log('🌱 Starting database seeding...')
+
+// Generate unique IDs
 const poseIds = {
-  shinToShin: crypto.randomUUID(),
-  bird: crypto.randomUUID(),
-  throne: crypto.randomUUID(),
-  foldedLeaf: crypto.randomUUID(),
-  whale: crypto.randomUUID(),
-  star: crypto.randomUUID(),
-  reverseBird: crypto.randomUUID(),
-  highFlyingWhale: crypto.randomUUID()
+  shinToShin: randomUUID(),
+  bird: randomUUID(),
+  throne: randomUUID(),
+  foldedLeaf: randomUUID(),
+  whale: randomUUID(),
+  star: randomUUID(),
+  reverseBird: randomUUID(),
+  highFlyingWhale: randomUUID()
 }
 
 console.log('🔍 Generated pose IDs:', poseIds)
@@ -80,7 +92,7 @@ const poses = [
 // Sample transitions between poses
 const transitions = [
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Mount to Bird",
     description: "Initial mount from ground to bird position",
     fromPoseId: poseIds.shinToShin,
@@ -88,7 +100,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Bird to Throne",
     description: "Transition from bird to throne by sitting up",
     fromPoseId: poseIds.bird,
@@ -96,7 +108,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Throne to Bird",
     description: "Return from throne to bird by leaning forward",
     fromPoseId: poseIds.throne,
@@ -104,7 +116,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Bird to Folded Leaf",
     description: "Forward fold from bird position",
     fromPoseId: poseIds.bird,
@@ -112,7 +124,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Folded Leaf to Bird",
     description: "Return from folded leaf to bird",
     fromPoseId: poseIds.foldedLeaf,
@@ -120,7 +132,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Bird to Whale",
     description: "Transition to prone whale position",
     fromPoseId: poseIds.bird,
@@ -128,7 +140,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Whale to Bird",
     description: "Return from whale to bird position",
     fromPoseId: poseIds.whale,
@@ -136,7 +148,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Whale to Throne",
     description: "Prasarita twist from whale to throne",
     fromPoseId: poseIds.whale,
@@ -144,7 +156,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Throne to Star",
     description: "Backbend transition to star position",
     fromPoseId: poseIds.throne,
@@ -152,7 +164,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Star to Throne",
     description: "Return from star to throne",
     fromPoseId: poseIds.star,
@@ -160,7 +172,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Bird to Reverse Bird",
     description: "Turn around to face away from base",
     fromPoseId: poseIds.bird,
@@ -168,7 +180,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Reverse Bird to Bird",
     description: "Turn around to face the base",
     fromPoseId: poseIds.reverseBird,
@@ -176,7 +188,7 @@ const transitions = [
     createdAt: Date.now()
   },
   {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     name: "Whale to High Flying Whale",
     description: "Extend to advanced whale position",
     fromPoseId: poseIds.whale,
@@ -190,32 +202,18 @@ async function seedDatabase() {
   try {
     console.log(`\n📥 Adding ${poses.length} poses to database...`)
     
-    // Add all poses
-    for (const pose of poses) {
-      console.log(`🧪 Adding pose: ${pose.name}`)
-      try {
-        await db.transact([db.tx.poses[pose.id].update(pose)])
-        console.log(`✅ Successfully added: ${pose.name}`)
-      } catch (error) {
-        console.error(`❌ Failed to add pose ${pose.name}:`, error)
-        throw error
-      }
-    }
+    // Add all poses in a single transaction
+    const poseTransactions = poses.map(pose => db.tx.poses[pose.id].update(pose))
+    await db.transact(poseTransactions)
     console.log('✅ All poses added successfully')
 
     console.log(`\n🔗 Adding ${transitions.length} transitions to database...`)
     
-    // Add all transitions
-    for (const transition of transitions) {
-      console.log(`🧪 Adding transition: ${transition.name}`)
-      try {
-        await db.transact([db.tx.transitions[transition.id].update(transition)])
-        console.log(`✅ Successfully added: ${transition.name}`)
-      } catch (error) {
-        console.error(`❌ Failed to add transition ${transition.name}:`, error)
-        throw error
-      }
-    }
+    // Add all transitions in a single transaction
+    const transitionTransactions = transitions.map(transition => 
+      db.tx.transitions[transition.id].update(transition)
+    )
+    await db.transact(transitionTransactions)
     console.log('✅ All transitions added successfully')
 
     console.log('\n🎉 Database seeding completed successfully!')
@@ -230,18 +228,9 @@ async function seedDatabase() {
 
   } catch (error) {
     console.error('\n❌ Error seeding database:', error)
+    process.exit(1)
   }
 }
 
-// Check if db is available (should be global in the app)
-if (typeof db !== 'undefined') {
-  console.log('✅ Database connection found, starting seeding...')
-  seedDatabase()
-} else {
-  console.error('❌ Database connection not found. Make sure you are on the AcroKit page at http://localhost:3000')
-  console.log('🔧 To seed the database:')
-  console.log('   1. Navigate to http://localhost:3000')
-  console.log('   2. Open browser console (F12)')
-  console.log('   3. Copy and paste this entire script')
-  console.log('   4. Press Enter')
-}
+console.log('✅ Starting seeding with inlined configuration...')
+seedDatabase()
