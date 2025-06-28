@@ -2,9 +2,10 @@
 
 import { init } from '@instantdb/admin'
 import { randomUUID } from 'crypto'
-import { schema, APP_ID } from '../src/lib/schema.ts'
+import { schema } from '../src/lib/schema.ts'
 
-// Validate environment variables
+// Get APP_ID from environment variable
+const APP_ID = process.env.INSTANT_APP_ID
 if (!APP_ID) {
   throw new Error('INSTANT_APP_ID environment variable is required')
 }
