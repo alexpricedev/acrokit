@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Pose, Transition, FlowStep, db, id } from '../lib/instant'
+import { Pose, Transition, FlowStep } from '../lib/instant'
 import { PoseCard } from './PoseCard'
 import { FlowSaveModal } from './FlowSaveModal'
 import { RandomFlowModal } from './RandomFlowModal'
