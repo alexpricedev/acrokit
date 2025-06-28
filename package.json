@@ -8,9 +8,10 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "seed": "echo 'Use scripts/seed-browser.js - copy and paste into browser console at http://localhost:3000'"
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
+    "@instantdb/admin": "^0.20.4",
     "@instantdb/react": "^0.20.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
