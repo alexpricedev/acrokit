@@ -4,11 +4,8 @@ import { init } from '@instantdb/admin'
 import { randomUUID } from 'crypto'
 import { schema } from '../src/lib/schema.ts'
 
-// Get APP_ID from environment variable
-const APP_ID = process.env.INSTANT_APP_ID
-if (!APP_ID) {
-  throw new Error('INSTANT_APP_ID environment variable is required')
-}
+// App configuration - public APP_ID (safe to inline)
+const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 
 const db = init({
   appId: APP_ID,
@@ -240,8 +237,7 @@ if (!process.env.INSTANT_ADMIN_TOKEN) {
   console.error('❌ INSTANT_ADMIN_TOKEN environment variable is required')
   console.log('🔧 To seed the database:')
   console.log('   1. Get your admin token from https://www.instantdb.com/dash')
-  console.log('   2. Set environment variables in .env:')
-  console.log('      INSTANT_APP_ID=your_app_id_here')
+  console.log('   2. Set environment variable in .env:')
   console.log('      INSTANT_ADMIN_TOKEN=your_token_here')
   console.log('   3. Run: npm run seed')
   process.exit(1)
