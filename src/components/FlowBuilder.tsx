@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Pose, Transition, FlowStep } from '../lib/instant'
+import { Pose, Transition, FlowStep, db, id } from '../lib/instant'
 import { PoseCard } from './PoseCard'
 import { FlowSaveModal } from './FlowSaveModal'
 import { RandomFlowModal } from './RandomFlowModal'
 import { useAuth } from './AuthProvider'
 import { useToast } from './ToastProvider'
-import { samplePoses, sampleTransitions } from '../data/sampleData'
+import { useFlowData } from '../hooks'
 
 interface FlowBuilderProps {
   initialFlow?: FlowStep[]
@@ -15,30 +15,37 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
   const { user } = useAuth()
   const { showToast } = useToast()
   const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || [])
-  const [availablePoses, setAvailablePoses] = useState<Pose[]>([])
-  const [availableTransitions, setAvailableTransitions] = useState<Transition[]>([])
   const [isStartingPose, setIsStartingPose] = useState(true)
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [showRandomModal, setShowRandomModal] = useState(false)
 
-  // Initialize with sample data for demo
+  // Use the new well-architected hook for data loading
+  const flowData = useFlowData()
+  const { poses, transitions, isLoading, hasError, hasData, isEmpty } = flowData
+
+  // Database is now seeded via Node.js script: npm run seed
+
+  // Debug authentication state (this is now handled in the hooks)
   useEffect(() => {
-    // Convert sample data to have IDs and timestamps
-    const posesWithIds: Pose[] = samplePoses.map((pose, index) => ({
-      ...pose,
-      id: pose.name.toLowerCase().replace(/\s+/g, '-'),
-      createdAt: Date.now() - index * 1000
-    }))
+    console.log('🔐 Auth state:', { user: !!user, userId: user?.id })
+    console.log('📊 FlowBuilder combined state:', { 
+      isLoading, 
+      hasError,
+      hasData,
+      isEmpty,
+      posesCount: poses.length,
+      transitionsCount: transitions.length
+    })
+  }, [user, isLoading, hasError, hasData, isEmpty, poses.length, transitions.length])
 
-    const transitionsWithIds: Transition[] = sampleTransitions.map((transition, index) => ({
-      ...transition,
-      id: `${transition.fromPoseId}-to-${transition.toPoseId}`,
-      createdAt: Date.now() - index * 1000
-    }))
+  // Show error message if database queries fail
+  useEffect(() => {
+    if (hasError) {
+      showToast('Failed to load poses and transitions from database', 'error')
+      console.error('Database query errors:', { error: flowData.error })
+    }
+  }, [hasError, flowData.error, showToast])
 
-    setAvailablePoses(posesWithIds)
-    setAvailableTransitions(transitionsWithIds)
-  }, [])
 
   // Update flow state when initialFlow changes
   useEffect(() => {
@@ -50,21 +57,15 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
 
   const getValidNextPoses = () => {
     if (isStartingPose) {
-      // Show all poses that can be starting poses (have transitions from shin-to-shin)
-      return availablePoses.filter(pose => 
-        availableTransitions.some(t => t.toPoseId === pose.id && t.fromPoseId === 'shin-to-shin')
-      )
+      // Use the helper from the hook for starting poses
+      return flowData.getStartingPoses()
     }
 
     if (currentFlow.length === 0) return []
 
     const lastPose = currentFlow[currentFlow.length - 1].pose
-    const validTransitions = availableTransitions.filter(t => t.fromPoseId === lastPose.id)
-    
-    return validTransitions.map(transition => ({
-      pose: availablePoses.find(p => p.id === transition.toPoseId),
-      transition
-    })).filter(item => item.pose) as { pose: Pose, transition: Transition }[]
+    // Use the helper from the hook for next valid poses
+    return flowData.getValidNextPoses(lastPose.id)
   }
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
@@ -102,9 +103,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
       setIsStartingPose(true)
       
       const newFlow: FlowStep[] = []
-      let currentPoseOptions = availablePoses.filter(pose => 
-        availableTransitions.some(t => t.fromPoseId === 'shin-to-shin' && t.toPoseId === pose.id)
-      )
+      let currentPoseOptions = flowData.getStartingPoses()
       
       for (let i = 0; i < moveCount; i++) {
         if (currentPoseOptions.length === 0) break
@@ -116,7 +115,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
         let transition: Transition | undefined
         if (newFlow.length > 0) {
           const lastPose = newFlow[newFlow.length - 1].pose
-          transition = availableTransitions.find(t => 
+          transition = transitions.find(t => 
             t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
           )
         }
@@ -125,9 +124,8 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
         newFlow.push({ pose: randomPose, transition })
         
         // Get next valid poses for the next iteration
-        currentPoseOptions = availablePoses.filter(pose => 
-          availableTransitions.some(t => t.fromPoseId === randomPose.id && t.toPoseId === pose.id)
-        )
+        const nextOptions = flowData.getValidNextPoses(randomPose.id)
+        currentPoseOptions = nextOptions.map(item => item.pose)
       }
       
       setCurrentFlow(newFlow)
@@ -142,12 +140,44 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
 
   const validOptions = getValidNextPoses()
 
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-4xl mb-4">🔄</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading poses and transitions...</h2>
+          <p className="text-gray-600">Please wait while we fetch the data from the database.</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state if database queries failed
+  if (hasError) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="text-red-400 text-4xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Failed to load data</h2>
+          <p className="text-gray-600 mb-4">There was an error loading poses and transitions from the database.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Left Column - Your Flow */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">Your flow</h2>
               <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
@@ -179,11 +209,11 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
             )}
             
             {/* Action Buttons */}
-            <div className="mt-6 space-y-3">
+            <div className="mt-6 space-y-3 sm:space-y-4">
               {currentFlow.length === 0 && (
                 <button
                   onClick={() => setShowRandomModal(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium min-h-[44px] sm:min-h-0"
                 >
                   Create random flow
                 </button>
@@ -192,7 +222,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
               <button
                 onClick={handleSaveFlow}
                 disabled={currentFlow.length === 0}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium min-h-[44px] sm:min-h-0"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -224,18 +254,20 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
 
         {/* Right Column - Available Moves */}
         <div className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold text-gray-900">
-                {isStartingPose ? 'Starting moves' : 'Available next moves'}
-              </h2>
-              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
-                {validOptions.length}
-              </span>
+          <div className="mb-4 sm:mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {isStartingPose ? 'Starting moves' : 'Available next moves'}
+                </h2>
+                <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
+                  {validOptions.length}
+                </span>
+              </div>
             </div>
             
-            {/* Difficulty Filter Pills */}
-            <div className="flex gap-2">
+            {/* Difficulty Filter Pills - Mobile Friendly */}
+            <div className="flex flex-wrap gap-2 justify-start">
               <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">Easy</span>
               <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">Medium</span>
               <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">Hard</span>
@@ -253,7 +285,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {isStartingPose 
                 ? (validOptions as Pose[]).map((pose) => (
                     <PoseCard
@@ -263,8 +295,8 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                     />
                   ))
                 : (validOptions as { pose: Pose, transition: Transition }[]).map(({ pose, transition }) => (
-                    <div key={pose.id} className="space-y-2">
-                      <div className="text-sm text-gray-500 font-medium px-1">
+                    <div key={pose.id} className="space-y-1 sm:space-y-2">
+                      <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">
                         Via: {transition.name}
                       </div>
                       <PoseCard

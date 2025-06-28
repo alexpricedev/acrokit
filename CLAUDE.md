@@ -54,12 +54,11 @@ Sample Data (sampleData.ts)
 - **Example Usage**:
   ```typescript
   await mcp__puppeteer__puppeteer_navigate({ url: "http://localhost:3000" })
-  await mcp__puppeteer__puppeteer_screenshot({ name: "feature-test" })
+  await mcp__puppeteer__puppeteer_screenshot({ name: "homepage" })
   await mcp__puppeteer__puppeteer_click({ selector: "button[class*='bg-blue-500']" })
   ```
 
 ### Design Validation
-- **Reference**: acrokit.com prototype
 - **Key Elements**: Card layouts, gradient borders, difficulty tags, two-column layout
 - **Colors**: Green (Easy), Blue (Medium), Red (Hard), Neutral grays
 
@@ -86,10 +85,12 @@ Sample Data (sampleData.ts)
 
 ### Essential Commands
 ```bash
-npm run dev          # Start development server
+npm run dev          # Start development server (assume always running)
 npm run build        # Check TypeScript errors
 npm run lint         # Check code quality
 ```
+
+**Note**: Always assume the dev server is running when testing - don't start it manually.
 
 ### Server Ports
 - **Primary**: localhost:3000
@@ -192,10 +193,10 @@ type Schema = {
 ## 💡 Development Tips
 
 ### Working with Puppeteer
-- Use `width: 1200, height: 800` for desktop testing
-- Use `width: 375, height: 667` for mobile testing
+- Take screenshots at different viewport sizes for responsive testing
 - Always wait for navigation before screenshots
-- Use CSS selectors, avoid text-based selectors when possible
+- Use specific CSS selectors for interactions
+- Capture screenshots to validate visual states
 
 ### Component Patterns
 - **Conditional rendering** based on auth state
@@ -222,15 +223,13 @@ type Schema = {
 
 ## 🚨 CRITICAL DEVELOPMENT WORKFLOW
 
-### ⚠️ ALWAYS TEST IN BROWSER WITH PUPPETEER MCP
+### ⚠️ ALWAYS TEST IN BROWSER WITH PUPPETEER
 
 **MANDATORY**: Before and after ANY code changes, you MUST:
 
-1. **Start the dev server**: `npm run dev` 
-2. **Test with Puppeteer MCP**: Use the browser tools to validate functionality
-3. **Take screenshots**: Document current state vs expected state
-4. **Test core flows**: Authentication → Flow Building → Saving → Loading
-5. **Verify design**: Compare against acrokit.com prototype
+1. **Test with Puppeteer**: Use the browser tools to validate functionality
+2. **Take screenshots**: Document current state vs expected state
+3. **Test core flows**: Authentication → Flow Building → Saving → Loading
 
 ### Essential Testing Commands
 ```typescript
@@ -238,15 +237,17 @@ type Schema = {
 await mcp__puppeteer__puppeteer_navigate({ url: "http://localhost:3000" })
 
 // Take screenshots for validation
-await mcp__puppeteer__puppeteer_screenshot({ name: "feature-test", width: 1200, height: 800 })
+await mcp__puppeteer__puppeteer_screenshot({ name: "current-state" })
 
 // Test interactions
 await mcp__puppeteer__puppeteer_click({ selector: "button[class*='bg-blue-500']" })
 await mcp__puppeteer__puppeteer_fill({ selector: "input[type='email']", value: "test@example.com" })
+
+// Execute JavaScript for complex interactions
+await mcp__puppeteer__puppeteer_evaluate({ script: "document.querySelector('button').click()" })
 ```
 
 ### Why This Matters
-- **Visual Design**: Must match acrokit.com prototype exactly
 - **User Experience**: Every interaction must be smooth and intuitive  
 - **Functionality**: Constrained flow system is complex and needs visual validation
 - **Responsive Design**: Must work on mobile and desktop

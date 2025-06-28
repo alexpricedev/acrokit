@@ -1,37 +1,39 @@
-import { init } from '@instantdb/react'
+import { init, i, id } from '@instantdb/react'
 
 // Database schema definition for InstantDB
-export const schema = {
+const _schema = i.schema({
   entities: {
-    poses: {
-      name: { type: 'string' },
-      description: { type: 'string' },
-      difficulty: { type: 'string' },
-      imageUrl: { type: 'string' },
-      baseImageUrl: { type: 'string' },
-      flyerImageUrl: { type: 'string' },
-      createdAt: { type: 'number' }
-    },
-    transitions: {
-      name: { type: 'string' },
-      description: { type: 'string' },
-      fromPoseId: { type: 'string' },
-      toPoseId: { type: 'string' },
-      createdAt: { type: 'number' }
-    },
-    flows: {
-      name: { type: 'string' },
-      description: { type: 'string' },
-      isPublic: { type: 'boolean' },
-      userId: { type: 'string' },
-      stepsData: { type: 'string' },
-      createdAt: { type: 'number' },
-      updatedAt: { type: 'number' }
-    }
-  },
-  links: {},
-  rooms: {}
-} as const
+    poses: i.entity({
+      name: i.string(),
+      description: i.string(),
+      difficulty: i.string(),
+      imageUrl: i.string().optional(),
+      baseImageUrl: i.string().optional(),
+      flyerImageUrl: i.string().optional(),
+      createdAt: i.number()
+    }),
+    transitions: i.entity({
+      name: i.string(),
+      description: i.string().optional(),
+      fromPoseId: i.string(),
+      toPoseId: i.string(),
+      createdAt: i.number()
+    }),
+    flows: i.entity({
+      name: i.string(),
+      description: i.string().optional(),
+      isPublic: i.boolean(),
+      userId: i.string(),
+      stepsData: i.string(),
+      createdAt: i.number(),
+      updatedAt: i.number()
+    })
+  }
+})
+
+type _AppSchema = typeof _schema
+interface AppSchema extends _AppSchema {}
+const schema: AppSchema = _schema
 
 // TypeScript types derived from schema
 export type Schema = {
@@ -70,6 +72,7 @@ const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 
 export const db = init({
   appId: APP_ID,
+  schema
 })
 
 export type Pose = Schema['poses']
@@ -80,6 +83,9 @@ export type User = {
   email: string
   createdAt: number
 }
+
+// Export id function for transactions
+export { id }
 
 // Local flow step interface for the builder
 export interface FlowStep {

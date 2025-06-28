@@ -60,7 +60,7 @@ export function RandomFlowModal({ isOpen, onClose, onGenerate }: RandomFlowModal
                   onClick={() => setMoveCount(count)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     moveCount === count
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-slate-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -92,8 +92,7 @@ export function RandomFlowModal({ isOpen, onClose, onGenerate }: RandomFlowModal
               <div>
                 <h3 className="text-sm font-medium text-blue-900 mb-1">About random flows</h3>
                 <p className="text-xs text-blue-700">
-                  We'll create a valid sequence by randomly selecting poses and transitions. 
-                  Each move will follow proper acroyoga flow rules to ensure safety.
+                  We'll create a valid sequence by randomly selecting poses and transitions.
                 </p>
               </div>
             </div>
@@ -113,7 +112,7 @@ export function RandomFlowModal({ isOpen, onClose, onGenerate }: RandomFlowModal
               </>
             ) : (
               <>
-                🎲 Generate random flow
+                Create
               </>
             )}
           </button>

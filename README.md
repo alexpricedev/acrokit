@@ -48,7 +48,7 @@ A modern React web application for building and sharing valid Acroyoga sequences
 - **Database**: InstantDB (real-time, auth-enabled)
 - **Authentication**: InstantDB Auth with magic links
 - **State Management**: React Context + useState/useEffect
-- **Testing**: Puppeteer for visual regression testing
+- **Testing**: Browser MCP for visual regression testing
 
 ## 🚀 Getting Started
 
