@@ -10,7 +10,7 @@ const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0'
 const db = init({
   appId: APP_ID,
   schema,
-  adminToken: 'your_admin_token_here'
+  adminToken: process.env.INSTANT_ADMIN_TOKEN,
 })
 
 console.log('🌱 Starting database seeding...')
