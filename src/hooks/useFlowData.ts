@@ -36,31 +36,15 @@ export function useFlowData() {
   })
   
   /**
-   * Get poses that can be starting poses (have transitions from shin-to-shin)
+   * Get poses that are marked as starting poses
    */
   const getStartingPoses = (): Pose[] => {
-    // Find the "Shin to Shin" pose by name first
-    const shinToShinPose = posesResult.poses.find(pose => 
-      pose.name.toLowerCase() === 'shin to shin'
-    )
-    
-    if (!shinToShinPose) {
-      console.warn('🚨 No "Shin to Shin" pose found in database')
-      return []
-    }
-    
-    const startingPoses = posesResult.poses.filter(pose => 
-      transitionsResult.transitions.some(t => t.toPoseId === pose.id && t.fromPoseId === shinToShinPose.id)
-    )
+    const startingPoses = posesResult.poses.filter(pose => pose.isStartingPose === true)
     
     console.log('🎯 getStartingPoses debug:', {
       totalPoses: posesResult.poses.length,
-      totalTransitions: transitionsResult.transitions.length,
-      shinToShinPose: shinToShinPose ? { id: shinToShinPose.id, name: shinToShinPose.name } : null,
       startingPosesFound: startingPoses.length,
-      allPoseIds: posesResult.poses.map(p => p.id),
-      allTransitions: transitionsResult.transitions.map(t => ({ name: t.name, from: t.fromPoseId, to: t.toPoseId })),
-      startingTransitions: transitionsResult.transitions.filter(t => t.fromPoseId === shinToShinPose.id)
+      startingPoses: startingPoses.map(p => ({ id: p.id, name: p.name, isStarting: p.isStartingPose }))
     })
     
     return startingPoses

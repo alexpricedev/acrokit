@@ -145,13 +145,7 @@ export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
         <div className="text-center py-12">
           <div className="text-gray-400 text-4xl mb-4">🤸‍♀️</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">No flows yet</h2>
-          <p className="text-gray-600 mb-6">Create your first acroyoga flow sequence to get started.</p>
-          <button
-            onClick={() => onPageChange('builder')}
-            className="px-6 py-3 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium min-h-[44px] sm:min-h-0"
-          >
-            Start building
-          </button>
+          <p className="text-gray-600">Create your first acroyoga flow sequence to get started.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
