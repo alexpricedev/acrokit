@@ -64,7 +64,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {isCodeSent ? 'Check your email' : 'Sign in to AcroKit'}
+            {isCodeSent ? 'Check your email' : 'Welcome to AcroKit'}
           </h2>
           <button
             onClick={handleClose}
@@ -157,7 +157,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </button>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-              We'll send you a 6-digit code - no password needed!
+              We'll send you a 6-digit code - works for new and existing accounts!
             </p>
           </form>
         )}
