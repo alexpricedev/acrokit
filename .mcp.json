@@ -4,14 +4,13 @@
       "type": "http",
       "url": "https://mcp.instantdb.com/mcp"
     },
-    "puppeteer": {
-      "type": "stdio",
+    "playwright": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-puppeteer"
-      ],
-      "env": {}
+      "args": ["-y", "@automatalabs/mcp-server-playwright"]
+    },
+    "filesystem": {
+      "command": "/Users/alexprice/go/bin/mcp-filesystem-server",
+      "args": ["/Users/alexprice/projects"]
     }
   }
 }

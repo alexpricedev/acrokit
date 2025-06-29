@@ -44,18 +44,19 @@ Sample Data (sampleData.ts)
 
 ## 🧪 Testing Strategy
 
-### Puppeteer Visual Testing
+### Playwright Visual Testing
 - **Purpose**: Test UI and user flows, validate design matches prototype
 - **Key Commands**:
   ```bash
   npm run dev  # Start server (usually localhost:3000)
+  npx playwright install  # Install browsers (one-time setup)
   ```
 - **Testing Pattern**: Navigate → Screenshot → Interact → Screenshot
 - **Example Usage**:
   ```typescript
-  await mcp__puppeteer__puppeteer_navigate({ url: "http://localhost:3000" })
-  await mcp__puppeteer__puppeteer_screenshot({ name: "homepage" })
-  await mcp__puppeteer__puppeteer_click({ selector: "button[class*='bg-blue-500']" })
+  await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
+  await mcp__playwright__browser_screenshot({ name: "homepage" })
+  await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
   ```
 
 ### Design Validation
@@ -179,7 +180,7 @@ type Schema = {
 ## 🎯 Testing Guidelines
 
 ### Before Making Changes
-1. **Screenshot current state** with Puppeteer
+1. **Screenshot current state** with Playwright
 2. **Test core flows**: Build flow → Save → Load → Edit
 3. **Verify design consistency** with acrokit.com prototype
 4. **Check TypeScript** with `npm run build`
@@ -192,11 +193,12 @@ type Schema = {
 
 ## 💡 Development Tips
 
-### Working with Puppeteer
+### Working with Playwright
 - Take screenshots at different viewport sizes for responsive testing
 - Always wait for navigation before screenshots
 - Use specific CSS selectors for interactions
 - Capture screenshots to validate visual states
+- Supports multiple browsers (Chromium, Firefox, WebKit)
 
 ### Component Patterns
 - **Conditional rendering** based on auth state
@@ -223,28 +225,28 @@ type Schema = {
 
 ## 🚨 CRITICAL DEVELOPMENT WORKFLOW
 
-### ⚠️ ALWAYS TEST IN BROWSER WITH PUPPETEER
+### ⚠️ ALWAYS TEST IN BROWSER WITH PLAYWRIGHT
 
 **MANDATORY**: Before and after ANY code changes, you MUST:
 
-1. **Test with Puppeteer**: Use the browser tools to validate functionality
+1. **Test with Playwright**: Use the browser tools to validate functionality
 2. **Take screenshots**: Document current state vs expected state
 3. **Test core flows**: Authentication → Flow Building → Saving → Loading
 
 ### Essential Testing Commands
 ```typescript
 // Navigate to app
-await mcp__puppeteer__puppeteer_navigate({ url: "http://localhost:3000" })
+await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
 
 // Take screenshots for validation
-await mcp__puppeteer__puppeteer_screenshot({ name: "current-state" })
+await mcp__playwright__browser_screenshot({ name: "current-state" })
 
 // Test interactions
-await mcp__puppeteer__puppeteer_click({ selector: "button[class*='bg-blue-500']" })
-await mcp__puppeteer__puppeteer_fill({ selector: "input[type='email']", value: "test@example.com" })
+await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
+await mcp__playwright__browser_fill({ selector: "input[type='email']", value: "test@example.com" })
 
 // Execute JavaScript for complex interactions
-await mcp__puppeteer__puppeteer_evaluate({ script: "document.querySelector('button').click()" })
+await mcp__playwright__browser_evaluate({ script: "document.querySelector('button').click()" })
 ```
 
 ### Why This Matters

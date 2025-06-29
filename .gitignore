@@ -108,6 +108,10 @@ dist-ssr
 screenshots/
 *.png
 
+# Exception: Allow documentation screenshots
+!docs/screenshots/
+!docs/screenshots/*.png
+
 # Test artifacts
 test-results/
 playwright-report/
