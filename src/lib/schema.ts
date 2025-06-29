@@ -7,6 +7,7 @@ export const schema = i.schema({
       name: i.string(),
       description: i.string(),
       difficulty: i.string(),
+      isStartingPose: i.boolean().optional(),
       imageUrl: i.string().optional(),
       baseImageUrl: i.string().optional(),
       flyerImageUrl: i.string().optional(),
@@ -41,6 +42,7 @@ export type Schema = {
     name: string
     description: string
     difficulty: 'beginner' | 'intermediate' | 'advanced'
+    isStartingPose?: boolean
     imageUrl?: string
     baseImageUrl?: string
     flyerImageUrl?: string

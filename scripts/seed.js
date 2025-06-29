@@ -43,6 +43,7 @@ const poses = [
     name: "Bird",
     description: "Classic L-basing pose with flyer's hips on base's feet",
     difficulty: "beginner",
+    isStartingPose: true,
     createdAt: Date.now()
   },
   {
@@ -50,6 +51,7 @@ const poses = [
     name: "Throne",
     description: "Flyer sits on base's feet with back supported by base's hands",
     difficulty: "beginner",
+    isStartingPose: true,
     createdAt: Date.now()
   },
   {
