@@ -1,42 +1,50 @@
 #!/usr/bin/env node
-
 import { chromium } from 'playwright';
+
+const args = process.argv.slice(2);
+if (args.length === 0) {
+  console.log('Usage: node scripts/screenshot.js <name> [url] [selector]');
+  process.exit(1);
+}
+
+const names = args[0].split(',');
+const url = args[1] || process.env.SCREENSHOT_URL || 'http://localhost:3000';
+const waitSelector = args[2];
+
+const CONFIG = {
+  url,
+  outputDir: 'docs/screenshots',
+  readySelectors: waitSelector ? [waitSelector] : ['button', '[data-testid]', 'main'],
+  renderDelay: 2000
+};
+
+async function waitForReady(page) {
+  for (const selector of CONFIG.readySelectors) {
+    try {
+      await page.waitForSelector(selector, { timeout: 5000 });
+      await page.waitForTimeout(CONFIG.renderDelay);
+      return;
+    } catch (e) {}
+  }
+  await page.waitForLoadState('networkidle');
+}
 
 async function takeScreenshots() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
   
-  console.log('Navigating to app...');
-  await page.goto('http://localhost:3000');
+  await page.goto(CONFIG.url);
+  await waitForReady(page);
   
-  console.log('Waiting for data to load...');
-  // Wait for specific elements to appear instead of text content
-  await page.waitForSelector('button:has-text("Add to flow")', { timeout: 30000 });
-  
-  // Extra wait to ensure everything is fully rendered
-  await page.waitForTimeout(2000);
-  
-  console.log('Taking starting moves screenshot...');
-  await page.screenshot({ 
-    path: 'docs/screenshots/starting-moves-working.png',
-    fullPage: true 
-  });
-  
-  console.log('Clicking on first pose...');
-  await page.click('button:has-text("Add to flow")');
-  
-  // Wait for constraint system to load
-  await page.waitForSelector('text=Available next moves', { timeout: 10000 });
-  await page.waitForTimeout(1000);
-  
-  console.log('Taking constraint system screenshot...');
-  await page.screenshot({ 
-    path: 'docs/screenshots/constraint-system-working.png',
-    fullPage: true 
-  });
+  for (const name of names) {
+    await page.screenshot({ 
+      path: `${CONFIG.outputDir}/${name}.png`,
+      fullPage: true 
+    });
+    console.log(`✅ Saved: ${name}.png`);
+  }
   
   await browser.close();
-  console.log('Screenshots saved successfully!');
 }
 
 takeScreenshots().catch(console.error);
