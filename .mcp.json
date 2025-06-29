@@ -6,11 +6,10 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@automatalabs/mcp-server-playwright"]
-    },
-    "filesystem": {
-      "command": "/Users/alexprice/go/bin/mcp-filesystem-server",
-      "args": ["/Users/alexprice/projects"]
+      "args": [
+        "-y",
+        "@automatalabs/mcp-server-playwright"
+      ]
     }
   }
 }
