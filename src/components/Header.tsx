@@ -74,12 +74,20 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 )}
               </div>
             ) : (
-              <button 
-                onClick={() => setShowLoginModal(true)}
-                className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-              >
-                Sign up
-              </button>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => setShowLoginModal(true)}
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm"
+                >
+                  Log in
+                </button>
+                <button 
+                  onClick={() => setShowLoginModal(true)}
+                  className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+                >
+                  Sign up
+                </button>
+              </div>
             )}
           </div>
 
@@ -173,12 +181,20 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                   )}
                 </div>
               ) : (
-                <button 
-                  onClick={() => setShowLoginModal(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg"
-                >
-                  Create a free account
-                </button>
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={() => setShowLoginModal(true)}
+                    className="text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                  >
+                    Log in
+                  </button>
+                  <button 
+                    onClick={() => setShowLoginModal(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg"
+                  >
+                    Sign up
+                  </button>
+                </div>
               )}
             </nav>
           </div>
