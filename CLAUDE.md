@@ -59,6 +59,53 @@ Sample Data (sampleData.ts)
   await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
   ```
 
+### Screenshot Configuration System
+- **Purpose**: Consistent, automated screenshot capture for documentation and PRs
+- **Script**: `scripts/screenshot.js` with predefined UI state configurations
+- **Usage**: `node scripts/screenshot.js <screen-key> [screen-key2,screen-key3...]`
+- **Key Features**:
+  - **Configuration-based**: Each screen state defined with actions, wait conditions, and descriptions
+  - **Action sequences**: Supports click, fill, wait, login, viewport changes
+  - **Batch capture**: Take multiple screenshots with single command
+  - **Self-documenting**: Run without args to see all available screens
+
+#### Available Screen Configurations
+```bash
+# Main screens
+flow-builder                # Empty flow builder state
+flow-builder-with-poses    # Flow builder with poses added
+flows-gallery              # Gallery page (requires login)
+
+# Header states  
+header-logged-out          # Shows login/signup buttons
+header-logged-in           # Shows user menu
+
+# Modals
+login-modal                # Login/signup modal
+login-modal-code-sent      # After sending magic code
+flow-save-modal            # Flow saving interface
+random-flow-modal          # Random flow creation
+user-menu-open             # User dropdown menu
+
+# UI Components
+pose-cards                 # Available pose cards
+difficulty-filters         # Filter buttons
+mobile-view                # Mobile responsive layout
+empty-flow-state          # Empty state message
+```
+
+#### Example Usage
+```bash
+# Single screenshot
+node scripts/screenshot.js login-modal
+
+# Multiple screenshots for PR
+node scripts/screenshot.js header-logged-out,login-modal,flow-builder
+
+# All available screens listed
+node scripts/screenshot.js
+```
+
 ### Design Validation
 - **Key Elements**: Card layouts, gradient borders, difficulty tags, two-column layout
 - **Colors**: Green (Easy), Blue (Medium), Red (Hard), Neutral grays
