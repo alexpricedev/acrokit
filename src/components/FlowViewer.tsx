@@ -1,0 +1,294 @@
+import { useState, useEffect } from 'react'
+import { Flow, FlowStep, db, id } from '../lib/instant'
+import { useAuth } from './AuthProvider'
+import { useToast } from './ToastProvider'
+import { PoseCard } from './PoseCard'
+
+interface FlowViewerProps {
+  flowId: string
+  onBack: () => void
+}
+
+export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
+  const { user } = useAuth()
+  const { showToast } = useToast()
+  const [flow, setFlow] = useState<Flow | null>(null)
+  const [flowSteps, setFlowSteps] = useState<FlowStep[]>([])
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Query the specific flow by ID
+  const { isLoading: dbLoading, data, error } = db.useQuery({
+    flows: {
+      $: {
+        where: {
+          id: flowId
+        }
+      }
+    }
+  })
+
+  useEffect(() => {
+    if (!dbLoading) {
+      if (error) {
+        console.error('Error loading flow:', error)
+        showToast('Failed to load flow', 'error')
+        return
+      }
+
+      if (data?.flows && data.flows.length > 0) {
+        const flowData = data.flows[0] as Flow
+        
+        // Check if flow is public or belongs to current user
+        if (!flowData.isPublic && (!user || flowData.userId !== user.id)) {
+          showToast('This flow is private and cannot be viewed', 'error')
+          onBack()
+          return
+        }
+
+        setFlow(flowData)
+        
+        // Parse the flow steps
+        try {
+          const steps = JSON.parse(flowData.stepsData) as FlowStep[]
+          setFlowSteps(steps)
+        } catch (parseError) {
+          console.error('Error parsing flow data:', parseError)
+          showToast('Invalid flow data', 'error')
+          onBack()
+          return
+        }
+      } else {
+        showToast('Flow not found', 'error')
+        onBack()
+        return
+      }
+      
+      setIsLoading(false)
+    }
+  }, [dbLoading, data, error, flowId, user, showToast, onBack])
+
+  const copyFlow = async () => {
+    if (!user || !flow) {
+      showToast('Please sign in to copy flows', 'error')
+      return
+    }
+
+    try {
+      await db.transact(
+        db.tx.flows[id()].update({
+          name: `Copy of ${flow.name}`,
+          description: flow.description ? `${flow.description} (copied)` : 'Copied from public gallery',
+          isPublic: false,
+          userId: user.id,
+          stepsData: flow.stepsData,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        })
+      )
+      showToast(`Copied "${flow.name}" to your flows!`, 'success')
+    } catch (error) {
+      console.error('Error copying flow:', error)
+      showToast('Failed to copy flow. Please try again.', 'error')
+    }
+  }
+
+  const shareFlow = () => {
+    if (!flow) return
+    
+    const shareUrl = `${window.location.origin}/flow/${flow.id}`
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      showToast('Flow link copied to clipboard!', 'success')
+    }).catch(() => {
+      showToast('Failed to copy to clipboard. Check console for link.', 'error')
+      console.log('Flow link:', shareUrl)
+    })
+  }
+
+  const nextStep = () => {
+    if (currentStep < flowSteps.length - 1) {
+      setCurrentStep(currentStep + 1)
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const goToStep = (stepIndex: number) => {
+    setCurrentStep(stepIndex)
+  }
+
+  if (isLoading || dbLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-4xl mb-4">🔄</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading flow...</h2>
+          <p className="text-gray-600">Please wait while we fetch the flow for you.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!flow || flowSteps.length === 0) {
+    return null
+  }
+
+  const currentPose = flowSteps[currentStep]
+
+  return (
+    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15,18 9,12 15,6"/>
+            </svg>
+            Back to Gallery
+          </button>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{flow.name}</h1>
+            {flow.description && (
+              <p className="text-gray-600">{flow.description}</p>
+            )}
+          </div>
+          
+          <div className="flex gap-2">
+            <button
+              onClick={shareFlow}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            >
+              Share Flow
+            </button>
+            {user && (
+              <button
+                onClick={copyFlow}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                Copy to My Flows
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+          <span>Step {currentStep + 1} of {flowSteps.length}</span>
+          <span>{flow.isPublic ? 'Public Flow' : 'Private Flow'}</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${((currentStep + 1) / flowSteps.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Main content - two column layout */}
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Current pose display */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {currentPose.pose.name}
+              </h2>
+              {currentPose.transition && (
+                <p className="text-blue-600 font-medium">
+                  via {currentPose.transition.name}
+                </p>
+              )}
+            </div>
+            
+            <PoseCard 
+              pose={currentPose.pose}
+              showAddButton={false}
+            />
+            
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">{currentPose.pose.description}</p>
+            </div>
+          </div>
+
+          {/* Navigation controls */}
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15,18 9,12 15,6"/>
+              </svg>
+              Previous
+            </button>
+            
+            <button
+              onClick={nextStep}
+              disabled={currentStep === flowSteps.length - 1}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="9,18 15,12 9,6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Flow overview */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Flow Overview</h3>
+            
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {flowSteps.map((step, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToStep(index)}
+                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    index === currentStep
+                      ? 'bg-blue-100 border border-blue-200'
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {index + 1}. {step.pose.name}
+                      </div>
+                      {step.transition && (
+                        <div className="text-sm text-blue-600">
+                          via {step.transition.name}
+                        </div>
+                      )}
+                    </div>
+                    <div className={`px-2 py-1 text-xs rounded-full ${
+                      step.pose.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                      step.pose.difficulty === 'intermediate' ? 'bg-blue-100 text-blue-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {step.pose.difficulty}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

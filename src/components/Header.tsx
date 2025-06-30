@@ -3,8 +3,8 @@ import { useAuth } from './AuthProvider'
 import { LoginModal } from './LoginModal'
 
 interface HeaderProps {
-  currentPage: 'builder' | 'gallery'
-  onPageChange: (page: 'builder' | 'gallery') => void
+  currentPage: 'builder' | 'gallery' | 'public-gallery' | 'flow-viewer'
+  onPageChange: (page: 'builder' | 'gallery' | 'public-gallery') => void
 }
 
 export function Header({ currentPage, onPageChange }: HeaderProps) {
@@ -103,6 +103,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
             >
               Flow builder
             </button>
+            <button 
+              onClick={() => onPageChange('public-gallery')}
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors min-h-[40px] flex items-center ${
+                currentPage === 'public-gallery' || currentPage === 'flow-viewer'
+                  ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+              }`}
+            >
+              Gallery
+            </button>
             {user && (
               <button 
                 onClick={() => onPageChange('gallery')}
@@ -138,6 +148,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 }`}
               >
                 Flow builder
+              </button>
+              <button 
+                onClick={() => onPageChange('public-gallery')}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === 'public-gallery' || currentPage === 'flow-viewer'
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                }`}
+              >
+                Gallery
               </button>
               {user && (
                 <button 

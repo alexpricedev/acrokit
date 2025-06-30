@@ -87,9 +87,9 @@ export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
   }
 
   const shareFlow = (flow: Flow) => {
-    const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${flow.id}`
+    const shareUrl = `${window.location.origin}/flow/${flow.id}`
     navigator.clipboard.writeText(shareUrl).then(() => {
-      showToast('Shareable link copied to clipboard!', 'success')
+      showToast('Public flow link copied to clipboard!', 'success')
     }).catch(() => {
       showToast('Failed to copy to clipboard. Check console for link.', 'error')
       console.log('Share link:', shareUrl)
