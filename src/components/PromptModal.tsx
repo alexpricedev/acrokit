@@ -1,28 +1,35 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 interface PromptModalProps {
-  isOpen: boolean
-  title: string
-  message: string
-  defaultValue?: string
-  onConfirm: (value: string) => void
-  onCancel: () => void
+  isOpen: boolean;
+  title: string;
+  message: string;
+  defaultValue?: string;
+  onConfirm: (value: string) => void;
+  onCancel: () => void;
 }
 
-export function PromptModal({ isOpen, title, message, defaultValue = '', onConfirm, onCancel }: PromptModalProps) {
-  const [value, setValue] = useState(defaultValue)
+export function PromptModal({
+  isOpen,
+  title,
+  message,
+  defaultValue = '',
+  onConfirm,
+  onCancel,
+}: PromptModalProps) {
+  const [value, setValue] = useState(defaultValue);
 
   const handleConfirm = () => {
-    onConfirm(value)
-    setValue('')
-  }
+    onConfirm(value);
+    setValue('');
+  };
 
   const handleCancel = () => {
-    onCancel()
-    setValue('')
-  }
+    onCancel();
+    setValue('');
+  };
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -33,9 +40,16 @@ export function PromptModal({ isOpen, title, message, defaultValue = '', onConfi
             onClick={handleCancel}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -45,15 +59,15 @@ export function PromptModal({ isOpen, title, message, defaultValue = '', onConfi
         <input
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={e => setValue(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
           placeholder="Enter value..."
           autoFocus
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter') {
-              handleConfirm()
+              handleConfirm();
             } else if (e.key === 'Escape') {
-              handleCancel()
+              handleCancel();
             }
           }}
         />
@@ -74,5 +88,5 @@ export function PromptModal({ isOpen, title, message, defaultValue = '', onConfi
         </div>
       </div>
     </div>
-  )
+  );
 }

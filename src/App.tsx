@@ -1,76 +1,80 @@
-import { useState, useEffect } from 'react'
-import './App.css'
-import { FlowBuilder } from './components/FlowBuilder'
-import { FlowsGallery } from './components/FlowsGallery'
-import { AboutPage } from './components/AboutPage'
-import { PublicGallery } from './components/PublicGallery'
-import { FlowViewer } from './components/FlowViewer'
-import { Header } from './components/Header'
-import { AuthProvider } from './components/AuthProvider'
-import { ToastProvider } from './components/ToastProvider'
-import { FlowStep } from './lib/instant'
+import { useState, useEffect } from 'react';
+import './App.css';
+import { FlowBuilder } from './components/FlowBuilder';
+import { FlowsGallery } from './components/FlowsGallery';
+import { AboutPage } from './components/AboutPage';
+import { PublicGallery } from './components/PublicGallery';
+import { FlowViewer } from './components/FlowViewer';
+import { Header } from './components/Header';
+import { AuthProvider } from './components/AuthProvider';
+import { ToastProvider } from './components/ToastProvider';
+import { FlowStep } from './lib/instant';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'>('builder')
-  const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>()
-  const [viewingFlowId, setViewingFlowId] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState<
+    'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'
+  >('builder');
+  const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>();
+  const [viewingFlowId, setViewingFlowId] = useState<string | null>(null);
 
   // Check URL routing on app load
   useEffect(() => {
-    const path = window.location.pathname
-    
+    const path = window.location.pathname;
+
     // Handle URL routing
     if (path === '/gallery') {
-      setCurrentPage('public-gallery')
+      setCurrentPage('public-gallery');
     } else if (path === '/my-flows') {
-      setCurrentPage('gallery')
+      setCurrentPage('gallery');
     } else if (path === '/about') {
-      setCurrentPage('about')
+      setCurrentPage('about');
     } else if (path.startsWith('/flow/')) {
-      const flowId = path.split('/flow/')[1]
+      const flowId = path.split('/flow/')[1];
       if (flowId) {
-        setViewingFlowId(flowId)
-        setCurrentPage('flow-viewer')
+        setViewingFlowId(flowId);
+        setCurrentPage('flow-viewer');
       }
     } else {
-      setCurrentPage('builder')
+      setCurrentPage('builder');
     }
-  }, [])
+  }, []);
 
   const handleLoadFlow = (flow: FlowStep[]) => {
-    setLoadedFlow(flow)
-    setCurrentPage('builder')
-    window.history.pushState({}, '', '/')
-  }
+    setLoadedFlow(flow);
+    setCurrentPage('builder');
+    window.history.pushState({}, '', '/');
+  };
 
-  const handlePageChange = (page: 'builder' | 'gallery' | 'public-gallery' | 'about') => {
-    setCurrentPage(page)
-    setViewingFlowId(null) // Clear flow viewer when changing pages
-    
+  const handlePageChange = (
+    page: 'builder' | 'gallery' | 'public-gallery' | 'about'
+  ) => {
+    setCurrentPage(page);
+    setViewingFlowId(null); // Clear flow viewer when changing pages
+
     if (page === 'builder') {
-      setLoadedFlow(undefined) // Clear loaded flow when manually switching to builder
-      window.history.pushState({}, '', '/')
+      setLoadedFlow(undefined); // Clear loaded flow when manually switching to builder
+      window.history.pushState({}, '', '/');
     } else if (page === 'public-gallery') {
-      window.history.pushState({}, '', '/gallery')
+      window.history.pushState({}, '', '/gallery');
     } else if (page === 'gallery') {
-      window.history.pushState({}, '', '/my-flows')
+      window.history.pushState({}, '', '/my-flows');
     } else if (page === 'about') {
-      window.history.pushState({}, '', '/about')
+      window.history.pushState({}, '', '/about');
     }
-  }
+  };
 
   const handleViewFlow = (flowId: string) => {
-    setViewingFlowId(flowId)
-    setCurrentPage('flow-viewer')
-    window.history.pushState({}, '', `/flow/${flowId}`)
-  }
+    setViewingFlowId(flowId);
+    setCurrentPage('flow-viewer');
+    window.history.pushState({}, '', `/flow/${flowId}`);
+  };
 
   const handleBackFromViewer = () => {
-    setViewingFlowId(null)
+    setViewingFlowId(null);
     // Go back to public gallery by default - users can navigate if needed
-    setCurrentPage('public-gallery')
-    window.history.pushState({}, '', '/gallery')
-  }
+    setCurrentPage('public-gallery');
+    window.history.pushState({}, '', '/gallery');
+  };
 
   return (
     <AuthProvider>
@@ -81,11 +85,22 @@ function App() {
             {currentPage === 'builder' ? (
               <FlowBuilder initialFlow={loadedFlow} />
             ) : currentPage === 'gallery' ? (
-              <FlowsGallery onLoadFlow={handleLoadFlow} onPageChange={setCurrentPage} onPracticeFlow={handleViewFlow} />
+              <FlowsGallery
+                onLoadFlow={handleLoadFlow}
+                onPageChange={setCurrentPage}
+                onPracticeFlow={handleViewFlow}
+              />
             ) : currentPage === 'public-gallery' ? (
-              <PublicGallery onViewFlow={handleViewFlow} onLoadFlow={handleLoadFlow} />
+              <PublicGallery
+                onViewFlow={handleViewFlow}
+                onLoadFlow={handleLoadFlow}
+              />
             ) : currentPage === 'flow-viewer' && viewingFlowId ? (
-              <FlowViewer flowId={viewingFlowId} onBack={handleBackFromViewer} onLoadFlow={handleLoadFlow} />
+              <FlowViewer
+                flowId={viewingFlowId}
+                onBack={handleBackFromViewer}
+                onLoadFlow={handleLoadFlow}
+              />
             ) : currentPage === 'about' ? (
               <AboutPage />
             ) : (
@@ -95,7 +110,7 @@ function App() {
         </div>
       </ToastProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -17,8 +17,9 @@ export function AboutPage() {
             Flow Builder
           </h2>
           <p className="text-gray-600">
-            Create beautiful acroyoga sequences with our intelligent flow builder. 
-            Only valid poses appear as options, ensuring every transition is safe and achievable.
+            Create beautiful acroyoga sequences with our intelligent flow
+            builder. Only valid poses appear as options, ensuring every
+            transition is safe and achievable.
           </p>
         </div>
 
@@ -28,8 +29,9 @@ export function AboutPage() {
             Save & Share
           </h2>
           <p className="text-gray-600">
-            Build your personal library of flows. Save them privately for practice 
-            or share them publicly to inspire the community. Each public flow gets its own shareable link.
+            Build your personal library of flows. Save them privately for
+            practice or share them publicly to inspire the community. Each
+            public flow gets its own shareable link.
           </p>
         </div>
 
@@ -39,8 +41,9 @@ export function AboutPage() {
             Public Gallery
           </h2>
           <p className="text-gray-600">
-            Discover flows shared by the community. Browse, practice, and remix flows 
-            created by other acro enthusiasts. Find inspiration for your next session.
+            Discover flows shared by the community. Browse, practice, and remix
+            flows created by other acro enthusiasts. Find inspiration for your
+            next session.
           </p>
         </div>
 
@@ -50,8 +53,9 @@ export function AboutPage() {
             Practice Mode
           </h2>
           <p className="text-gray-600">
-            Step through flows pose by pose with our guided practice mode. 
-            Navigate forward and backward, jump to specific poses, and focus on perfecting each transition.
+            Step through flows pose by pose with our guided practice mode.
+            Navigate forward and backward, jump to specific poses, and focus on
+            perfecting each transition.
           </p>
         </div>
 
@@ -61,8 +65,9 @@ export function AboutPage() {
             Named Transitions
           </h2>
           <p className="text-gray-600">
-            Every transition has a proper name (like "Prasarita Twist"). 
-            Learn the vocabulary while you build, making it easier to teach and remember flows.
+            Every transition has a proper name (like &ldquo;Prasarita
+            Twist&rdquo;). Learn the vocabulary while you build, making it
+            easier to teach and remember flows.
           </p>
         </div>
 
@@ -72,8 +77,9 @@ export function AboutPage() {
             Remix & Customize
           </h2>
           <p className="text-gray-600">
-            Found a flow you like? Remix it to your collection and make it your own. 
-            Modify existing flows or use them as starting points for new creations.
+            Found a flow you like? Remix it to your collection and make it your
+            own. Modify existing flows or use them as starting points for new
+            creations.
           </p>
         </div>
       </div>
@@ -82,13 +88,13 @@ export function AboutPage() {
         <p className="text-gray-600 mb-6">
           Ready to start building safer, more connected flows?
         </p>
-        <button 
-          onClick={() => window.location.href = '/'}
+        <button
+          onClick={() => (window.location.href = '/')}
           className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg"
         >
           Start Building Flows
         </button>
       </div>
     </div>
-  )
+  );
 }

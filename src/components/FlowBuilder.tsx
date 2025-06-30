@@ -1,144 +1,158 @@
-import { useState, useEffect } from 'react'
-import { Pose, Transition, FlowStep } from '../lib/instant'
-import { PoseCard } from './PoseCard'
-import { FlowSaveModal } from './FlowSaveModal'
-import { RandomFlowModal } from './RandomFlowModal'
-import { useAuth } from './AuthProvider'
-import { useToast } from './ToastProvider'
-import { useFlowData } from '../hooks'
+import { useState, useEffect } from 'react';
+import { Pose, Transition, FlowStep } from '../lib/instant';
+import { PoseCard } from './PoseCard';
+import { FlowSaveModal } from './FlowSaveModal';
+import { RandomFlowModal } from './RandomFlowModal';
+import { useAuth } from './AuthProvider';
+import { useToast } from './ToastProvider';
+import { useFlowData } from '../hooks';
 
 interface FlowBuilderProps {
-  initialFlow?: FlowStep[]
+  initialFlow?: FlowStep[];
 }
 
 export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
-  const { user } = useAuth()
-  const { showToast } = useToast()
-  const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || [])
-  const [isStartingPose, setIsStartingPose] = useState(true)
-  const [showSaveModal, setShowSaveModal] = useState(false)
-  const [showRandomModal, setShowRandomModal] = useState(false)
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || []);
+  const [isStartingPose, setIsStartingPose] = useState(true);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showRandomModal, setShowRandomModal] = useState(false);
 
   // Use the new well-architected hook for data loading
-  const flowData = useFlowData()
-  const { poses, transitions, isLoading, hasError, hasData, isEmpty } = flowData
+  const flowData = useFlowData();
+  const { poses, transitions, isLoading, hasError, hasData, isEmpty } =
+    flowData;
 
   // Database is now seeded via Node.js script: npm run seed
 
   // Debug authentication state (this is now handled in the hooks)
   useEffect(() => {
-    console.log('🔐 Auth state:', { user: !!user, userId: user?.id })
-    console.log('📊 FlowBuilder combined state:', { 
-      isLoading, 
+    console.log('🔐 Auth state:', { user: !!user, userId: user?.id });
+    console.log('📊 FlowBuilder combined state:', {
+      isLoading,
       hasError,
       hasData,
       isEmpty,
       posesCount: poses.length,
-      transitionsCount: transitions.length
-    })
-  }, [user, isLoading, hasError, hasData, isEmpty, poses.length, transitions.length])
+      transitionsCount: transitions.length,
+    });
+  }, [
+    user,
+    isLoading,
+    hasError,
+    hasData,
+    isEmpty,
+    poses.length,
+    transitions.length,
+  ]);
 
   // Show error message if database queries fail
   useEffect(() => {
     if (hasError) {
-      showToast('Failed to load poses and transitions from database', 'error')
-      console.error('Database query errors:', { error: flowData.error })
+      showToast('Failed to load poses and transitions from database', 'error');
+      console.error('Database query errors:', { error: flowData.error });
     }
-  }, [hasError, flowData.error, showToast])
-
+  }, [hasError, flowData.error, showToast]);
 
   // Update flow state when initialFlow changes
   useEffect(() => {
     if (initialFlow) {
-      setCurrentFlow(initialFlow)
-      setIsStartingPose(initialFlow.length === 0)
+      setCurrentFlow(initialFlow);
+      setIsStartingPose(initialFlow.length === 0);
     }
-  }, [initialFlow])
+  }, [initialFlow]);
 
   const getValidNextPoses = () => {
     if (isStartingPose) {
       // Use the helper from the hook for starting poses
-      return flowData.getStartingPoses()
+      return flowData.getStartingPoses();
     }
 
-    if (currentFlow.length === 0) return []
+    if (currentFlow.length === 0) return [];
 
-    const lastPose = currentFlow[currentFlow.length - 1].pose
+    const lastPose = currentFlow[currentFlow.length - 1].pose;
     // Use the helper from the hook for next valid poses
-    return flowData.getValidNextPoses(lastPose.id)
-  }
+    return flowData.getValidNextPoses(lastPose.id);
+  };
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
-    setCurrentFlow(prev => [...prev, { pose, transition }])
-    setIsStartingPose(false)
-  }
+    setCurrentFlow(prev => [...prev, { pose, transition }]);
+    setIsStartingPose(false);
+  };
 
   const removeLastPose = () => {
     setCurrentFlow(prev => {
-      const newFlow = prev.slice(0, -1)
+      const newFlow = prev.slice(0, -1);
       if (newFlow.length === 0) {
-        setIsStartingPose(true)
+        setIsStartingPose(true);
       }
-      return newFlow
-    })
-  }
+      return newFlow;
+    });
+  };
 
   const clearFlow = () => {
-    setCurrentFlow([])
-    setIsStartingPose(true)
-  }
+    setCurrentFlow([]);
+    setIsStartingPose(true);
+  };
 
   const handleSaveFlow = () => {
     if (!user) {
-      showToast('Please sign in to save flows', 'info')
-      return
+      showToast('Please sign in to save flows', 'info');
+      return;
     }
-    setShowSaveModal(true)
-  }
+    setShowSaveModal(true);
+  };
 
   const generateRandomFlow = async (moveCount: number) => {
     try {
       // Clear existing flow
-      setCurrentFlow([])
-      setIsStartingPose(true)
-      
-      const newFlow: FlowStep[] = []
-      let currentPoseOptions = flowData.getStartingPoses()
-      
-      for (let i = 0; i < moveCount; i++) {
-        if (currentPoseOptions.length === 0) break
-        
-        // Select random pose from valid options
-        const randomPose = currentPoseOptions[Math.floor(Math.random() * currentPoseOptions.length)]
-        
-        // Find transition for this pose (if not the first pose)
-        let transition: Transition | undefined
-        if (newFlow.length > 0) {
-          const lastPose = newFlow[newFlow.length - 1].pose
-          transition = transitions.find(t => 
-            t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
-          )
-        }
-        
-        // Add to flow
-        newFlow.push({ pose: randomPose, transition })
-        
-        // Get next valid poses for the next iteration
-        const nextOptions = flowData.getValidNextPoses(randomPose.id)
-        currentPoseOptions = nextOptions.map(item => item.pose)
-      }
-      
-      setCurrentFlow(newFlow)
-      setIsStartingPose(newFlow.length === 0)
-      
-      showToast(`Generated random flow with ${newFlow.length} moves!`, 'success')
-    } catch (error) {
-      console.error('Error generating random flow:', error)
-      showToast('Error generating random flow. Please try again.', 'error')
-    }
-  }
+      setCurrentFlow([]);
+      setIsStartingPose(true);
 
-  const validOptions = getValidNextPoses()
+      const newFlow: FlowStep[] = [];
+      let currentPoseOptions = flowData.getStartingPoses();
+
+      for (let i = 0; i < moveCount; i++) {
+        if (currentPoseOptions.length === 0) break;
+
+        // Select random pose from valid options
+        const randomPose =
+          currentPoseOptions[
+            Math.floor(Math.random() * currentPoseOptions.length)
+          ];
+
+        // Find transition for this pose (if not the first pose)
+        let transition: Transition | undefined;
+        if (newFlow.length > 0) {
+          const lastPose = newFlow[newFlow.length - 1].pose;
+          transition = transitions.find(
+            t => t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
+          );
+        }
+
+        // Add to flow
+        newFlow.push({ pose: randomPose, transition });
+
+        // Get next valid poses for the next iteration
+        const nextOptions = flowData.getValidNextPoses(randomPose.id);
+        currentPoseOptions = nextOptions.map(item => item.pose);
+      }
+
+      setCurrentFlow(newFlow);
+      setIsStartingPose(newFlow.length === 0);
+
+      showToast(
+        `Generated random flow with ${newFlow.length} moves!`,
+        'success'
+      );
+    } catch (error) {
+      console.error('Error generating random flow:', error);
+      showToast('Error generating random flow. Please try again.', 'error');
+    }
+  };
+
+  const validOptions = getValidNextPoses();
 
   // Show loading state while data is being fetched
   if (isLoading) {
@@ -146,11 +160,15 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
       <div className="max-w-7xl mx-auto p-6">
         <div className="text-center py-12">
           <div className="text-gray-400 text-4xl mb-4">🔄</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading poses and transitions...</h2>
-          <p className="text-gray-600">Please wait while we fetch the data from the database.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Loading poses and transitions...
+          </h2>
+          <p className="text-gray-600">
+            Please wait while we fetch the data from the database.
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   // Show error state if database queries failed
@@ -159,8 +177,12 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
       <div className="max-w-7xl mx-auto p-6">
         <div className="text-center py-12">
           <div className="text-red-400 text-4xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Failed to load data</h2>
-          <p className="text-gray-600 mb-4">There was an error loading poses and transitions from the database.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Failed to load data
+          </h2>
+          <p className="text-gray-600 mb-4">
+            There was an error loading poses and transitions from the database.
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -169,7 +191,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -184,11 +206,13 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                 {currentFlow.length}
               </span>
             </div>
-            
+
             {currentFlow.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-3">👋</div>
-                <p className="text-gray-600 mb-4">Add your first move or load a flow to get started</p>
+                <p className="text-gray-600 mb-4">
+                  Add your first move or load a flow to get started
+                </p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -198,16 +222,20 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                       {index + 1}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{step.pose.name}</div>
+                      <div className="font-medium text-gray-900">
+                        {step.pose.name}
+                      </div>
                       {step.transition && (
-                        <div className="text-sm text-gray-500">via {step.transition.name}</div>
+                        <div className="text-sm text-gray-500">
+                          via {step.transition.name}
+                        </div>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            
+
             {/* Action Buttons */}
             <div className="mt-6 space-y-3 sm:space-y-4">
               {currentFlow.length === 0 && (
@@ -218,20 +246,27 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                   Create random flow
                 </button>
               )}
-              
+
               <button
                 onClick={handleSaveFlow}
                 disabled={currentFlow.length === 0}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium min-h-[44px] sm:min-h-0"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                  <polyline points="17,21 17,13 7,13 7,21"/>
-                  <polyline points="7,3 7,8 15,8"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                  <polyline points="17,21 17,13 7,13 7,21" />
+                  <polyline points="7,3 7,8 15,8" />
                 </svg>
                 {user ? 'Save flow' : 'Sign in to save'}
               </button>
-              
+
               {currentFlow.length > 0 && (
                 <div className="flex gap-2">
                   <button
@@ -265,36 +300,43 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                 </span>
               </div>
             </div>
-            
+
             {/* Difficulty Filter Pills - Mobile Friendly */}
             <div className="flex flex-wrap gap-2 justify-start">
-              <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">Easy</span>
-              <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">Medium</span>
-              <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">Hard</span>
+              <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+                Easy
+              </span>
+              <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">
+                Medium
+              </span>
+              <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+                Hard
+              </span>
             </div>
           </div>
-          
+
           {validOptions.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-gray-400 text-4xl mb-3">🤸‍♀️</div>
               <p className="text-gray-600">
-                {isStartingPose 
-                  ? 'Loading poses...' 
-                  : 'No valid transitions available from current pose.'
-                }
+                {isStartingPose
+                  ? 'Loading poses...'
+                  : 'No valid transitions available from current pose.'}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-              {isStartingPose 
-                ? (validOptions as Pose[]).map((pose) => (
+              {isStartingPose
+                ? (validOptions as Pose[]).map(pose => (
                     <PoseCard
                       key={pose.id}
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
                     />
                   ))
-                : (validOptions as { pose: Pose, transition: Transition }[]).map(({ pose, transition }) => (
+                : (
+                    validOptions as { pose: Pose; transition: Transition }[]
+                  ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">
                       <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">
                         Via: {transition.name}
@@ -304,8 +346,7 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                         onClick={() => addPoseToFlow(pose, transition)}
                       />
                     </div>
-                  ))
-              }
+                  ))}
             </div>
           )}
         </div>
@@ -317,12 +358,12 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
         currentFlow={currentFlow}
         user={user}
       />
-      
+
       <RandomFlowModal
         isOpen={showRandomModal}
         onClose={() => setShowRandomModal(false)}
         onGenerate={generateRandomFlow}
       />
     </div>
-  )
+  );
 }
