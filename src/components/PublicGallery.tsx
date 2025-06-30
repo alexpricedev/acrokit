@@ -146,13 +146,10 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
             >
               <div className="p-6">
                 <div className="mb-4">
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="mb-2">
                     <h3 className="font-bold text-gray-900 text-lg">
                       {flow.name}
                     </h3>
-                    <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
-                      Public
-                    </span>
                   </div>
 
                   {flow.description && (
@@ -178,7 +175,7 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                     onClick={() => onViewFlow(flow.id)}
                     className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                   >
-                    Practice Flow
+                    Practice flow
                   </button>
 
                   <button

@@ -25,7 +25,7 @@ function App() {
     // Handle URL routing
     if (path === '/gallery') {
       setCurrentPage('public-gallery');
-    } else if (path === '/my-flows') {
+    } else if (path === '/flows') {
       setCurrentPage('gallery');
     } else if (path === '/about') {
       setCurrentPage('about');
@@ -60,7 +60,7 @@ function App() {
     } else if (page === 'public-gallery') {
       window.history.pushState({}, '', '/gallery');
     } else if (page === 'gallery') {
-      window.history.pushState({}, '', '/my-flows');
+      window.history.pushState({}, '', '/flows');
     } else if (page === 'about') {
       window.history.pushState({}, '', '/about');
     }

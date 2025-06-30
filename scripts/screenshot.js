@@ -28,9 +28,9 @@ const SCREEN_CONFIG = {
     url: 'http://localhost:3000',
     actions: [
       { type: 'login' },
-      { type: 'click', selector: 'button:has-text("My flows")' },
+      { type: 'click', selector: 'button:has-text("Your Flows")' },
     ],
-    waitFor: 'h2:has-text("My flows")',
+    waitFor: 'h2:has-text("Your flows")',
     filename: 'flows-gallery',
   },
 
@@ -39,7 +39,7 @@ const SCREEN_CONFIG = {
     url: 'http://localhost:3000',
     actions: [
       { type: 'login' },
-      { type: 'click', selector: 'button:has-text("My flows")' },
+      { type: 'click', selector: 'button:has-text("Your Flows")' },
       { type: 'wait', duration: 2000 },
       { type: 'click', selector: 'button[title="Delete flow"]' },
     ],
