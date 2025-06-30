@@ -59,28 +59,12 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
 
   const navItems = [
     {
-      id: 'about',
-      label: 'About',
-      description: 'Learn about AcroKit and our mission',
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/>
-          <path d="M12 8h.01"/>
-          <path d="M11 12h1v4h1"/>
-        </svg>
-      ),
-      page: 'about' as const
-    },
-    {
       id: 'builder',
       label: 'Flow Builder',
       description: 'Create safe, connected acro sequences',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 3v5h5"/>
-          <path d="M3 8a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 4"/>
-          <path d="M21 21v-5h-5"/>
-          <path d="M21 16a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 20"/>
+        <svg width="20" height="20" viewBox="0 0 384 512" fill="currentColor">
+          <path d="M297.2 248.9C311.6 228.3 320 203.2 320 176c0-70.7-57.3-128-128-128S64 105.3 64 176c0 27.2 8.4 52.3 22.8 72.9c3.7 5.3 8.1 11.3 12.8 17.7c0 0 0 0 0 0c12.9 17.7 28.3 38.9 39.8 59.8c10.4 19 15.7 38.8 18.3 57.5L109 384c-2.2-12-5.9-23.7-11.8-34.5c-9.9-18-22.2-34.9-34.5-51.8c0 0 0 0 0 0s0 0 0 0c-5.2-7.1-10.4-14.2-15.4-21.4C27.6 247.9 16 213.3 16 176C16 78.8 94.8 0 192 0s176 78.8 176 176c0 37.3-11.6 71.9-31.4 100.3c-5 7.2-10.2 14.3-15.4 21.4c0 0 0 0 0 0s0 0 0 0c-12.3 16.8-24.6 33.7-34.5 51.8c-5.9 10.8-9.6 22.5-11.8 34.5l-48.6 0c2.6-18.7 7.9-38.6 18.3-57.5c11.5-20.9 26.9-42.1 39.8-59.8c0 0 0 0 0 0s0 0 0 0s0 0 0 0c4.7-6.4 9-12.4 12.7-17.7zM192 128c-26.5 0-48 21.5-48 48c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-44.2 35.8-80 80-80c8.8 0 16 7.2 16 16s-7.2 16-16 16zm0 384c-44.2 0-80-35.8-80-80l0-16 160 0 0 16c0 44.2-35.8 80-80 80z"/>
         </svg>
       ),
       page: 'builder' as const
@@ -90,28 +74,23 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
       label: 'Public Gallery',
       description: 'Discover flows shared by the community',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-          <path d="M12 11h4"/>
-          <path d="M12 16h4"/>
-          <path d="M8 11h.01"/>
-          <path d="M8 16h.01"/>
+        <svg width="20" height="20" viewBox="0 0 576 512" fill="currentColor">
+          <path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.4-6.8-12-10.9-20.1-10.9s-15.7 4.1-20.1 10.9l-52.2 79.8-12.4-16.9c-4.5-6.2-11.7-9.8-19.4-9.8s-14.8 3.6-19.4 9.8L175.6 336 160 336c-8.8 0-16-7.2-16-16l0-224c0-8.8 7.2-16 16-16zM96 96l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32c-35.3 0-64 28.7-64 64zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224zm208 24a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/>
         </svg>
       ),
       page: 'public-gallery' as const
     },
-    ...(user ? [{
-      id: 'my-flows',
-      label: 'My Flows',
+{
+      id: 'your-flows',
+      label: 'Your Flows',
       description: 'Manage your saved flow sequences',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        <svg width="20" height="20" viewBox="0 0 384 512" fill="currentColor">
+          <path d="M256 64A64 64 0 1 0 128 64a64 64 0 1 0 128 0zM152.9 169.3c-23.7-8.4-44.5-24.3-58.8-45.8L74.6 94.2C64.8 79.5 45 75.6 30.2 85.4s-18.7 29.7-8.9 44.4L40.9 159c18.1 27.1 42.8 48.4 71.1 62.4L112 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96 32 0 0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-258.4c29.1-14.2 54.4-36.2 72.7-64.2l18.2-27.9c9.6-14.8 5.4-34.6-9.4-44.3s-34.6-5.5-44.3 9.4L291 122.4c-21.8 33.4-58.9 53.6-98.8 53.6c-12.6 0-24.9-2-36.6-5.8c-.9-.3-1.8-.7-2.7-.9z"/>
         </svg>
       ),
       page: 'gallery' as const
-    }] : [])
+    }
   ];
 
   return (
@@ -121,9 +100,12 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
             <div className="flex items-center">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <button
+                onClick={() => handleNavClick('builder')}
+                className="text-xl sm:text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
+              >
                 AcroKit<span className="text-blue-600">.</span>
-              </h1>
+              </button>
               <p className="text-sm text-gray-600 ml-3 hidden md:block">
                 Build and share your acro flows
               </p>
@@ -134,7 +116,10 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
               {/* Main Navigation Dropdown */}
               <div className="relative" ref={navMenuRef}>
                 <button
-                  onClick={() => setShowNavMenu(!showNavMenu)}
+                  onClick={() => {
+                    setShowNavMenu(!showNavMenu);
+                    setShowUserMenu(false);
+                  }}
                   className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -146,53 +131,40 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </button>
 
                 {showNavMenu && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 py-3 z-50">
-                    {navItems.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleNavClick(item.page)}
-                        className={`w-full flex items-start gap-4 px-6 py-4 text-left hover:bg-gray-50 transition-colors ${
-                          currentPage === item.page ||
-                          (item.page === 'public-gallery' && currentPage === 'flow-viewer')
-                            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500'
-                            : 'text-gray-700'
-                        }`}
-                      >
-                        <div className={`flex-shrink-0 mt-0.5 ${
-                          currentPage === item.page ||
-                          (item.page === 'public-gallery' && currentPage === 'flow-viewer')
-                            ? 'text-blue-600'
-                            : 'text-gray-400'
-                        }`}>
-                          {item.icon}
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm">{item.label}</div>
-                          <div className="text-xs text-gray-500 mt-1">{item.description}</div>
-                        </div>
-                      </button>
-                    ))}
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50">
+                    <div className="space-y-2">
+                      {navItems.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => handleNavClick(item.page)}
+                          className={`w-full flex items-start gap-4 px-4 py-3 text-left rounded-lg transition-all duration-200 hover:shadow-sm ${
+                            currentPage === item.page ||
+                            (item.page === 'public-gallery' && currentPage === 'flow-viewer')
+                              ? 'bg-blue-50 text-blue-700 border border-transparent shadow-sm hover:bg-blue-100'
+                              : 'text-gray-700 border border-transparent hover:bg-gray-50'
+                          }`}
+                        >
+                          <div className={`flex-shrink-0 mt-0.5 ${
+                            currentPage === item.page ||
+                            (item.page === 'public-gallery' && currentPage === 'flow-viewer')
+                              ? 'text-blue-600'
+                              : 'text-gray-400'
+                          }`}>
+                            {item.icon}
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">{item.label}</div>
+                            <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Primary CTA - Conditional based on user state */}
-              {user ? (
-                <button
-                  onClick={() => handleNavClick('gallery')}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm flex items-center gap-2"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14,2 14,8 20,8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10,9 9,9 8,9"/>
-                  </svg>
-                  <span className="hidden sm:inline">View my flows</span>
-                  <span className="sm:hidden">My flows</span>
-                </button>
-              ) : (
+              {/* Primary CTA - Sign up for non-logged users */}
+              {!user && (
                 <button
                   onClick={() => openLoginModal('signup')}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
@@ -206,12 +178,13 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
               {user && (
                 <div className="relative" ref={userMenuRef}>
                   <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 px-3 py-2 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors"
+                    onClick={() => {
+                      setShowUserMenu(!showUserMenu);
+                      setShowNavMenu(false);
+                    }}
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full hover:bg-blue-600 transition-colors flex items-center justify-center text-white font-semibold text-sm sm:text-base"
                   >
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold text-blue-700">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </div>
+                    {user.email?.charAt(0).toUpperCase()}
                   </button>
 
                   {showUserMenu && (
@@ -219,6 +192,15 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                       <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
                         {user.email}
                       </div>
+                      <button
+                        onClick={() => {
+                          handleNavClick('about');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        About AcroKit
+                      </button>
                       <button
                         onClick={() => {
                           signOut();
@@ -233,14 +215,22 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </div>
               )}
 
-              {/* Log in link for non-logged in users */}
+              {/* About AcroKit and Log in links for non-logged in users */}
               {!user && (
-                <button
-                  onClick={() => openLoginModal('login')}
-                  className="text-gray-700 hover:text-gray-900 font-medium text-sm"
-                >
-                  Log in
-                </button>
+                <>
+                  <button
+                    onClick={() => handleNavClick('about')}
+                    className="text-gray-700 hover:text-gray-900 font-medium text-sm"
+                  >
+                    About AcroKit
+                  </button>
+                  <button
+                    onClick={() => openLoginModal('login')}
+                    className="text-gray-700 hover:text-gray-900 font-medium text-sm"
+                  >
+                    Log in
+                  </button>
+                </>
               )}
 
               {/* Fake login for development */}

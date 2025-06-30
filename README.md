@@ -27,7 +27,7 @@ A modern React web application for building and sharing valid Acroyoga sequences
 
 ### 💾 **Flow Management**
 - **Save flows** with names, descriptions, and privacy settings
-- **My Flows gallery** - dedicated page for managing saved flows
+- **Your Flows gallery** - dedicated page for managing saved flows
 - **Public/Private settings** - toggle flow visibility
 - **Share functionality** - generate shareable links for public flows
 - **Load & Edit** - load saved flows back into the builder
@@ -99,7 +99,7 @@ A modern React web application for building and sharing valid Acroyoga sequences
 ### Managing Flows
 
 1. **Sign in** - Click "Sign in" and use the magic link authentication
-2. **Visit "My flows"** - View all your saved flow sequences
+2. **Visit "Your flows"** - View all your saved flow sequences
 3. **Load & Edit** - Load any saved flow back into the builder
 4. **Share flows** - Make flows public and share via generated links
 5. **Manage privacy** - Toggle flows between public and private
