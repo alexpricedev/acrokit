@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Flow, FlowStep, db } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
+import { ConfirmationModal } from './ConfirmationModal';
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[]) => void;
@@ -18,20 +19,63 @@ export function FlowsGallery({
   const { showToast } = useToast();
   const [flows, setFlows] = useState<Flow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [flowToDelete, setFlowToDelete] = useState<Flow | null>(null);
 
-  // Load flows from InstantDB
-  const { isLoading: dbLoading, data } = db.useQuery({
-    flows: {
-      $: {
-        where: {
-          userId: user?.id,
+  // Check if we're using fake auth for testing
+  const useFakeAuth = window.location.search.includes('fake-auth');
+
+  // Load flows from InstantDB (only if not using fake auth)
+  const shouldSkipQuery = useFakeAuth || !user;
+  const { isLoading: dbLoading, data } = db.useQuery(
+    shouldSkipQuery ? {} : {
+      flows: {
+        $: {
+          where: {
+            userId: user?.id,
+          },
         },
       },
-    },
-  });
+    }
+  );
 
   useEffect(() => {
     if (!user) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (useFakeAuth) {
+      // Load fake flows for testing
+      const fakeFlows: Flow[] = [
+        {
+          id: 'fake-flow-1',
+          name: 'My Test Flow',
+          description: 'A test flow for demonstrating the delete confirmation',
+          isPublic: false,
+          userId: 'fake-user-id',
+          stepsData: JSON.stringify([
+            { pose: { name: 'Bird' }, transition: null },
+            { pose: { name: 'Throne' }, transition: { name: 'Bird to Throne' } },
+          ]),
+          createdAt: Date.now() - 86400000, // 1 day ago
+          updatedAt: Date.now() - 86400000,
+        },
+        {
+          id: 'fake-flow-2',
+          name: 'Another Flow',
+          description: 'Another flow to test with',
+          isPublic: true,
+          userId: 'fake-user-id',
+          stepsData: JSON.stringify([
+            { pose: { name: 'Throne' }, transition: null },
+            { pose: { name: 'Star' }, transition: { name: 'Throne to Star' } },
+          ]),
+          createdAt: Date.now() - 172800000, // 2 days ago
+          updatedAt: Date.now() - 172800000,
+        },
+      ];
+      setFlows(fakeFlows);
       setIsLoading(false);
       return;
     }
@@ -40,7 +84,7 @@ export function FlowsGallery({
       setFlows(data.flows as Flow[]);
       setIsLoading(false);
     }
-  }, [user, dbLoading, data]);
+  }, [user, dbLoading, data, useFakeAuth]);
 
   const handleLoadFlow = (flow: Flow) => {
     try {
@@ -54,7 +98,15 @@ export function FlowsGallery({
 
   const handleDeleteFlow = async (flowId: string) => {
     try {
+      if (useFakeAuth) {
+        // For fake auth, just remove from local state
+        setFlows(prev => prev.filter(flow => flow.id !== flowId));
+        showToast('Flow deleted successfully', 'success');
+        return;
+      }
+      
       await db.transact(db.tx.flows[flowId].delete());
+      showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
       console.error('Error deleting flow:', error);
@@ -62,10 +114,38 @@ export function FlowsGallery({
     }
   };
 
+  const handleDeleteClick = (flow: Flow) => {
+    setFlowToDelete(flow);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (flowToDelete) {
+      handleDeleteFlow(flowToDelete.id);
+    }
+    setShowDeleteConfirm(false);
+    setFlowToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setFlowToDelete(null);
+  };
+
   const togglePublic = async (flowId: string) => {
     try {
       const flow = flows.find(f => f.id === flowId);
       if (!flow) return;
+
+      if (useFakeAuth) {
+        // For fake auth, just update local state
+        setFlows(prev => prev.map(f => 
+          f.id === flowId 
+            ? { ...f, isPublic: !f.isPublic, updatedAt: Date.now() }
+            : f
+        ));
+        return;
+      }
 
       await db.transact(
         db.tx.flows[flowId].update({
@@ -252,7 +332,7 @@ export function FlowsGallery({
                   )}
 
                   <button
-                    onClick={() => handleDeleteFlow(flow.id)}
+                    onClick={() => handleDeleteClick(flow)}
                     className="px-3 py-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors text-sm"
                     title="Delete flow"
                   >
@@ -279,6 +359,21 @@ export function FlowsGallery({
           ))}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        title="Delete Flow"
+        message={
+          flowToDelete
+            ? `Are you sure you want to delete "${flowToDelete.name}"? This action cannot be undone.`
+            : 'Are you sure you want to delete this flow? This action cannot be undone.'
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        isDangerous={true}
+      />
     </div>
   );
 }
