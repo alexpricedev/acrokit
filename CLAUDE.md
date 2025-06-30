@@ -60,7 +60,7 @@ Sample Data (sampleData.ts)
   ```
 
 ### Design Validation
-- **Key Elements**: Card layouts, gradient borders, difficulty tags, two-column layout
+- **Key Elements**: Card layouts, gradient borders, difficulty tags
 - **Colors**: Green (Easy), Blue (Medium), Red (Hard), Neutral grays
 
 ## 📁 Key Files & Responsibilities
@@ -130,30 +130,8 @@ npm run lint         # Check code quality
 4. `FlowsGallery` displays saved flows with management options
 5. "Load & Edit" deserializes flow back to builder state
 
-## 🐛 Known Issues & Areas for Improvement
-
-### Current Issues
-1. **Flow Loading**: Loading flows from gallery to builder needs refinement
-2. **Auth Integration**: Using mock auth instead of real InstantDB
-3. **Data Persistence**: localStorage instead of real database
-
-### Future Enhancements
-1. **Real InstantDB Integration**: Replace mock auth and localStorage
-2. **Image Support**: Add pose images to cards
-3. **Advanced Filtering**: Difficulty-based filtering in gallery
-4. **Flow Sharing**: Improve sharing UX and URL handling
-
 ## 🔐 Authentication Patterns
 
-### Current (Demo)
-```typescript
-// Mock auth in AuthProvider.tsx
-const [mockUser, setMockUser] = useState<any>(null)
-// Simulate login with timeout
-setTimeout(() => setMockUser({ id: 'demo-user', email }), 1000)
-```
-
-### Production Pattern
 ```typescript
 // Real InstantDB auth
 const { user, isLoading } = db.useAuth()
@@ -256,7 +234,3 @@ await mcp__playwright__browser_evaluate({ script: "document.querySelector('butto
 - **Authentication Flow**: Multi-step process requires browser testing
 
 **DO NOT** make changes without browser testing - this is a visual, interactive application that requires real browser validation.
-
----
-
-**Remember**: This is a constrained flow builder - the validation system is the core feature that makes AcroKit unique. Always preserve the constraint logic when making changes!
