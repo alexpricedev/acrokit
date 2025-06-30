@@ -88,10 +88,18 @@ Sample Data (sampleData.ts)
 ```bash
 npm run dev          # Start development server (assume always running)
 npm run build        # Check TypeScript errors
-npm run lint         # Check code quality
+npm run lint         # Check code quality with ESLint
+npm run lint:fix     # Auto-fix linting issues
+npm run format       # Format code with Prettier
+npm run format:check # Check code formatting
 ```
 
 **Note**: Always assume the dev server is running when testing - don't start it manually.
+
+### Code Quality Tools
+- **ESLint**: Code linting with TypeScript and React rules
+- **Prettier**: Code formatting with consistent style
+- **Configuration Files**: `.eslintrc.cjs`, `.prettierrc`, `.prettierignore`
 
 ### Server Ports
 - **Primary**: localhost:3000

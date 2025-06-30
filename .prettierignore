@@ -1,0 +1,8 @@
+dist
+node_modules
+*.md
+package-lock.json
+.env
+.env.local
+.env.production.local
+.env.development.local
