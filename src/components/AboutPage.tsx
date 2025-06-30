@@ -12,13 +12,13 @@ export function AboutPage() {
 
       <div className="grid md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="text-3xl mb-4">🤸‍♀️</div>
+          <div className="text-3xl mb-4">🏗️</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            Constrained Flow Building
+            Flow Builder
           </h2>
           <p className="text-gray-600">
-            Only add poses that have valid transitions from your current sequence. 
-            No more guessing - AcroKit ensures every move flows naturally into the next.
+            Create beautiful acroyoga sequences with our intelligent flow builder. 
+            Only valid poses appear as options, ensuring every transition is safe and achievable.
           </p>
         </div>
 
