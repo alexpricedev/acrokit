@@ -3,8 +3,8 @@ import { useAuth } from './AuthProvider'
 import { LoginModal } from './LoginModal'
 
 interface HeaderProps {
-  currentPage: 'builder' | 'gallery' | 'about'
-  onPageChange: (page: 'builder' | 'gallery' | 'about') => void
+  currentPage: 'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'
+  onPageChange: (page: 'builder' | 'gallery' | 'public-gallery' | 'about') => void
 }
 
 export function Header({ currentPage, onPageChange }: HeaderProps) {
@@ -47,41 +47,44 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
             </div>
             
             {user ? (
-              <div className="relative" ref={mobileMenuRef}>
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-1 text-gray-700 hover:text-gray-900"
-                >
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-medium text-sm">
+              <div className="flex items-center gap-3">
+                <div className="relative" ref={mobileMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 px-3 py-2 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors"
+                  >
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-xs font-semibold text-blue-700">
                       {user.email?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                </button>
-                
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                    <button
-                      onClick={() => {
-                        signOut()
-                        setShowUserMenu(false)
-                      }}
-                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50"
-                    >
-                      Sign out
-                    </button>
-                  </div>
-                )}
+                    </div>
+                  </button>
+                  
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
+                        {user.email}
+                      </div>
+                      <button
+                        onClick={() => {
+                          signOut()
+                          setShowUserMenu(false)
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <button 
+              <div className="flex items-center gap-3">
+                <button
                   onClick={() => setShowLoginModal(true)}
-                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm"
+                  className="text-gray-700 hover:text-gray-900 font-medium text-sm"
                 >
                   Log in
                 </button>
-                <button 
+                <button
                   onClick={() => setShowLoginModal(true)}
                   className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
                 >
@@ -112,6 +115,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
               }`}
             >
               Flow builder
+            </button>
+            <button 
+              onClick={() => onPageChange('public-gallery')}
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors min-h-[40px] flex items-center ${
+                currentPage === 'public-gallery' || currentPage === 'flow-viewer'
+                  ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+              }`}
+            >
+              Gallery
             </button>
             {user && (
               <button 
@@ -159,6 +172,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
               >
                 Flow builder
               </button>
+              <button 
+                onClick={() => onPageChange('public-gallery')}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === 'public-gallery' || currentPage === 'flow-viewer'
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                }`}
+              >
+                Gallery
+              </button>
               {user && (
                 <button 
                   onClick={() => onPageChange('gallery')}
@@ -176,24 +199,24 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 <div className="relative" ref={desktopMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
+                    className="flex items-center gap-2 px-3 py-2 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-medium text-sm">
-                        {user.email?.charAt(0).toUpperCase()}
-                      </span>
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-700">
+                      {user.email?.charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-medium hidden lg:inline">{user.email}</span>
                   </button>
                   
                   {showUserMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
+                        {user.email}
+                      </div>
                       <button
                         onClick={() => {
                           signOut()
                           setShowUserMenu(false)
                         }}
-                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Sign out
                       </button>
@@ -201,16 +224,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-3">
-                  <button 
+                <div className="flex items-center gap-3">
+                  <button
                     onClick={() => setShowLoginModal(true)}
-                    className="text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                    className="text-gray-700 hover:text-gray-900 font-medium"
                   >
                     Log in
                   </button>
-                  <button 
+                  <button
                     onClick={() => setShowLoginModal(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
                   >
                     Sign up
                   </button>
@@ -220,8 +243,10 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
           </div>
         </div>
       </header>
-
-      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} />
+      )}
     </>
   )
 }
