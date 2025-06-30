@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { FlowBuilder } from './components/FlowBuilder'
 import { FlowsGallery } from './components/FlowsGallery'
+import { AboutPage } from './components/AboutPage'
 import { PublicGallery } from './components/PublicGallery'
 import { FlowViewer } from './components/FlowViewer'
 import { Header } from './components/Header'
@@ -10,7 +11,7 @@ import { ToastProvider } from './components/ToastProvider'
 import { FlowStep } from './lib/instant'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'builder' | 'gallery' | 'public-gallery' | 'flow-viewer'>('builder')
+  const [currentPage, setCurrentPage] = useState<'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'>('builder')
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>()
   const [viewingFlowId, setViewingFlowId] = useState<string | null>(null)
 
@@ -23,6 +24,8 @@ function App() {
       setCurrentPage('public-gallery')
     } else if (path === '/my-flows') {
       setCurrentPage('gallery')
+    } else if (path === '/about') {
+      setCurrentPage('about')
     } else if (path.startsWith('/flow/')) {
       const flowId = path.split('/flow/')[1]
       if (flowId) {
@@ -40,7 +43,7 @@ function App() {
     window.history.pushState({}, '', '/')
   }
 
-  const handlePageChange = (page: 'builder' | 'gallery' | 'public-gallery') => {
+  const handlePageChange = (page: 'builder' | 'gallery' | 'public-gallery' | 'about') => {
     setCurrentPage(page)
     setViewingFlowId(null) // Clear flow viewer when changing pages
     
@@ -51,6 +54,8 @@ function App() {
       window.history.pushState({}, '', '/gallery')
     } else if (page === 'gallery') {
       window.history.pushState({}, '', '/my-flows')
+    } else if (page === 'about') {
+      window.history.pushState({}, '', '/about')
     }
   }
 
@@ -81,6 +86,8 @@ function App() {
               <PublicGallery onViewFlow={handleViewFlow} onLoadFlow={handleLoadFlow} />
             ) : currentPage === 'flow-viewer' && viewingFlowId ? (
               <FlowViewer flowId={viewingFlowId} onBack={handleBackFromViewer} onLoadFlow={handleLoadFlow} />
+            ) : currentPage === 'about' ? (
+              <AboutPage />
             ) : (
               <FlowBuilder initialFlow={loadedFlow} />
             )}
