@@ -245,7 +245,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
       </header>
       
       {showLoginModal && (
-        <LoginModal onClose={() => setShowLoginModal(false)} />
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       )}
     </>
   )
