@@ -20,6 +20,11 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 - **Auth Flow**: Email → Magic code → 6-digit verification → Sign in
 - **File**: `/src/components/AuthProvider.tsx` - Real InstantDB auth integrated
 
+### Railway PR Deployments
+- Each new PR will get a unique testing deployment on Railway
+- The URL to this deployment should be included in the PR description
+- The URL will always follow this format: `acrokit-acrokit-pr-XX.up.railway.app` where XX is the number of the PR
+
 ### Data Flow
 ```
 Sample Data (sampleData.ts) 
@@ -74,7 +79,6 @@ Sample Data (sampleData.ts)
 
 ### Data & Configuration  
 - **`lib/instant.ts`**: InstantDB setup, TypeScript schemas
-- **`data/sampleData.ts`**: Sample poses and transitions for demo
 - **`tailwind.config.js`**: Tailwind CSS configuration
 
 ### UI Components
