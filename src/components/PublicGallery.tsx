@@ -5,9 +5,10 @@ import { useToast } from './ToastProvider'
 
 interface PublicGalleryProps {
   onViewFlow: (flowId: string) => void
+  onLoadFlow: (flow: FlowStep[]) => void
 }
 
-export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
+export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
   const { user } = useAuth()
   const { showToast } = useToast()
   const [flows, setFlows] = useState<Flow[]>([])
@@ -58,6 +59,9 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
     }
 
     try {
+      // Parse the flow steps for loading into the builder
+      const steps = JSON.parse(flow.stepsData) as FlowStep[]
+      
       await db.transact(
         db.tx.flows[id()].update({
           name: `Remix of ${flow.name}`,
@@ -69,7 +73,11 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
           updatedAt: Date.now()
         })
       )
+      
       showToast(`Remixed "${flow.name}" to your flows!`, 'success')
+      
+      // Navigate to flow builder with the remixed flow loaded
+      onLoadFlow(steps)
     } catch (error) {
       console.error('Error remixing flow:', error)
       showToast('Failed to remix flow. Please try again.', 'error')

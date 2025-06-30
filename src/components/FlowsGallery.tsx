@@ -182,36 +182,47 @@ export function FlowsGallery({ onLoadFlow, onPageChange, onPracticeFlow }: Flows
                 </div>
 
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleLoadFlow(flow)}
-                    className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                  >
-                    Load & Edit
-                  </button>
-                  
                   {onPracticeFlow && (
                     <button
                       onClick={() => onPracticeFlow(flow.id)}
-                      className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                      className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                     >
                       Practice
                     </button>
                   )}
                   
+                  <button
+                    onClick={() => handleLoadFlow(flow)}
+                    className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
+                  >
+                    Load & Edit
+                  </button>
+                  
                   {flow.isPublic && (
                     <button
                       onClick={() => shareFlow(flow)}
-                      className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                      className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      title="Share flow"
                     >
-                      Share
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16,6 12,2 8,6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                      </svg>
                     </button>
                   )}
                   
                   <button
                     onClick={() => handleDeleteFlow(flow.id)}
-                    className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                    className="px-3 py-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors text-sm"
+                    title="Delete flow"
                   >
-                    Delete
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3,6 5,6 21,6"/>
+                      <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2v2"/>
+                      <line x1="10" y1="11" x2="10" y2="17"/>
+                      <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
                   </button>
                 </div>
               </div>

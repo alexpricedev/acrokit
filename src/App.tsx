@@ -37,6 +37,7 @@ function App() {
   const handleLoadFlow = (flow: FlowStep[]) => {
     setLoadedFlow(flow)
     setCurrentPage('builder')
+    window.history.pushState({}, '', '/')
   }
 
   const handlePageChange = (page: 'builder' | 'gallery' | 'public-gallery') => {
@@ -77,9 +78,9 @@ function App() {
             ) : currentPage === 'gallery' ? (
               <FlowsGallery onLoadFlow={handleLoadFlow} onPageChange={setCurrentPage} onPracticeFlow={handleViewFlow} />
             ) : currentPage === 'public-gallery' ? (
-              <PublicGallery onViewFlow={handleViewFlow} />
+              <PublicGallery onViewFlow={handleViewFlow} onLoadFlow={handleLoadFlow} />
             ) : currentPage === 'flow-viewer' && viewingFlowId ? (
-              <FlowViewer flowId={viewingFlowId} onBack={handleBackFromViewer} />
+              <FlowViewer flowId={viewingFlowId} onBack={handleBackFromViewer} onLoadFlow={handleLoadFlow} />
             ) : (
               <FlowBuilder initialFlow={loadedFlow} />
             )}

@@ -7,9 +7,10 @@ import { PoseCard } from './PoseCard'
 interface FlowViewerProps {
   flowId: string
   onBack: () => void
+  onLoadFlow: (flow: FlowStep[]) => void
 }
 
-export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
+export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
   const { user } = useAuth()
   const { showToast } = useToast()
   const [flow, setFlow] = useState<Flow | null>(null)
@@ -86,7 +87,11 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
           updatedAt: Date.now()
         })
       )
+      
       showToast(`Remixed "${flow.name}" to your flows!`, 'success')
+      
+      // Navigate to flow builder with the remixed flow loaded
+      onLoadFlow(flowSteps)
     } catch (error) {
       console.error('Error remixing flow:', error)
       showToast('Failed to remix flow. Please try again.', 'error')
@@ -278,14 +283,14 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
         <div className="flex justify-center gap-4">
           <button
             onClick={shareFlow}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            title="Share flow"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
               <polyline points="16,6 12,2 8,6"/>
               <line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
-            Share Flow
           </button>
           
           {user && (
