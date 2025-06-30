@@ -163,7 +163,7 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
                     <button
                       onClick={() => remixFlow(flow)}
                       className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
-                      title="Remix this flow"
+                      title="Make a copy of this flow"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
