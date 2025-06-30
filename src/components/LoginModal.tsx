@@ -3,10 +3,11 @@ import { useAuth } from './AuthProvider'
 
 interface LoginModalProps {
   isOpen: boolean
+  mode: 'login' | 'signup'
   onClose: () => void
 }
 
-export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -64,7 +65,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {isCodeSent ? 'Check your email' : 'Welcome to AcroKit'}
+            {isCodeSent ? 'Check your email' : (mode === 'login' ? 'Welcome back to AcroKit' : 'Join AcroKit')}
           </h2>
           <button
             onClick={handleClose}
@@ -157,7 +158,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </button>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-              We'll send you a 6-digit code - works for new and existing accounts!
+              {mode === 'login' 
+                ? "Welcome back! We'll send you a 6-digit code to access your flows and continue building your acroyoga library."
+                : "Save your flows, access them anywhere, and build your personal acroyoga library. We'll send you a 6-digit code to get started!"
+              }
             </p>
           </form>
         )}

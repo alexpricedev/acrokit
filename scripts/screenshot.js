@@ -53,13 +53,23 @@ const SCREEN_CONFIG = {
   
   // Modals
   'login-modal': {
-    description: 'Login/signup modal',
+    description: 'Login modal with welcome back copy',
     url: 'http://localhost:3000',
     actions: [
-      { type: 'click', selector: 'button:has-text("Log in"):visible' }
+      { type: 'click', selector: 'nav button:has-text("Log in")' }
     ],
-    waitFor: 'h2:has-text("Welcome to AcroKit")',
+    waitFor: 'h2:has-text("Welcome back to AcroKit")',
     filename: 'login-modal'
+  },
+  
+  'signup-modal': {
+    description: 'Signup modal with join benefits copy',
+    url: 'http://localhost:3000',
+    actions: [
+      { type: 'click', selector: 'nav button:has-text("Sign up")' }
+    ],
+    waitFor: 'h2:has-text("Join AcroKit")',
+    filename: 'signup-modal'
   },
   
   'login-modal-code-sent': {
