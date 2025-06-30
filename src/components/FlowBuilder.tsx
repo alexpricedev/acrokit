@@ -260,7 +260,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={handleSaveFlow}
                 disabled={
-                  currentFlow.length === 0 || (editingFlowId && !hasChanges())
+                  currentFlow.length === 0 || (!!editingFlowId && !hasChanges())
                 }
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium min-h-[44px] sm:min-h-0"
               >
