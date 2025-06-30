@@ -163,21 +163,28 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
             )}
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
-              onClick={shareFlow}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              Share Flow
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15,18 9,12 15,6"/>
+              </svg>
+              Previous
             </button>
-            {user && (
-              <button
-                onClick={remixFlow}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-              >
-                Remix this flow
-              </button>
-            )}
+            
+            <button
+              onClick={nextStep}
+              disabled={currentStep === flowSteps.length - 1}
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              Next
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="9,18 15,12 9,6"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -222,30 +229,6 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
             </div>
           </div>
 
-          {/* Navigation controls */}
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="15,18 9,12 15,6"/>
-              </svg>
-              Previous
-            </button>
-            
-            <button
-              onClick={nextStep}
-              disabled={currentStep === flowSteps.length - 1}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="9,18 15,12 9,6"/>
-              </svg>
-            </button>
-          </div>
         </div>
 
         {/* Flow overview */}
@@ -287,6 +270,36 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
               ))}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Bottom action buttons */}
+      <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={shareFlow}
+            className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16,6 12,2 8,6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+            Share Flow
+          </button>
+          
+          {user && (
+            <button
+              onClick={remixFlow}
+              className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Remix this flow
+            </button>
+          )}
         </div>
       </div>
     </div>
