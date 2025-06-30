@@ -61,6 +61,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     {
       id: 'about',
       label: 'About',
+      description: 'Learn about AcroKit and our mission',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10"/>
@@ -73,6 +74,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     {
       id: 'builder',
       label: 'Flow Builder',
+      description: 'Create safe, connected acro sequences',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -83,6 +85,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     {
       id: 'gallery',
       label: 'Public Gallery',
+      description: 'Discover flows shared by the community',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
@@ -95,6 +98,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     ...(user ? [{
       id: 'my-flows',
       label: 'My Flows',
+      description: 'Manage your saved flow sequences',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -140,19 +144,19 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </button>
 
                 {showNavMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 py-3 z-50">
                     {navItems.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => handleNavClick(item.page)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                        className={`w-full flex items-start gap-4 px-6 py-4 text-left hover:bg-gray-50 transition-colors ${
                           currentPage === item.page ||
                           (item.page === 'public-gallery' && currentPage === 'flow-viewer')
                             ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500'
                             : 'text-gray-700'
                         }`}
                       >
-                        <div className={`flex-shrink-0 ${
+                        <div className={`flex-shrink-0 mt-0.5 ${
                           currentPage === item.page ||
                           (item.page === 'public-gallery' && currentPage === 'flow-viewer')
                             ? 'text-blue-600'
@@ -161,7 +165,8 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                           {item.icon}
                         </div>
                         <div className="flex-1">
-                          <div className="font-medium">{item.label}</div>
+                          <div className="font-medium text-sm">{item.label}</div>
+                          <div className="text-xs text-gray-500 mt-1">{item.description}</div>
                         </div>
                       </button>
                     ))}
