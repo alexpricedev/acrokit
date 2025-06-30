@@ -224,7 +224,9 @@ export function FlowsGallery({
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Flows</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Your Flows
+            </h1>
             <p className="text-gray-600">
               Manage your saved acroyoga flow sequences
             </p>

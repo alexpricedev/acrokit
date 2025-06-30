@@ -29,6 +29,17 @@ export const schema = i.schema({
       createdAt: i.number(),
       updatedAt: i.number(),
     }),
+    profiles: i.entity({
+      displayName: i.string(),
+      createdAt: i.number(),
+      updatedAt: i.number(),
+    }),
+  },
+  links: {
+    profileUser: {
+      forward: { on: 'profiles', has: 'one', label: '$user' },
+      reverse: { on: '$users', has: 'one', label: 'profile' },
+    },
   },
 });
 
@@ -66,11 +77,18 @@ export type Schema = {
     createdAt: number;
     updatedAt: number;
   };
+  profiles: {
+    id: string;
+    displayName: string;
+    createdAt: number;
+    updatedAt: number;
+  };
 };
 
 export type Pose = Schema['poses'];
 export type Transition = Schema['transitions'];
 export type Flow = Schema['flows'];
+export type Profile = Schema['profiles'];
 export type User = {
   id: string;
   email: string;
