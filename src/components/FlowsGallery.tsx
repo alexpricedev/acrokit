@@ -289,7 +289,7 @@ export function FlowsGallery({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => togglePublic(flow.id)}
-                      className={`group flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200 hover:shadow-sm ${
+                      className={`group flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all duration-200 hover:shadow-sm ${
                         flow.isPublic
                           ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'
                           : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
@@ -297,8 +297,8 @@ export function FlowsGallery({
                       title={`Click to make ${flow.isPublic ? 'private' : 'public'}`}
                     >
                       <svg
-                        width="14"
-                        height="14"
+                        width="12"
+                        height="12"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -328,20 +328,9 @@ export function FlowsGallery({
                           </>
                         )}
                       </svg>
-                      <span className="text-sm font-medium">
+                      <span className="text-xs font-medium">
                         {flow.isPublic ? 'Public' : 'Private'}
                       </span>
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="opacity-50 group-hover:opacity-100 transition-opacity"
-                      >
-                        <polyline points="6,9 12,15 18,9" />
-                      </svg>
                     </button>
                   </div>
                 </div>
