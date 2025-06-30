@@ -23,13 +23,13 @@ export function AboutPage() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="text-3xl mb-4">🔗</div>
+          <div className="text-3xl mb-4">💾</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            Named Transitions
+            Save & Share
           </h2>
           <p className="text-gray-600">
-            Every transition has a proper name (like "Prasarita Twist"). 
-            Learn the vocabulary while you build, making it easier to teach and remember flows.
+            Build your personal library of flows. Save them privately for practice 
+            or share them publicly to inspire the community. Each public flow gets its own shareable link.
           </p>
         </div>
 
@@ -56,13 +56,13 @@ export function AboutPage() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="text-3xl mb-4">💾</div>
+          <div className="text-3xl mb-4">🔗</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            Save & Share
+            Named Transitions
           </h2>
           <p className="text-gray-600">
-            Build your personal library of flows. Save them privately for practice 
-            or share them publicly to inspire the community. Each public flow gets its own shareable link.
+            Every transition has a proper name (like "Prasarita Twist"). 
+            Learn the vocabulary while you build, making it easier to teach and remember flows.
           </p>
         </div>
 
