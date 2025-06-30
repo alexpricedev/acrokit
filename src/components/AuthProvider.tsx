@@ -1,4 +1,10 @@
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from 'react';
 import { db } from '../lib/instant';
 
 interface AuthContextType {
@@ -15,10 +21,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if we're in development mode and want to use fake auth for testing
   const useFakeAuth = window.location.search.includes('fake-auth');
-  
+
   // Real InstantDB auth
   const { user: realUser, isLoading: realIsLoading } = db.useAuth();
-  
+
   // Fake auth state for testing
   const [fakeUser, setFakeUser] = useState<any>(null);
 
@@ -47,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const user = {
           id: 'fake-user-id',
           email: email,
-          createdAt: Date.now()
+          createdAt: Date.now(),
         };
         setFakeUser(user);
         localStorage.setItem('fake-auth-user', JSON.stringify(user));
@@ -73,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const user = {
         id: 'fake-user-id',
         email: 'test@example.com',
-        createdAt: Date.now()
+        createdAt: Date.now(),
       };
       setFakeUser(user);
       localStorage.setItem('fake-auth-user', JSON.stringify(user));
@@ -86,13 +92,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ 
-        user, 
-        isLoading, 
-        signInWithEmail, 
-        verifyCode, 
+      value={{
+        user,
+        isLoading,
+        signInWithEmail,
+        verifyCode,
         signOut,
-        ...(useFakeAuth && { fakeLogin })
+        ...(useFakeAuth && { fakeLogin }),
       }}
     >
       {children}
