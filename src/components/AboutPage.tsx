@@ -34,24 +34,46 @@ export function AboutPage() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="text-3xl mb-4">🌟</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            Public Gallery
+          </h2>
+          <p className="text-gray-600">
+            Discover flows shared by the community. Browse, practice, and remix flows 
+            created by other acro enthusiasts. Find inspiration for your next session.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="text-3xl mb-4">🎯</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            Practice Mode
+          </h2>
+          <p className="text-gray-600">
+            Step through flows pose by pose with our guided practice mode. 
+            Navigate forward and backward, jump to specific poses, and focus on perfecting each transition.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-3xl mb-4">💾</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             Save & Share
           </h2>
           <p className="text-gray-600">
             Build your personal library of flows. Save them privately for practice 
-            or share them publicly to inspire the community.
+            or share them publicly to inspire the community. Each public flow gets its own shareable link.
           </p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="text-3xl mb-4">📱</div>
+          <div className="text-3xl mb-4">🔄</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            Access Anywhere
+            Remix & Customize
           </h2>
           <p className="text-gray-600">
-            Practice at home, in the park, or at the studio. Your flows are 
-            available on any device, whenever inspiration strikes.
+            Found a flow you like? Remix it to your collection and make it your own. 
+            Modify existing flows or use them as starting points for new creations.
           </p>
         </div>
       </div>
