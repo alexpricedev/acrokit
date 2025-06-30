@@ -6,9 +6,10 @@ import { useToast } from './ToastProvider'
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[]) => void
   onPageChange: (page: 'builder' | 'gallery') => void
+  onPracticeFlow?: (flowId: string) => void
 }
 
-export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
+export function FlowsGallery({ onLoadFlow, onPageChange, onPracticeFlow }: FlowsGalleryProps) {
   const { user } = useAuth()
   const { showToast } = useToast()
   const [flows, setFlows] = useState<Flow[]>([])
@@ -187,6 +188,15 @@ export function FlowsGallery({ onLoadFlow, onPageChange }: FlowsGalleryProps) {
                   >
                     Load & Edit
                   </button>
+                  
+                  {onPracticeFlow && (
+                    <button
+                      onClick={() => onPracticeFlow(flow.id)}
+                      className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                    >
+                      Practice
+                    </button>
+                  )}
                   
                   {flow.isPublic && (
                     <button

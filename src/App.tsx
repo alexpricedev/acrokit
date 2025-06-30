@@ -7,31 +7,22 @@ import { FlowViewer } from './components/FlowViewer'
 import { Header } from './components/Header'
 import { AuthProvider } from './components/AuthProvider'
 import { ToastProvider } from './components/ToastProvider'
-import { SharedFlowLoader } from './components/SharedFlowLoader'
 import { FlowStep } from './lib/instant'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'builder' | 'gallery' | 'public-gallery' | 'flow-viewer'>('builder')
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>()
-  const [sharedFlowId, setSharedFlowId] = useState<string | null>(null)
   const [viewingFlowId, setViewingFlowId] = useState<string | null>(null)
 
   // Check URL routing on app load
   useEffect(() => {
     const path = window.location.pathname
-    const urlParams = new URLSearchParams(window.location.search)
     
-    // Handle legacy shared flow URLs
-    const shared = urlParams.get('shared')
-    if (shared) {
-      setSharedFlowId(shared)
-      setCurrentPage('builder') // Go to builder to show the shared flow
-      return
-    }
-    
-    // Handle new URL routing
+    // Handle URL routing
     if (path === '/gallery') {
       setCurrentPage('public-gallery')
+    } else if (path === '/my-flows') {
+      setCurrentPage('gallery')
     } else if (path.startsWith('/flow/')) {
       const flowId = path.split('/flow/')[1]
       if (flowId) {
@@ -45,13 +36,7 @@ function App() {
 
   const handleLoadFlow = (flow: FlowStep[]) => {
     setLoadedFlow(flow)
-    setSharedFlowId(null) // Clear shared flow when loading a regular flow
     setCurrentPage('builder')
-  }
-
-  const handleSharedFlowLoad = (flow: FlowStep[]) => {
-    setLoadedFlow(flow)
-    setSharedFlowId(null) // Clear shared flow ID after loading
   }
 
   const handlePageChange = (page: 'builder' | 'gallery' | 'public-gallery') => {
@@ -60,12 +45,11 @@ function App() {
     
     if (page === 'builder') {
       setLoadedFlow(undefined) // Clear loaded flow when manually switching to builder
-      setSharedFlowId(null) // Clear shared flow ID
       window.history.pushState({}, '', '/')
     } else if (page === 'public-gallery') {
       window.history.pushState({}, '', '/gallery')
     } else if (page === 'gallery') {
-      window.history.pushState({}, '', '/')
+      window.history.pushState({}, '', '/my-flows')
     }
   }
 
@@ -77,6 +61,7 @@ function App() {
 
   const handleBackFromViewer = () => {
     setViewingFlowId(null)
+    // Go back to public gallery by default - users can navigate if needed
     setCurrentPage('public-gallery')
     window.history.pushState({}, '', '/gallery')
   }
@@ -87,16 +72,10 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Header currentPage={currentPage} onPageChange={handlePageChange} />
           <main>
-            {sharedFlowId ? (
-              <SharedFlowLoader 
-                flowId={sharedFlowId} 
-                onFlowLoad={handleSharedFlowLoad}
-                onError={() => setSharedFlowId(null)}
-              />
-            ) : currentPage === 'builder' ? (
+            {currentPage === 'builder' ? (
               <FlowBuilder initialFlow={loadedFlow} />
             ) : currentPage === 'gallery' ? (
-              <FlowsGallery onLoadFlow={handleLoadFlow} onPageChange={setCurrentPage} />
+              <FlowsGallery onLoadFlow={handleLoadFlow} onPageChange={setCurrentPage} onPracticeFlow={handleViewFlow} />
             ) : currentPage === 'public-gallery' ? (
               <PublicGallery onViewFlow={handleViewFlow} />
             ) : currentPage === 'flow-viewer' && viewingFlowId ? (

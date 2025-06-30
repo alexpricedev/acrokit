@@ -68,17 +68,17 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
     }
   }, [dbLoading, data, error, flowId, user, showToast, onBack])
 
-  const copyFlow = async () => {
+  const remixFlow = async () => {
     if (!user || !flow) {
-      showToast('Please sign in to copy flows', 'error')
+      showToast('Please sign in to remix flows', 'error')
       return
     }
 
     try {
       await db.transact(
         db.tx.flows[id()].update({
-          name: `Copy of ${flow.name}`,
-          description: flow.description ? `${flow.description} (copied)` : 'Copied from public gallery',
+          name: `Remix of ${flow.name}`,
+          description: flow.description ? `${flow.description} (remixed)` : 'Remixed from public gallery',
           isPublic: false,
           userId: user.id,
           stepsData: flow.stepsData,
@@ -86,10 +86,10 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
           updatedAt: Date.now()
         })
       )
-      showToast(`Copied "${flow.name}" to your flows!`, 'success')
+      showToast(`Remixed "${flow.name}" to your flows!`, 'success')
     } catch (error) {
-      console.error('Error copying flow:', error)
-      showToast('Failed to copy flow. Please try again.', 'error')
+      console.error('Error remixing flow:', error)
+      showToast('Failed to remix flow. Please try again.', 'error')
     }
   }
 
@@ -172,10 +172,10 @@ export function FlowViewer({ flowId, onBack }: FlowViewerProps) {
             </button>
             {user && (
               <button
-                onClick={copyFlow}
+                onClick={remixFlow}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
-                Copy to My Flows
+                Remix this flow
               </button>
             )}
           </div>

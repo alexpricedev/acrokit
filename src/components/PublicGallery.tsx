@@ -51,17 +51,17 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
     }
   }
 
-  const copyFlow = async (flow: Flow) => {
+  const remixFlow = async (flow: Flow) => {
     if (!user) {
-      showToast('Please sign in to copy flows', 'error')
+      showToast('Please sign in to remix flows', 'error')
       return
     }
 
     try {
       await db.transact(
         db.tx.flows[id()].update({
-          name: `Copy of ${flow.name}`,
-          description: flow.description ? `${flow.description} (copied)` : 'Copied from public gallery',
+          name: `Remix of ${flow.name}`,
+          description: flow.description ? `${flow.description} (remixed)` : 'Remixed from public gallery',
           isPublic: false,
           userId: user.id,
           stepsData: flow.stepsData,
@@ -69,10 +69,10 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
           updatedAt: Date.now()
         })
       )
-      showToast(`Copied "${flow.name}" to your flows!`, 'success')
+      showToast(`Remixed "${flow.name}" to your flows!`, 'success')
     } catch (error) {
-      console.error('Error copying flow:', error)
-      showToast('Failed to copy flow. Please try again.', 'error')
+      console.error('Error remixing flow:', error)
+      showToast('Failed to remix flow. Please try again.', 'error')
     }
   }
 
@@ -102,7 +102,7 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Public Gallery</h1>
         <p className="text-gray-600">
-          Discover acroyoga flows shared by the community. Click any flow to practice it, or copy it to your collection.
+          Discover acroyoga flows shared by the community. Click any flow to practice it, or remix it to your collection.
         </p>
       </div>
 
@@ -161,9 +161,9 @@ export function PublicGallery({ onViewFlow }: PublicGalleryProps) {
                   
                   {user && (
                     <button
-                      onClick={() => copyFlow(flow)}
+                      onClick={() => remixFlow(flow)}
                       className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
-                      title="Copy to my flows"
+                      title="Remix this flow"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
