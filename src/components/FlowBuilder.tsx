@@ -9,12 +9,16 @@ import { useFlowData } from '../hooks';
 
 interface FlowBuilderProps {
   initialFlow?: FlowStep[];
+  editingFlowId?: string;
 }
 
-export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
+export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const { user } = useAuth();
   const { showToast } = useToast();
   const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || []);
+  const [originalFlow, setOriginalFlow] = useState<FlowStep[]>(
+    initialFlow || []
+  );
   const [isStartingPose, setIsStartingPose] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showRandomModal, setShowRandomModal] = useState(false);
@@ -59,9 +63,15 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
   useEffect(() => {
     if (initialFlow) {
       setCurrentFlow(initialFlow);
+      setOriginalFlow(initialFlow);
       setIsStartingPose(initialFlow.length === 0);
     }
   }, [initialFlow]);
+
+  // Check if flow has been modified
+  const hasChanges = () => {
+    return JSON.stringify(currentFlow) !== JSON.stringify(originalFlow);
+  };
 
   const getValidNextPoses = () => {
     if (isStartingPose) {
@@ -249,7 +259,9 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
 
               <button
                 onClick={handleSaveFlow}
-                disabled={currentFlow.length === 0}
+                disabled={
+                  currentFlow.length === 0 || (editingFlowId && !hasChanges())
+                }
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium min-h-[44px] sm:min-h-0"
               >
                 <svg
@@ -264,7 +276,11 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
                   <polyline points="17,21 17,13 7,13 7,21" />
                   <polyline points="7,3 7,8 15,8" />
                 </svg>
-                {user ? 'Save flow' : 'Sign in to save'}
+                {user
+                  ? editingFlowId
+                    ? 'Update flow'
+                    : 'Save flow'
+                  : 'Sign in to save'}
               </button>
 
               {currentFlow.length > 0 && (
@@ -357,6 +373,10 @@ export function FlowBuilder({ initialFlow }: FlowBuilderProps) {
         onClose={() => setShowSaveModal(false)}
         currentFlow={currentFlow}
         user={user}
+        editingFlowId={editingFlowId}
+        onSaveComplete={() => {
+          setOriginalFlow([...currentFlow]);
+        }}
       />
 
       <RandomFlowModal

@@ -17,7 +17,7 @@ interface SavedFlow {
 
 interface FlowSaveLoadProps {
   currentFlow: FlowStep[];
-  onLoadFlow: (flow: FlowStep[]) => void;
+  onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
 }
 
 export function FlowSaveLoad({ currentFlow, onLoadFlow }: FlowSaveLoadProps) {
