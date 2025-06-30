@@ -5,7 +5,7 @@ import { useToast } from './ToastProvider';
 
 interface PublicGalleryProps {
   onViewFlow: (flowId: string) => void;
-  onLoadFlow: (flow: FlowStep[]) => void;
+  onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
 }
 
 export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {

@@ -7,7 +7,7 @@ import { PoseCard } from './PoseCard';
 interface FlowViewerProps {
   flowId: string;
   onBack: () => void;
-  onLoadFlow: (flow: FlowStep[]) => void;
+  onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
 }
 
 export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {

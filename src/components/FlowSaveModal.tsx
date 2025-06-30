@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import * as React from 'react';
 import { FlowStep, db } from '../lib/instant';
 import { id } from '@instantdb/react';
 import { useToast } from './ToastProvider';
@@ -8,6 +9,8 @@ interface FlowSaveModalProps {
   onClose: () => void;
   currentFlow: FlowStep[];
   user: any;
+  editingFlowId?: string;
+  onSaveComplete?: () => void;
 }
 
 export function FlowSaveModal({
@@ -15,12 +18,34 @@ export function FlowSaveModal({
   onClose,
   currentFlow,
   user,
+  editingFlowId,
+  onSaveComplete,
 }: FlowSaveModalProps) {
   const [flowName, setFlowName] = useState('');
   const [flowDescription, setFlowDescription] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { showToast } = useToast();
+
+  // Load existing flow data when editing
+  const { data: existingFlowData } = db.useQuery(
+    editingFlowId ? { flows: { $: { where: { id: editingFlowId } } } } : {}
+  );
+
+  // Populate form when editing existing flow
+  React.useEffect(() => {
+    if (editingFlowId && existingFlowData?.flows?.[0]) {
+      const flow = existingFlowData.flows[0];
+      setFlowName(flow.name || '');
+      setFlowDescription(flow.description || '');
+      setIsPublic(flow.isPublic || false);
+    } else if (!editingFlowId) {
+      // Reset form for new flow
+      setFlowName('');
+      setFlowDescription('');
+      setIsPublic(false);
+    }
+  }, [editingFlowId, existingFlowData]);
 
   const getFlowPreview = (steps: FlowStep[]) => {
     return steps.map(step => step.pose.name).join(' → ');
@@ -32,25 +57,53 @@ export function FlowSaveModal({
     setIsSaving(true);
 
     try {
-      const flowId = id(); // Generate proper InstantDB ID
       const now = Date.now();
 
-      const flowData = {
-        name: flowName.trim(),
-        description: flowDescription.trim() || undefined,
-        isPublic,
-        userId: user.id,
-        stepsData: JSON.stringify(currentFlow),
-        createdAt: now,
-        updatedAt: now,
-      };
+      if (editingFlowId) {
+        // Update existing flow
+        const updateData = {
+          name: flowName.trim(),
+          description: flowDescription.trim() || undefined,
+          isPublic,
+          stepsData: JSON.stringify(currentFlow),
+          updatedAt: now,
+        };
 
-      console.log('Saving flow to InstantDB:', { id: flowId, ...flowData });
+        console.log('Updating existing flow:', {
+          id: editingFlowId,
+          ...updateData,
+        });
 
-      // Save to InstantDB using correct syntax
-      const result = await db.transact(db.tx.flows[flowId].update(flowData));
+        const result = await db.transact(
+          db.tx.flows[editingFlowId].update(updateData)
+        );
 
-      console.log('Flow saved successfully:', result);
+        console.log('Flow updated successfully:', result);
+        showToast('Flow updated successfully!', 'success');
+      } else {
+        // Create new flow
+        const flowId = id(); // Generate proper InstantDB ID
+
+        const flowData = {
+          name: flowName.trim(),
+          description: flowDescription.trim() || undefined,
+          isPublic,
+          userId: user.id,
+          stepsData: JSON.stringify(currentFlow),
+          createdAt: now,
+          updatedAt: now,
+        };
+
+        console.log('Saving new flow to InstantDB:', {
+          id: flowId,
+          ...flowData,
+        });
+
+        const result = await db.transact(db.tx.flows[flowId].update(flowData));
+
+        console.log('Flow saved successfully:', result);
+        showToast('Flow saved successfully!', 'success');
+      }
 
       // Reset form and close
       setFlowName('');
@@ -58,7 +111,10 @@ export function FlowSaveModal({
       setIsPublic(false);
       onClose();
 
-      showToast('Flow saved successfully!', 'success');
+      // Notify parent that save is complete
+      if (onSaveComplete) {
+        onSaveComplete();
+      }
     } catch (error) {
       console.error('Error saving flow:', error);
       showToast('Error saving flow. Please try again.', 'error');
@@ -81,7 +137,9 @@ export function FlowSaveModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Save flow</h2>
+          <h2 className="text-xl font-bold text-gray-900">
+            {editingFlowId ? 'Update flow' : 'Save flow'}
+          </h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -159,7 +217,13 @@ export function FlowSaveModal({
             disabled={!flowName.trim() || isSaving}
             className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSaving ? 'Saving...' : 'Save flow'}
+            {isSaving
+              ? editingFlowId
+                ? 'Updating...'
+                : 'Saving...'
+              : editingFlowId
+                ? 'Update flow'
+                : 'Save flow'}
           </button>
           <button
             onClick={handleClose}

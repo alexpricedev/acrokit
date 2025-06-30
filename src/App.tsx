@@ -15,6 +15,7 @@ function App() {
     'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'
   >('builder');
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>();
+  const [editingFlowId, setEditingFlowId] = useState<string | undefined>();
   const [viewingFlowId, setViewingFlowId] = useState<string | null>(null);
 
   // Check URL routing on app load
@@ -39,8 +40,9 @@ function App() {
     }
   }, []);
 
-  const handleLoadFlow = (flow: FlowStep[]) => {
+  const handleLoadFlow = (flow: FlowStep[], flowId?: string) => {
     setLoadedFlow(flow);
+    setEditingFlowId(flowId);
     setCurrentPage('builder');
     window.history.pushState({}, '', '/');
   };
@@ -53,6 +55,7 @@ function App() {
 
     if (page === 'builder') {
       setLoadedFlow(undefined); // Clear loaded flow when manually switching to builder
+      setEditingFlowId(undefined); // Clear editing flow ID
       window.history.pushState({}, '', '/');
     } else if (page === 'public-gallery') {
       window.history.pushState({}, '', '/gallery');
@@ -83,7 +86,10 @@ function App() {
           <Header currentPage={currentPage} onPageChange={handlePageChange} />
           <main>
             {currentPage === 'builder' ? (
-              <FlowBuilder initialFlow={loadedFlow} />
+              <FlowBuilder
+                initialFlow={loadedFlow}
+                editingFlowId={editingFlowId}
+              />
             ) : currentPage === 'gallery' ? (
               <FlowsGallery
                 onLoadFlow={handleLoadFlow}
@@ -104,7 +110,10 @@ function App() {
             ) : currentPage === 'about' ? (
               <AboutPage />
             ) : (
-              <FlowBuilder initialFlow={loadedFlow} />
+              <FlowBuilder
+                initialFlow={loadedFlow}
+                editingFlowId={editingFlowId}
+              />
             )}
           </main>
         </div>

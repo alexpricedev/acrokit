@@ -5,7 +5,7 @@ import { useToast } from './ToastProvider';
 import { ConfirmationModal } from './ConfirmationModal';
 
 interface FlowsGalleryProps {
-  onLoadFlow: (flow: FlowStep[]) => void;
+  onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
   onPageChange: (page: 'builder' | 'gallery') => void;
   onPracticeFlow?: (flowId: string) => void;
 }
@@ -94,7 +94,7 @@ export function FlowsGallery({
   const handleLoadFlow = (flow: Flow) => {
     try {
       const steps = JSON.parse(flow.stepsData) as FlowStep[];
-      onLoadFlow(steps);
+      onLoadFlow(steps, flow.id); // Pass the flow ID for editing
       // Don't call onPageChange - onLoadFlow already handles page navigation
     } catch (error) {
       console.error('Error loading flow:', error);
@@ -349,7 +349,7 @@ export function FlowsGallery({
                     onClick={() => handleLoadFlow(flow)}
                     className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
                   >
-                    Load & Edit
+                    Edit
                   </button>
 
                   {flow.isPublic && (
