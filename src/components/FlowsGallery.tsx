@@ -28,15 +28,17 @@ export function FlowsGallery({
   // Load flows from InstantDB (only if not using fake auth)
   const shouldSkipQuery = useFakeAuth || !user;
   const { isLoading: dbLoading, data } = db.useQuery(
-    shouldSkipQuery ? {} : {
-      flows: {
-        $: {
-          where: {
-            userId: user?.id,
+    shouldSkipQuery
+      ? {}
+      : {
+          flows: {
+            $: {
+              where: {
+                userId: user?.id,
+              },
+            },
           },
-        },
-      },
-    }
+        }
   );
 
   useEffect(() => {
@@ -56,7 +58,10 @@ export function FlowsGallery({
           userId: 'fake-user-id',
           stepsData: JSON.stringify([
             { pose: { name: 'Bird' }, transition: null },
-            { pose: { name: 'Throne' }, transition: { name: 'Bird to Throne' } },
+            {
+              pose: { name: 'Throne' },
+              transition: { name: 'Bird to Throne' },
+            },
           ]),
           createdAt: Date.now() - 86400000, // 1 day ago
           updatedAt: Date.now() - 86400000,
@@ -104,7 +109,7 @@ export function FlowsGallery({
         showToast('Flow deleted successfully', 'success');
         return;
       }
-      
+
       await db.transact(db.tx.flows[flowId].delete());
       showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
@@ -139,11 +144,13 @@ export function FlowsGallery({
 
       if (useFakeAuth) {
         // For fake auth, just update local state
-        setFlows(prev => prev.map(f => 
-          f.id === flowId 
-            ? { ...f, isPublic: !f.isPublic, updatedAt: Date.now() }
-            : f
-        ));
+        setFlows(prev =>
+          prev.map(f =>
+            f.id === flowId
+              ? { ...f, isPublic: !f.isPublic, updatedAt: Date.now() }
+              : f
+          )
+        );
         return;
       }
 
@@ -282,13 +289,59 @@ export function FlowsGallery({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => togglePublic(flow.id)}
-                      className={`px-2 py-1 text-xs rounded-full transition-colors ${
+                      className={`group flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200 hover:shadow-sm ${
                         flow.isPublic
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-600'
+                          ? 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'
+                          : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                       }`}
+                      title={`Click to make ${flow.isPublic ? 'private' : 'public'}`}
                     >
-                      {flow.isPublic ? 'Public' : 'Private'}
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="transition-transform group-hover:scale-110"
+                      >
+                        {flow.isPublic ? (
+                          // Globe icon for public
+                          <>
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                          </>
+                        ) : (
+                          // Lock icon for private
+                          <>
+                            <rect
+                              x="3"
+                              y="11"
+                              width="18"
+                              height="11"
+                              rx="2"
+                              ry="2"
+                            />
+                            <circle cx="12" cy="16" r="1" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          </>
+                        )}
+                      </svg>
+                      <span className="text-sm font-medium">
+                        {flow.isPublic ? 'Public' : 'Private'}
+                      </span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="opacity-50 group-hover:opacity-100 transition-opacity"
+                      >
+                        <polyline points="6,9 12,15 18,9" />
+                      </svg>
                     </button>
                   </div>
                 </div>
