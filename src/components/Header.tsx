@@ -15,7 +15,8 @@ interface HeaderProps {
 }
 
 export function Header({ currentPage, onPageChange }: HeaderProps) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, fakeLogin } = useAuth();
+  const useFakeAuth = window.location.search.includes('fake-auth');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginMode, setLoginMode] = useState<'login' | 'signup'>('login');
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -93,6 +94,14 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
               </div>
             ) : (
               <div className="flex items-center gap-3">
+                {useFakeAuth && fakeLogin && (
+                  <button
+                    onClick={fakeLogin}
+                    className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm"
+                  >
+                    🧪 Fake Login
+                  </button>
+                )}
                 <button
                   onClick={() => openLoginModal('login')}
                   className="text-gray-700 hover:text-gray-900 font-medium text-sm"
@@ -244,6 +253,14 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
+                  {useFakeAuth && fakeLogin && (
+                    <button
+                      onClick={fakeLogin}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                    >
+                      🧪 Fake Login
+                    </button>
+                  )}
                   <button
                     onClick={() => openLoginModal('login')}
                     className="text-gray-700 hover:text-gray-900 font-medium"
