@@ -3,8 +3,8 @@ import { useAuth } from './AuthProvider'
 import { LoginModal } from './LoginModal'
 
 interface HeaderProps {
-  currentPage: 'builder' | 'gallery'
-  onPageChange: (page: 'builder' | 'gallery') => void
+  currentPage: 'builder' | 'gallery' | 'about'
+  onPageChange: (page: 'builder' | 'gallery' | 'about') => void
 }
 
 export function Header({ currentPage, onPageChange }: HeaderProps) {
@@ -94,6 +94,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
           {/* Mobile Navigation */}
           <div className="flex items-center justify-start space-x-3 sm:space-x-6 mt-3 sm:hidden">
             <button 
+              onClick={() => onPageChange('about')}
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors min-h-[40px] flex items-center ${
+                currentPage === 'about' 
+                  ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+              }`}
+            >
+              About
+            </button>
+            <button 
               onClick={() => onPageChange('builder')}
               className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors min-h-[40px] flex items-center ${
                 currentPage === 'builder' 
@@ -129,6 +139,16 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
             </div>
             
             <nav className="flex items-center space-x-6">
+              <button 
+                onClick={() => onPageChange('about')}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === 'about' 
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                About
+              </button>
               <button 
                 onClick={() => onPageChange('builder')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${

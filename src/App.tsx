@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { FlowBuilder } from './components/FlowBuilder'
 import { FlowsGallery } from './components/FlowsGallery'
+import { AboutPage } from './components/AboutPage'
 import { Header } from './components/Header'
 import { AuthProvider } from './components/AuthProvider'
 import { ToastProvider } from './components/ToastProvider'
@@ -9,7 +10,7 @@ import { SharedFlowLoader } from './components/SharedFlowLoader'
 import { FlowStep } from './lib/instant'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'builder' | 'gallery'>('builder')
+  const [currentPage, setCurrentPage] = useState<'builder' | 'gallery' | 'about'>('builder')
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>()
   const [sharedFlowId, setSharedFlowId] = useState<string | null>(null)
 
@@ -34,7 +35,7 @@ function App() {
     setSharedFlowId(null) // Clear shared flow ID after loading
   }
 
-  const handlePageChange = (page: 'builder' | 'gallery') => {
+  const handlePageChange = (page: 'builder' | 'gallery' | 'about') => {
     setCurrentPage(page)
     if (page === 'builder') {
       setLoadedFlow(undefined) // Clear loaded flow when manually switching to builder
@@ -56,8 +57,10 @@ function App() {
               />
             ) : currentPage === 'builder' ? (
               <FlowBuilder initialFlow={loadedFlow} />
-            ) : (
+            ) : currentPage === 'gallery' ? (
               <FlowsGallery onLoadFlow={handleLoadFlow} onPageChange={setCurrentPage} />
+            ) : (
+              <AboutPage />
             )}
           </main>
         </div>
