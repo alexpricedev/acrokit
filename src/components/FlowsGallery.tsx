@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Flow, FlowStep, db } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
+import { ConfirmationModal } from './ConfirmationModal';
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[]) => void;
@@ -18,6 +19,8 @@ export function FlowsGallery({
   const { showToast } = useToast();
   const [flows, setFlows] = useState<Flow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [flowToDelete, setFlowToDelete] = useState<Flow | null>(null);
 
   // Load flows from InstantDB
   const { isLoading: dbLoading, data } = db.useQuery({
@@ -55,11 +58,30 @@ export function FlowsGallery({
   const handleDeleteFlow = async (flowId: string) => {
     try {
       await db.transact(db.tx.flows[flowId].delete());
+      showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
       console.error('Error deleting flow:', error);
       showToast('Error deleting flow. Please try again.', 'error');
     }
+  };
+
+  const handleDeleteClick = (flow: Flow) => {
+    setFlowToDelete(flow);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (flowToDelete) {
+      handleDeleteFlow(flowToDelete.id);
+    }
+    setShowDeleteConfirm(false);
+    setFlowToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setFlowToDelete(null);
   };
 
   const togglePublic = async (flowId: string) => {
@@ -252,7 +274,7 @@ export function FlowsGallery({
                   )}
 
                   <button
-                    onClick={() => handleDeleteFlow(flow.id)}
+                    onClick={() => handleDeleteClick(flow)}
                     className="px-3 py-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors text-sm"
                     title="Delete flow"
                   >
@@ -279,6 +301,21 @@ export function FlowsGallery({
           ))}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        title="Delete Flow"
+        message={
+          flowToDelete
+            ? `Are you sure you want to delete "${flowToDelete.name}"? This action cannot be undone.`
+            : 'Are you sure you want to delete this flow? This action cannot be undone.'
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        isDangerous={true}
+      />
     </div>
   );
 }
