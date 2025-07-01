@@ -7,11 +7,19 @@ interface HeaderProps {
     | 'builder'
     | 'gallery'
     | 'public-gallery'
+    | 'poses-gallery'
+    | 'pose-detail'
     | 'flow-viewer'
     | 'about'
     | 'account';
   onPageChange: (
-    page: 'builder' | 'gallery' | 'public-gallery' | 'about' | 'account'
+    page:
+      | 'builder'
+      | 'gallery'
+      | 'public-gallery'
+      | 'poses-gallery'
+      | 'about'
+      | 'account'
   ) => void;
 }
 
@@ -57,7 +65,13 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
   };
 
   const handleNavClick = (
-    page: 'builder' | 'gallery' | 'public-gallery' | 'about' | 'account'
+    page:
+      | 'builder'
+      | 'gallery'
+      | 'public-gallery'
+      | 'poses-gallery'
+      | 'about'
+      | 'account'
   ) => {
     onPageChange(page);
     setShowNavMenu(false);
@@ -85,6 +99,17 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
         </svg>
       ),
       page: 'public-gallery' as const,
+    },
+    {
+      id: 'poses',
+      label: 'Poses Gallery',
+      description: 'Explore all acroyoga poses with details and tips',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor">
+          <path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z" />
+        </svg>
+      ),
+      page: 'poses-gallery' as const,
     },
     {
       id: 'your-flows',
@@ -153,7 +178,9 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                           className={`w-full flex items-start gap-4 px-4 py-3 text-left rounded-lg transition-all duration-200 hover:shadow-sm ${
                             currentPage === item.page ||
                             (item.page === 'public-gallery' &&
-                              currentPage === 'flow-viewer')
+                              currentPage === 'flow-viewer') ||
+                            (item.page === 'poses-gallery' &&
+                              currentPage === 'pose-detail')
                               ? 'bg-blue-50 text-blue-700 border border-transparent shadow-sm hover:bg-blue-100'
                               : 'text-gray-700 border border-transparent hover:bg-gray-50'
                           }`}
@@ -162,7 +189,9 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                             className={`flex-shrink-0 mt-0.5 ${
                               currentPage === item.page ||
                               (item.page === 'public-gallery' &&
-                                currentPage === 'flow-viewer')
+                                currentPage === 'flow-viewer') ||
+                              (item.page === 'poses-gallery' &&
+                                currentPage === 'pose-detail')
                                 ? 'text-blue-600'
                                 : 'text-gray-400'
                             }`}
