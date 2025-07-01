@@ -5,14 +5,40 @@ import { FlowsGallery } from './components/FlowsGallery';
 import { AboutPage } from './components/AboutPage';
 import { PublicGallery } from './components/PublicGallery';
 import { FlowViewer } from './components/FlowViewer';
+import { AccountPage } from './components/AccountPage';
+import { DisplayNameModal } from './components/DisplayNameModal';
 import { Header } from './components/Header';
 import { AuthProvider } from './components/AuthProvider';
 import { ToastProvider } from './components/ToastProvider';
+import { useAuth } from './components/AuthProvider';
 import { FlowStep } from './lib/instant';
 
-function App() {
+// Inner component that has access to auth context
+function AppContent() {
+  const { user, showDisplayNameModal, setDisplayNameAndCloseModal } = useAuth();
+
+  return (
+    <>
+      <AppRouter />
+
+      {/* Display Name Modal */}
+      <DisplayNameModal
+        isOpen={showDisplayNameModal}
+        onClose={setDisplayNameAndCloseModal}
+        userEmail={user?.email || ''}
+      />
+    </>
+  );
+}
+
+function AppRouter() {
   const [currentPage, setCurrentPage] = useState<
-    'builder' | 'gallery' | 'public-gallery' | 'flow-viewer' | 'about'
+    | 'builder'
+    | 'gallery'
+    | 'public-gallery'
+    | 'flow-viewer'
+    | 'about'
+    | 'account'
   >('builder');
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>();
   const [editingFlowId, setEditingFlowId] = useState<string | undefined>();
@@ -29,6 +55,8 @@ function App() {
       setCurrentPage('gallery');
     } else if (path === '/about') {
       setCurrentPage('about');
+    } else if (path === '/account') {
+      setCurrentPage('account');
     } else if (path.startsWith('/flow/')) {
       const flowId = path.split('/flow/')[1];
       if (flowId) {
@@ -48,7 +76,7 @@ function App() {
   };
 
   const handlePageChange = (
-    page: 'builder' | 'gallery' | 'public-gallery' | 'about'
+    page: 'builder' | 'gallery' | 'public-gallery' | 'about' | 'account'
   ) => {
     setCurrentPage(page);
     setViewingFlowId(null); // Clear flow viewer when changing pages
@@ -63,6 +91,8 @@ function App() {
       window.history.pushState({}, '', '/flows');
     } else if (page === 'about') {
       window.history.pushState({}, '', '/about');
+    } else if (page === 'account') {
+      window.history.pushState({}, '', '/account');
     }
   };
 
@@ -80,43 +110,45 @@ function App() {
   };
 
   return (
+    <div className="min-h-screen bg-gray-50">
+      <Header currentPage={currentPage} onPageChange={handlePageChange} />
+      <main>
+        {currentPage === 'builder' ? (
+          <FlowBuilder initialFlow={loadedFlow} editingFlowId={editingFlowId} />
+        ) : currentPage === 'gallery' ? (
+          <FlowsGallery
+            onLoadFlow={handleLoadFlow}
+            onPageChange={setCurrentPage}
+            onPracticeFlow={handleViewFlow}
+          />
+        ) : currentPage === 'public-gallery' ? (
+          <PublicGallery
+            onViewFlow={handleViewFlow}
+            onLoadFlow={handleLoadFlow}
+          />
+        ) : currentPage === 'flow-viewer' && viewingFlowId ? (
+          <FlowViewer
+            flowId={viewingFlowId}
+            onBack={handleBackFromViewer}
+            onLoadFlow={handleLoadFlow}
+          />
+        ) : currentPage === 'about' ? (
+          <AboutPage />
+        ) : currentPage === 'account' ? (
+          <AccountPage />
+        ) : (
+          <FlowBuilder initialFlow={loadedFlow} editingFlowId={editingFlowId} />
+        )}
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
     <AuthProvider>
       <ToastProvider>
-        <div className="min-h-screen bg-gray-50">
-          <Header currentPage={currentPage} onPageChange={handlePageChange} />
-          <main>
-            {currentPage === 'builder' ? (
-              <FlowBuilder
-                initialFlow={loadedFlow}
-                editingFlowId={editingFlowId}
-              />
-            ) : currentPage === 'gallery' ? (
-              <FlowsGallery
-                onLoadFlow={handleLoadFlow}
-                onPageChange={setCurrentPage}
-                onPracticeFlow={handleViewFlow}
-              />
-            ) : currentPage === 'public-gallery' ? (
-              <PublicGallery
-                onViewFlow={handleViewFlow}
-                onLoadFlow={handleLoadFlow}
-              />
-            ) : currentPage === 'flow-viewer' && viewingFlowId ? (
-              <FlowViewer
-                flowId={viewingFlowId}
-                onBack={handleBackFromViewer}
-                onLoadFlow={handleLoadFlow}
-              />
-            ) : currentPage === 'about' ? (
-              <AboutPage />
-            ) : (
-              <FlowBuilder
-                initialFlow={loadedFlow}
-                editingFlowId={editingFlowId}
-              />
-            )}
-          </main>
-        </div>
+        <AppContent />
       </ToastProvider>
     </AuthProvider>
   );

@@ -9,12 +9,12 @@ interface PublicGalleryProps {
 }
 
 export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { showToast } = useToast();
   const [flows, setFlows] = useState<Flow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load public flows from InstantDB
+  // Load public flows from InstantDB with user profiles
   const { isLoading: dbLoading, data } = db.useQuery({
     flows: {
       $: {
@@ -22,6 +22,9 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
           isPublic: true,
         },
       },
+    },
+    $users: {
+      profile: {},
     },
   });
 
@@ -52,6 +55,23 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     } catch {
       return 'Unknown';
     }
+  };
+
+  const getCreatorName = (flow: any) => {
+    // Check if the flow is by the current user
+    if (user && flow.userId === user.id) {
+      return profile?.displayName || user.email || 'You';
+    }
+
+    // Find the creator's profile
+    const creatorData = data?.$users?.find(
+      (userData: any) => userData.id === flow.userId
+    );
+    if (creatorData?.profile?.displayName) {
+      return creatorData.profile.displayName;
+    }
+
+    return 'Community Member';
   };
 
   const remixFlow = async (flow: Flow) => {
@@ -150,6 +170,9 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                     <h3 className="font-bold text-gray-900 text-lg">
                       {flow.name}
                     </h3>
+                    <p className="text-gray-500 text-sm">
+                      by {getCreatorName(flow)}
+                    </p>
                   </div>
 
                   {flow.description && (
