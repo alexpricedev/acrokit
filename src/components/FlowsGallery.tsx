@@ -3,6 +3,7 @@ import { Flow, FlowStep, db } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { ConfirmationModal } from './ConfirmationModal';
+import { LoginModal } from './LoginModal';
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
@@ -21,6 +22,8 @@ export function FlowsGallery({
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [flowToDelete, setFlowToDelete] = useState<Flow | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginMode, setLoginMode] = useState<'login' | 'signup'>('login');
 
   // Check if we're using fake auth for testing
   const useFakeAuth = window.location.search.includes('fake-auth');
@@ -137,6 +140,11 @@ export function FlowsGallery({
     setFlowToDelete(null);
   };
 
+  const openLoginModal = (mode: 'login' | 'signup') => {
+    setLoginMode(mode);
+    setShowLoginModal(true);
+  };
+
   const togglePublic = async (flowId: string) => {
     try {
       const flow = flows.find(f => f.id === flowId);
@@ -194,17 +202,42 @@ export function FlowsGallery({
 
   if (!user) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-gray-400 text-4xl mb-4">🔒</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Sign in required
-          </h2>
-          <p className="text-gray-600">
-            You need to be signed in to view your saved flows.
-          </p>
+      <>
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-6">🤸‍♀️</div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Unlock Your Flow Library
+            </h2>
+            <p className="text-gray-600 text-lg mb-2">
+              Save your favorite acroyoga sequences and access them anywhere.
+            </p>
+            <p className="text-gray-500 mb-8">
+              Build once, practice anytime. Your flows are waiting.
+            </p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <button
+                onClick={() => openLoginModal('signup')}
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg min-h-[44px]"
+              >
+                Create Free Account
+              </button>
+              <button
+                onClick={() => openLoginModal('login')}
+                className="bg-gray-100 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium text-lg min-h-[44px]"
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <LoginModal
+          isOpen={showLoginModal}
+          mode={loginMode}
+          onClose={() => setShowLoginModal(false)}
+        />
+      </>
     );
   }
 
