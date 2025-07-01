@@ -3,6 +3,7 @@ import { Pose, Transition, FlowStep } from '../lib/instant';
 import { PoseCard } from './PoseCard';
 import { FlowSaveModal } from './FlowSaveModal';
 import { RandomFlowModal } from './RandomFlowModal';
+import { PoseDetailModal } from './PoseDetailModal';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { useFlowData } from '../hooks';
@@ -22,6 +23,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [isStartingPose, setIsStartingPose] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showRandomModal, setShowRandomModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
@@ -112,6 +115,16 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
       return;
     }
     setShowSaveModal(true);
+  };
+
+  const handleShowPoseDetails = (pose: Pose) => {
+    setSelectedPose(pose);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowDetailModal(false);
+    setSelectedPose(null);
   };
 
   const generateRandomFlow = async (moveCount: number) => {
@@ -241,6 +254,27 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                         </div>
                       )}
                     </div>
+                    <button
+                      onClick={() => handleShowPoseDetails(step.pose)}
+                      className="p-1 hover:bg-gray-100 rounded transition-colors"
+                      title="View pose details"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>
@@ -344,6 +378,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                       key={pose.id}
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
+                      onShowDetails={handleShowPoseDetails}
                     />
                   ))
                 : (
@@ -356,6 +391,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                       <PoseCard
                         pose={pose}
                         onClick={() => addPoseToFlow(pose, transition)}
+                        onShowDetails={handleShowPoseDetails}
                       />
                     </div>
                   ))}
@@ -379,6 +415,12 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
         isOpen={showRandomModal}
         onClose={() => setShowRandomModal(false)}
         onGenerate={generateRandomFlow}
+      />
+
+      <PoseDetailModal
+        pose={selectedPose}
+        isOpen={showDetailModal}
+        onClose={handleCloseDetailModal}
       />
     </div>
   );

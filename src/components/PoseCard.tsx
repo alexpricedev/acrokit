@@ -6,6 +6,7 @@ interface PoseCardProps {
   isSelected?: boolean;
   isDisabled?: boolean;
   showAddButton?: boolean;
+  onShowDetails?: (pose: Pose) => void;
 }
 
 export function PoseCard({
@@ -14,6 +15,7 @@ export function PoseCard({
   isSelected,
   isDisabled,
   showAddButton = true,
+  onShowDetails,
 }: PoseCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -94,18 +96,45 @@ export function PoseCard({
           )}
         </div>
 
-        {/* Add to flow button */}
-        {showAddButton && (
-          <button
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors mb-3"
-            onClick={e => {
-              e.stopPropagation();
-              if (!isDisabled && onClick) onClick();
-            }}
-          >
-            Add to Flow
-          </button>
-        )}
+        {/* Action buttons */}
+        <div className="space-y-2">
+          {showAddButton && (
+            <button
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+              onClick={e => {
+                e.stopPropagation();
+                if (!isDisabled && onClick) onClick();
+              }}
+            >
+              Add to Flow
+            </button>
+          )}
+          
+          {onShowDetails && (
+            <button
+              className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+              onClick={e => {
+                e.stopPropagation();
+                onShowDetails(pose);
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+              </svg>
+              View Details
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Gradient bottom border */}
