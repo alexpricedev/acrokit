@@ -69,7 +69,7 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
               ? 'Check your email'
               : mode === 'login'
                 ? 'Welcome back to AcroKit'
-                : "Create Your Free Account"}
+                : 'Create Your Free Account'}
           </h2>
           <button
             onClick={handleClose}
