@@ -6,6 +6,8 @@ import { AboutPage } from './components/AboutPage';
 import { PublicGallery } from './components/PublicGallery';
 import { FlowViewer } from './components/FlowViewer';
 import { AccountPage } from './components/AccountPage';
+import { PosesGallery } from './components/PosesGallery';
+import { PoseDetail } from './components/PoseDetail';
 import { DisplayNameModal } from './components/DisplayNameModal';
 import { Header } from './components/Header';
 import { AuthProvider } from './components/AuthProvider';
@@ -36,6 +38,8 @@ function AppRouter() {
     | 'builder'
     | 'gallery'
     | 'public-gallery'
+    | 'poses-gallery'
+    | 'pose-detail'
     | 'flow-viewer'
     | 'about'
     | 'account'
@@ -43,6 +47,7 @@ function AppRouter() {
   const [loadedFlow, setLoadedFlow] = useState<FlowStep[] | undefined>();
   const [editingFlowId, setEditingFlowId] = useState<string | undefined>();
   const [viewingFlowId, setViewingFlowId] = useState<string | null>(null);
+  const [viewingPoseId, setViewingPoseId] = useState<string | null>(null);
 
   // Check URL routing on app load
   useEffect(() => {
@@ -53,6 +58,8 @@ function AppRouter() {
       setCurrentPage('public-gallery');
     } else if (path === '/flows') {
       setCurrentPage('gallery');
+    } else if (path === '/poses') {
+      setCurrentPage('poses-gallery');
     } else if (path === '/about') {
       setCurrentPage('about');
     } else if (path === '/account') {
@@ -62,6 +69,12 @@ function AppRouter() {
       if (flowId) {
         setViewingFlowId(flowId);
         setCurrentPage('flow-viewer');
+      }
+    } else if (path.startsWith('/pose/')) {
+      const poseId = path.split('/pose/')[1];
+      if (poseId) {
+        setViewingPoseId(poseId);
+        setCurrentPage('pose-detail');
       }
     } else {
       setCurrentPage('builder');
@@ -76,10 +89,17 @@ function AppRouter() {
   };
 
   const handlePageChange = (
-    page: 'builder' | 'gallery' | 'public-gallery' | 'about' | 'account'
+    page:
+      | 'builder'
+      | 'gallery'
+      | 'public-gallery'
+      | 'poses-gallery'
+      | 'about'
+      | 'account'
   ) => {
     setCurrentPage(page);
     setViewingFlowId(null); // Clear flow viewer when changing pages
+    setViewingPoseId(null); // Clear pose viewer when changing pages
 
     if (page === 'builder') {
       setLoadedFlow(undefined); // Clear loaded flow when manually switching to builder
@@ -89,6 +109,8 @@ function AppRouter() {
       window.history.pushState({}, '', '/gallery');
     } else if (page === 'gallery') {
       window.history.pushState({}, '', '/flows');
+    } else if (page === 'poses-gallery') {
+      window.history.pushState({}, '', '/poses');
     } else if (page === 'about') {
       window.history.pushState({}, '', '/about');
     } else if (page === 'account') {
@@ -102,11 +124,24 @@ function AppRouter() {
     window.history.pushState({}, '', `/flow/${flowId}`);
   };
 
+  const handleViewPose = (poseId: string) => {
+    setViewingPoseId(poseId);
+    setCurrentPage('pose-detail');
+    window.history.pushState({}, '', `/pose/${poseId}`);
+  };
+
   const handleBackFromViewer = () => {
     setViewingFlowId(null);
     // Go back to public gallery by default - users can navigate if needed
     setCurrentPage('public-gallery');
     window.history.pushState({}, '', '/gallery');
+  };
+
+  const handleBackFromPoseDetail = () => {
+    setViewingPoseId(null);
+    // Go back to poses gallery by default
+    setCurrentPage('poses-gallery');
+    window.history.pushState({}, '', '/poses');
   };
 
   return (
@@ -125,6 +160,13 @@ function AppRouter() {
           <PublicGallery
             onViewFlow={handleViewFlow}
             onLoadFlow={handleLoadFlow}
+          />
+        ) : currentPage === 'poses-gallery' ? (
+          <PosesGallery onViewPose={handleViewPose} />
+        ) : currentPage === 'pose-detail' && viewingPoseId ? (
+          <PoseDetail
+            poseId={viewingPoseId}
+            onBack={handleBackFromPoseDetail}
           />
         ) : currentPage === 'flow-viewer' && viewingFlowId ? (
           <FlowViewer

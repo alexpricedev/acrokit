@@ -7,5 +7,14 @@ export const db = init({
 });
 
 // Re-export types and utilities
-export type { Schema, Pose, Transition, Flow, User, FlowStep } from './schema';
+export type {
+  Schema,
+  Pose,
+  Transition,
+  Flow,
+  User,
+  Profile,
+  Comment,
+  FlowStep,
+} from './schema';
 export { id };

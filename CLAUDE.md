@@ -25,14 +25,6 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 - The URL to this deployment should be included in the PR description
 - The URL will always follow this format: `acrokit-acrokit-pr-XX.up.railway.app` where XX is the number of the PR
 
-### Data Flow
-```
-Sample Data (sampleData.ts) 
-  → FlowBuilder state 
-  → InstantDB real-time database
-  → Toast notifications for user feedback
-```
-
 ### State Management
 - **Flow Building**: Local React state in `FlowBuilder.tsx`
 - **Auth**: React Context in `AuthProvider.tsx` with real InstantDB integration
@@ -46,6 +38,7 @@ Sample Data (sampleData.ts)
 - **Schema**: Poses, transitions, and flows with proper relationships
 - **Documentation**: Check `INSTANT.md` for InstantDB API reference, syntax, and best practices
 - **Key Features**: Magic code auth, real-time queries, transactions, proper error handling
+- **MCP**: You have access to the instant MCP server and can read data, push schema changes etc as you need
 
 ## 🧪 Testing Strategy
 
