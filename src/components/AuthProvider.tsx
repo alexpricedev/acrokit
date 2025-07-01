@@ -66,6 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           id: 'fake-user-id',
           email: email,
           createdAt: Date.now(),
+          profile: {
+            id: 'fake-profile-id',
+            displayName: 'Test User',
+            email: email,
+          }
         };
         setFakeUser(user);
         localStorage.setItem('fake-auth-user', JSON.stringify(user));
@@ -92,6 +97,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: 'fake-user-id',
         email: 'test@example.com',
         createdAt: Date.now(),
+        profile: {
+          id: 'fake-profile-id',
+          displayName: 'Test User',
+          email: 'test@example.com',
+        }
       };
       setFakeUser(user);
       localStorage.setItem('fake-auth-user', JSON.stringify(user));
@@ -114,7 +124,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setShowDisplayNameModal(false);
     // Update the user object to include the display name
     if (useFakeAuth && fakeUser) {
-      const updatedUser = { ...fakeUser, displayName };
+      const updatedUser = { 
+        ...fakeUser, 
+        profile: { 
+          ...fakeUser.profile, 
+          displayName 
+        }
+      };
       setFakeUser(updatedUser);
       localStorage.setItem('fake-auth-user', JSON.stringify(updatedUser));
     }
