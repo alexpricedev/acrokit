@@ -64,7 +64,9 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     }
 
     // Find the creator's profile
-    const creatorData = data?.$users?.find((userData: any) => userData.id === flow.userId);
+    const creatorData = data?.$users?.find(
+      (userData: any) => userData.id === flow.userId
+    );
     if (creatorData?.profile?.displayName) {
       return creatorData.profile.displayName;
     }

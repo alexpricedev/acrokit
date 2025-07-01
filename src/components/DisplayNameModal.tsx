@@ -54,7 +54,9 @@ export function DisplayNameModal({
       if (error.message?.includes('unique')) {
         setError('This display name is already taken. Please choose another.');
       } else {
-        setError(`Failed to save display name: ${error.message || 'Please try again.'}`);
+        setError(
+          `Failed to save display name: ${error.message || 'Please try again.'}`
+        );
       }
     } finally {
       setIsSubmitting(false);

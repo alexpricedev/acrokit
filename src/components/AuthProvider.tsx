@@ -27,7 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const useFakeAuth = window.location.search.includes('fake-auth');
 
   // Real InstantDB auth with profile
-  const { user: realUser, profile: realProfile, isLoading: realIsLoading, needsDisplayName } = useAuthWithProfile();
+  const {
+    user: realUser,
+    profile: realProfile,
+    isLoading: realIsLoading,
+    needsDisplayName,
+  } = useAuthWithProfile();
 
   // Fake auth state for testing
   const [fakeUser, setFakeUser] = useState<any>(null);

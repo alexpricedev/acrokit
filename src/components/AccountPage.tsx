@@ -11,7 +11,7 @@ export function AccountPage() {
   const [error, setError] = useState('');
   // Load user's flows for statistics
   const { data: flowsData } = db.useQuery(
-    user 
+    user
       ? {
           flows: {
             $: {
@@ -33,7 +33,8 @@ export function AccountPage() {
 
   // Calculate flow statistics
   const totalFlows = flowsData?.flows?.length || 0;
-  const publicFlows = flowsData?.flows?.filter(flow => flow.isPublic).length || 0;
+  const publicFlows =
+    flowsData?.flows?.filter(flow => flow.isPublic).length || 0;
 
   const handleUpdateDisplayName = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,19 +169,22 @@ export function AccountPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-600">{totalFlows}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {totalFlows}
+                  </div>
                   <div className="text-sm text-gray-600">Total Flows</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-green-600">{publicFlows}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {publicFlows}
+                  </div>
                   <div className="text-sm text-gray-600">Public Flows</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-2xl font-bold text-purple-600">
-                    {profile?.createdAt 
+                    {profile?.createdAt
                       ? new Date(profile.createdAt).toLocaleDateString()
-                      : 'N/A'
-                    }
+                      : 'N/A'}
                   </div>
                   <div className="text-sm text-gray-600">Member Since</div>
                 </div>

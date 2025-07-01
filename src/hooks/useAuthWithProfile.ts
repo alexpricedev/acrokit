@@ -28,12 +28,12 @@ export function useAuthWithProfile(): AuthWithProfile {
 
   // Extract profile from the linked data
   const profile = data?.$users?.[0]?.profile || null;
-  
+
   // Overall loading state
-  const isLoading = authLoading || (user && profileLoading);
-  
+  const isLoading = authLoading || Boolean(user && profileLoading);
+
   // User needs display name if they're authenticated but have no profile
-  const needsDisplayName = !!(user && !isLoading && !profile);
+  const needsDisplayName = Boolean(user && !isLoading && !profile);
 
   return {
     user,

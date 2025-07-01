@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthProvider';
 import { LoginModal } from './LoginModal';
-import { db } from '../lib/instant';
 
 interface HeaderProps {
   currentPage:

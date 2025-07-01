@@ -3,6 +3,9 @@ import { i } from '@instantdb/react';
 // Shared schema definition for InstantDB
 export const schema = i.schema({
   entities: {
+    $users: i.entity({
+      email: i.string().unique().indexed(),
+    }),
     poses: i.entity({
       name: i.string(),
       description: i.string(),
@@ -48,6 +51,10 @@ export const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0';
 
 // TypeScript types derived from schema
 export type Schema = {
+  $users: {
+    id: string;
+    email: string;
+  };
   poses: {
     id: string;
     name: string;
