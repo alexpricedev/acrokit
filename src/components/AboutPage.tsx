@@ -6,7 +6,7 @@ export function AboutPage() {
           About AcroKit
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Your companion for building safe, connected acroyoga flows
+          Your companion for building seamless, connected acroyoga flows
         </p>
       </div>
 
@@ -18,8 +18,8 @@ export function AboutPage() {
           </h2>
           <p className="text-gray-600">
             Create beautiful acroyoga sequences with our intelligent flow
-            builder. Only valid poses appear as options, ensuring every
-            transition is safe and achievable.
+            builder. Only compatible poses appear as options, ensuring every
+            transition is seamless and logical.
           </p>
         </div>
 
