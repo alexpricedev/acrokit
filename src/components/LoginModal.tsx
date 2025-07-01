@@ -69,7 +69,7 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
               ? 'Check your email'
               : mode === 'login'
                 ? 'Welcome back to AcroKit'
-                : 'Join AcroKit'}
+                : "Create Your Free Account"}
           </h2>
           <button
             onClick={handleClose}
@@ -173,13 +173,13 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
               disabled={isLoading || !email.trim()}
               className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Sending...' : 'Send magic code'}
+              {isLoading ? 'Sending...' : 'Send Magic Code'}
             </button>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
               {mode === 'login'
-                ? "Welcome back! We'll send you a 6-digit code to access your flows and continue building your acroyoga library."
-                : "Save your flows, access them anywhere, and build your personal acroyoga library. We'll send you a 6-digit code to get started!"}
+                ? "Welcome back! We'll send you a 6-digit code to access your flows and continue building your AcroYoga library."
+                : "Save your flows, access them anywhere, and build your personal AcroYoga library. We'll send you a 6-digit code to get started!"}
             </p>
           </form>
         )}

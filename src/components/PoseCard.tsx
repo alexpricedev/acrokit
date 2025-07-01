@@ -103,7 +103,7 @@ export function PoseCard({
               if (!isDisabled && onClick) onClick();
             }}
           >
-            Add to flow
+            Add to Flow
           </button>
         )}
       </div>

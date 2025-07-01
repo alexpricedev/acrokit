@@ -253,7 +253,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                   onClick={() => setShowRandomModal(true)}
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium min-h-[44px] sm:min-h-0"
                 >
-                  Create random flow
+                  Create Random Flow
                 </button>
               )}
 
@@ -274,9 +274,9 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                 </svg>
                 {user
                   ? editingFlowId
-                    ? 'Update flow'
-                    : 'Save flow'
-                  : 'Sign in to save'}
+                    ? 'Update Flow'
+                    : 'Save Flow'
+                  : 'Sign In to Save'}
               </button>
 
               {currentFlow.length > 0 && (

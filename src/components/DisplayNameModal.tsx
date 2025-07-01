@@ -115,7 +115,7 @@ export function DisplayNameModal({
             disabled={displayName.length < 3 || isSubmitting}
             className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            {isSubmitting ? 'Saving...' : 'Save display name'}
+            {isSubmitting ? 'Saving...' : 'Save Display Name'}
           </button>
         </form>
       </div>
