@@ -280,8 +280,8 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
               )}
             </div>
 
-            <PoseCard 
-              pose={currentPose.pose} 
+            <PoseCard
+              pose={currentPose.pose}
               showAddButton={false}
               onClick={() => handleShowPoseDetails(currentPose.pose)}
             />

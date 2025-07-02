@@ -7,7 +7,11 @@ interface PoseDetailModalProps {
   onClose: () => void;
 }
 
-export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps) {
+export function PoseDetailModal({
+  pose,
+  isOpen,
+  onClose,
+}: PoseDetailModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -76,7 +80,7 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
     <dialog
       ref={dialogRef}
       className="rounded-xl shadow-2xl border-0 bg-transparent p-0 backdrop:bg-black backdrop:bg-opacity-50 max-w-2xl w-full mx-auto"
-      onClick={(e) => {
+      onClick={e => {
         // Close modal when clicking backdrop
         if (e.target === e.currentTarget) {
           onClose();
@@ -134,7 +138,7 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
                   </span>
                 )}
               </div>
-              
+
               {/* Additional images if available */}
               {(pose.baseImageUrl || pose.flyerImageUrl) && (
                 <div className="grid grid-cols-2 gap-4">
@@ -169,21 +173,24 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
 
           {/* Description Section */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Description
+            </h3>
             <p className="text-gray-700 leading-relaxed">
               {pose.description || 'No description available for this pose.'}
             </p>
           </div>
 
-
           {/* Safety Tips */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">💡 Practice Tips</h3>
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">
+              💡 Practice Tips
+            </h3>
             <ul className="text-blue-800 text-sm space-y-2">
               <li>• Always have a spotter when attempting new poses</li>
               <li>• Communicate clearly with your partner throughout</li>
               <li>• Start slowly and build up to the full expression</li>
-              <li>• Listen to your body and don't force positions</li>
+              <li>• Listen to your body and don&apos;t force positions</li>
             </ul>
           </div>
         </div>

@@ -266,10 +266,7 @@ export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
         {/* Comments List */}
         <div className="space-y-4">
           {comments.map(comment => (
-            <div
-              key={comment.id}
-              className="bg-gray-50 rounded-lg p-4"
-            >
+            <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                   {comment.author?.displayName?.charAt(0).toUpperCase() || '?'}
