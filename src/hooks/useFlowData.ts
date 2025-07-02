@@ -14,27 +14,6 @@ export function useFlowData() {
   const error = posesResult.error || transitionsResult.error;
   const hasError = !!(posesResult.error || transitionsResult.error);
 
-  // Debug combined state
-  console.log('🔍 useFlowData debug:', {
-    poses: {
-      loading: posesResult.isLoading,
-      count: posesResult.poses.length,
-      hasData: posesResult.hasData,
-      error: posesResult.error?.message,
-    },
-    transitions: {
-      loading: transitionsResult.isLoading,
-      count: transitionsResult.transitions.length,
-      hasData: transitionsResult.hasData,
-      error: transitionsResult.error?.message,
-    },
-    combined: {
-      isLoading,
-      hasError,
-      isEmpty: posesResult.isEmpty && transitionsResult.isEmpty,
-    },
-  });
-
   /**
    * Get poses that are marked as starting poses
    */
@@ -42,16 +21,6 @@ export function useFlowData() {
     const startingPoses = posesResult.poses.filter(
       pose => pose.isStartingPose === true
     );
-
-    console.log('🎯 getStartingPoses debug:', {
-      totalPoses: posesResult.poses.length,
-      startingPosesFound: startingPoses.length,
-      startingPoses: startingPoses.map(p => ({
-        id: p.id,
-        name: p.name,
-        isStarting: p.isStartingPose,
-      })),
-    });
 
     return startingPoses;
   };

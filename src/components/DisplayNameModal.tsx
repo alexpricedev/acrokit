@@ -37,7 +37,7 @@ export function DisplayNameModal({
         const profileId = id();
         await db.transact(
           db.tx.profiles[profileId]
-            .merge({
+            .update({
               displayName: displayName.trim(),
               createdAt: Date.now(),
               updatedAt: Date.now(),

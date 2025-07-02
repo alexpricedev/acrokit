@@ -196,7 +196,6 @@ export function FlowsGallery({
           'Failed to copy to clipboard. Check console for link.',
           'error'
         );
-        console.log('Share link:', shareUrl);
       });
   };
 

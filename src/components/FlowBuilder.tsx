@@ -28,31 +28,9 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
-  const { poses, transitions, isLoading, hasError, hasData, isEmpty } =
-    flowData;
+  const { transitions, isLoading, hasError } = flowData;
 
   // Database is now seeded via Node.js script: npm run seed
-
-  // Debug authentication state (this is now handled in the hooks)
-  useEffect(() => {
-    console.log('🔐 Auth state:', { user: !!user, userId: user?.id });
-    console.log('📊 FlowBuilder combined state:', {
-      isLoading,
-      hasError,
-      hasData,
-      isEmpty,
-      posesCount: poses.length,
-      transitionsCount: transitions.length,
-    });
-  }, [
-    user,
-    isLoading,
-    hasError,
-    hasData,
-    isEmpty,
-    poses.length,
-    transitions.length,
-  ]);
 
   // Show error message if database queries fail
   useEffect(() => {
