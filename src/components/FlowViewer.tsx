@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Flow, FlowStep, db, id } from '../lib/instant';
+import { Flow, FlowStep, db, id, Pose } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { PoseCard } from './PoseCard';
+import { PoseDetailModal } from './PoseDetailModal';
 
 interface FlowViewerProps {
   flowId: string;
@@ -17,6 +18,8 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
   const [flowSteps, setFlowSteps] = useState<FlowStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [isPoseModalOpen, setIsPoseModalOpen] = useState(false);
 
   // Query the specific flow by ID
   const {
@@ -136,6 +139,16 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
 
   const goToStep = (stepIndex: number) => {
     setCurrentStep(stepIndex);
+  };
+
+  const handleShowPoseDetails = (pose: Pose) => {
+    setSelectedPose(pose);
+    setIsPoseModalOpen(true);
+  };
+
+  const handleClosePoseModal = () => {
+    setIsPoseModalOpen(false);
+    setSelectedPose(null);
   };
 
   if (isLoading || dbLoading) {
@@ -267,7 +280,11 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
               )}
             </div>
 
-            <PoseCard pose={currentPose.pose} showAddButton={false} />
+            <PoseCard 
+              pose={currentPose.pose} 
+              showAddButton={false}
+              onClick={() => handleShowPoseDetails(currentPose.pose)}
+            />
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">{currentPose.pose.description}</p>
@@ -366,6 +383,13 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
           )}
         </div>
       </div>
+
+      {/* Pose Detail Modal */}
+      <PoseDetailModal
+        pose={selectedPose}
+        isOpen={isPoseModalOpen}
+        onClose={handleClosePoseModal}
+      />
     </div>
   );
 }
