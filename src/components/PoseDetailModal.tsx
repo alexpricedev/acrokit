@@ -118,21 +118,25 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
         {/* Content */}
         <div className="p-6">
           {/* Image Section */}
-          {(pose.imageUrl || pose.baseImageUrl || pose.flyerImageUrl) && (
-            <div className="mb-6">
-              <div className="grid gap-4">
-                {/* Main image */}
-                {pose.imageUrl && (
-                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                    <img
-                      src={pose.imageUrl}
-                      alt={pose.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+          <div className="mb-6">
+            <div className="grid gap-4">
+              {/* Main image */}
+              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                {pose.imageUrl ? (
+                  <img
+                    src={pose.imageUrl}
+                    alt={pose.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-400 text-6xl font-light">
+                    {pose.name}
+                  </span>
                 )}
-                
-                {/* Additional images if available */}
+              </div>
+              
+              {/* Additional images if available */}
+              {(pose.baseImageUrl || pose.flyerImageUrl) && (
                 <div className="grid grid-cols-2 gap-4">
                   {pose.baseImageUrl && (
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
@@ -159,9 +163,9 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
                     </div>
                   )}
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Description Section */}
           <div className="mb-6">
@@ -171,22 +175,6 @@ export function PoseDetailModal({ pose, isOpen, onClose }: PoseDetailModalProps)
             </p>
           </div>
 
-          {/* Difficulty Info */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Difficulty Level</h3>
-            <div className="flex items-center gap-3">
-              <span
-                className={`px-3 py-1 text-sm font-medium rounded-full ${getDifficultyColor(pose.difficulty)}`}
-              >
-                {getDifficultyLabel(pose.difficulty)}
-              </span>
-              <span className="text-gray-600 text-sm">
-                {pose.difficulty === 'beginner' && 'Great for beginners to acroyoga'}
-                {pose.difficulty === 'intermediate' && 'Requires some acroyoga experience'}
-                {pose.difficulty === 'advanced' && 'For experienced practitioners only'}
-              </span>
-            </div>
-          </div>
 
           {/* Safety Tips */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">

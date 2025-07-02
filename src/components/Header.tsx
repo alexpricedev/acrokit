@@ -91,7 +91,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     },
     {
       id: 'gallery',
-      label: 'Public Gallery',
+      label: 'Public Flows',
       description: 'Discover flows shared by the community',
       icon: (
         <svg width="20" height="20" viewBox="0 0 576 512" fill="currentColor">
@@ -105,8 +105,8 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
       label: 'Poses Gallery',
       description: 'Explore all acroyoga poses with details and tips',
       icon: (
-        <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor">
-          <path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z" />
+        <svg width="20" height="20" viewBox="0 0 576 512" fill="currentColor">
+          <path d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"/>
         </svg>
       ),
       page: 'poses-gallery' as const,

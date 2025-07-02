@@ -268,7 +268,7 @@ export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
           {comments.map(comment => (
             <div
               key={comment.id}
-              className="border-b border-gray-100 pb-4 last:border-b-0"
+              className="bg-gray-50 rounded-lg p-4"
             >
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">

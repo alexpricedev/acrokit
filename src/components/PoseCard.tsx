@@ -97,10 +97,10 @@ export function PoseCard({
         </div>
 
         {/* Action buttons */}
-        <div className="space-y-2">
+        <div className="flex gap-2">
           {showAddButton && (
             <button
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
               onClick={e => {
                 e.stopPropagation();
                 if (!isDisabled && onClick) onClick();
@@ -112,26 +112,21 @@ export function PoseCard({
           
           {onShowDetails && (
             <button
-              className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-10 h-10 rounded-lg transition-colors flex items-center justify-center"
               onClick={e => {
                 e.stopPropagation();
                 onShowDetails(pose);
               }}
+              title="View Details"
             >
               <svg
                 width="16"
                 height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                viewBox="0 0 512 512"
+                fill="currentColor"
               >
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
               </svg>
-              View Details
             </button>
           )}
         </div>
