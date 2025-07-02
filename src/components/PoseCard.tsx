@@ -6,6 +6,7 @@ interface PoseCardProps {
   isSelected?: boolean;
   isDisabled?: boolean;
   showAddButton?: boolean;
+  onShowDetails?: (pose: Pose) => void;
 }
 
 export function PoseCard({
@@ -14,6 +15,7 @@ export function PoseCard({
   isSelected,
   isDisabled,
   showAddButton = true,
+  onShowDetails,
 }: PoseCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -94,18 +96,40 @@ export function PoseCard({
           )}
         </div>
 
-        {/* Add to flow button */}
-        {showAddButton && (
-          <button
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors mb-3"
-            onClick={e => {
-              e.stopPropagation();
-              if (!isDisabled && onClick) onClick();
-            }}
-          >
-            Add to Flow
-          </button>
-        )}
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          {showAddButton && (
+            <button
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+              onClick={e => {
+                e.stopPropagation();
+                if (!isDisabled && onClick) onClick();
+              }}
+            >
+              Add to Flow
+            </button>
+          )}
+
+          {onShowDetails && (
+            <button
+              className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-10 h-10 rounded-lg transition-colors flex items-center justify-center"
+              onClick={e => {
+                e.stopPropagation();
+                onShowDetails(pose);
+              }}
+              title="View Details"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 512 512"
+                fill="currentColor"
+              >
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Gradient bottom border */}

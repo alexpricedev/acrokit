@@ -49,36 +49,68 @@ function AppRouter() {
   const [viewingFlowId, setViewingFlowId] = useState<string | null>(null);
   const [viewingPoseId, setViewingPoseId] = useState<string | null>(null);
 
-  // Check URL routing on app load
-  useEffect(() => {
+  // URL routing function
+  const handleRouting = () => {
     const path = window.location.pathname;
 
     // Handle URL routing
-    if (path === '/gallery') {
+    if (path === '/public') {
       setCurrentPage('public-gallery');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     } else if (path === '/flows') {
       setCurrentPage('gallery');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     } else if (path === '/poses') {
       setCurrentPage('poses-gallery');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     } else if (path === '/about') {
       setCurrentPage('about');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     } else if (path === '/account') {
       setCurrentPage('account');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     } else if (path.startsWith('/flow/')) {
       const flowId = path.split('/flow/')[1];
       if (flowId) {
         setViewingFlowId(flowId);
         setCurrentPage('flow-viewer');
+        setViewingPoseId(null);
       }
     } else if (path.startsWith('/pose/')) {
       const poseId = path.split('/pose/')[1];
       if (poseId) {
         setViewingPoseId(poseId);
         setCurrentPage('pose-detail');
+        setViewingFlowId(null);
       }
     } else {
       setCurrentPage('builder');
+      setViewingFlowId(null);
+      setViewingPoseId(null);
     }
+  };
+
+  // Handle URL routing on app load and browser navigation
+  useEffect(() => {
+    // Handle initial URL routing
+    handleRouting();
+
+    // Listen for browser back/forward navigation
+    const handlePopState = () => {
+      handleRouting();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   const handleLoadFlow = (flow: FlowStep[], flowId?: string) => {
@@ -106,7 +138,7 @@ function AppRouter() {
       setEditingFlowId(undefined); // Clear editing flow ID
       window.history.pushState({}, '', '/');
     } else if (page === 'public-gallery') {
-      window.history.pushState({}, '', '/gallery');
+      window.history.pushState({}, '', '/public');
     } else if (page === 'gallery') {
       window.history.pushState({}, '', '/flows');
     } else if (page === 'poses-gallery') {
@@ -134,7 +166,7 @@ function AppRouter() {
     setViewingFlowId(null);
     // Go back to public gallery by default - users can navigate if needed
     setCurrentPage('public-gallery');
-    window.history.pushState({}, '', '/gallery');
+    window.history.pushState({}, '', '/public');
   };
 
   const handleBackFromPoseDetail = () => {
