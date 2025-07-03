@@ -59,6 +59,19 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     }
   }, [showUserMenu, showNavMenu]);
 
+  // Prevent body scroll when nav menu is open on mobile
+  useEffect(() => {
+    if (showNavMenu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showNavMenu]);
+
   const openLoginModal = (mode: 'login' | 'signup') => {
     setLoginMode(mode);
     setShowLoginModal(true);
@@ -169,7 +182,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </button>
 
                 {showNavMenu && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50">
+                  <div className="fixed left-4 right-4 mt-2 sm:absolute sm:left-auto sm:right-0 sm:w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50" style={{top: '60px'}}>
                     <div className="space-y-2">
                       {navItems.map(item => (
                         <button
