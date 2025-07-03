@@ -169,7 +169,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                 </button>
 
                 {showNavMenu && (
-                  <div className="absolute left-4 right-4 mt-2 sm:left-auto sm:right-0 sm:w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50">
+                  <div className="fixed left-4 right-4 mt-2 sm:absolute sm:left-auto sm:right-0 sm:w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50" style={{top: '60px'}}>
                     <div className="space-y-2">
                       {navItems.map(item => (
                         <button
