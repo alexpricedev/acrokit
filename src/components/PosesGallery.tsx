@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { db } from '../lib/instant';
+import { PoseCard } from './PoseCard';
+import { useFavoritePoses } from '../hooks/useFavoritePoses';
+import { useAuth } from './AuthProvider';
+import { Pose } from '../lib/instant';
 
 interface PosesGalleryProps {
   onViewPose: (poseId: string) => void;
@@ -7,6 +11,9 @@ interface PosesGalleryProps {
 
 export function PosesGallery({ onViewPose }: PosesGalleryProps) {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const { user } = useAuth();
+  const { favoritePoses, toggleFavorite, isFavorited } = useFavoritePoses();
 
   const { isLoading, data, error } = db.useQuery({
     poses: {
@@ -38,33 +45,13 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
     );
   }
 
-  const poses = data?.poses || [];
+  let poses = data?.poses || [];
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'intermediate':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'advanced':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getDifficultyGradient = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'from-green-200 to-green-300';
-      case 'intermediate':
-        return 'from-blue-200 to-blue-300';
-      case 'advanced':
-        return 'from-red-200 to-red-300';
-      default:
-        return 'from-gray-200 to-gray-300';
-    }
-  };
+  // Filter by favorites if enabled
+  if (showFavoritesOnly && user) {
+    const favoritePoseIds = new Set(favoritePoses.map(p => p.id));
+    poses = poses.filter(pose => favoritePoseIds.has(pose.id));
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,48 +66,75 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
         </p>
       </div>
 
-      {/* Difficulty Filter */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        <button
-          onClick={() => setSelectedDifficulty('all')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedDifficulty === 'all'
-              ? 'bg-gray-900 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          All Poses
-        </button>
-        <button
-          onClick={() => setSelectedDifficulty('beginner')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedDifficulty === 'beginner'
-              ? 'bg-green-600 text-white'
-              : 'bg-green-100 text-green-700 hover:bg-green-200'
-          }`}
-        >
-          Beginner
-        </button>
-        <button
-          onClick={() => setSelectedDifficulty('intermediate')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedDifficulty === 'intermediate'
-              ? 'bg-blue-600 text-white'
-              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-          }`}
-        >
-          Intermediate
-        </button>
-        <button
-          onClick={() => setSelectedDifficulty('advanced')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedDifficulty === 'advanced'
-              ? 'bg-red-600 text-white'
-              : 'bg-red-100 text-red-700 hover:bg-red-200'
-          }`}
-        >
-          Advanced
-        </button>
+      {/* Filters */}
+      <div className="space-y-4 mb-8">
+        {/* Favorites Filter - Only show if user is logged in */}
+        {user && (
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                showFavoritesOnly
+                  ? 'bg-red-100 text-red-800 border border-red-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 512 512"
+                fill="currentColor"
+              >
+                <path d="m47.6 300.4 180.7 168.7c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+              </svg>
+              {showFavoritesOnly ? 'Show All Poses' : 'Show Favorites Only'}
+            </button>
+          </div>
+        )}
+
+        {/* Difficulty Filter */}
+        <div className="flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => setSelectedDifficulty('all')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedDifficulty === 'all'
+                ? 'bg-gray-900 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            All Poses
+          </button>
+          <button
+            onClick={() => setSelectedDifficulty('beginner')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedDifficulty === 'beginner'
+                ? 'bg-green-600 text-white'
+                : 'bg-green-100 text-green-700 hover:bg-green-200'
+            }`}
+          >
+            Beginner
+          </button>
+          <button
+            onClick={() => setSelectedDifficulty('intermediate')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedDifficulty === 'intermediate'
+                ? 'bg-blue-600 text-white'
+                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+            }`}
+          >
+            Intermediate
+          </button>
+          <button
+            onClick={() => setSelectedDifficulty('advanced')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedDifficulty === 'advanced'
+                ? 'bg-red-600 text-white'
+                : 'bg-red-100 text-red-700 hover:bg-red-200'
+            }`}
+          >
+            Advanced
+          </button>
+        </div>
       </div>
 
       {/* Poses Grid */}
@@ -133,63 +147,15 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {poses.map(pose => (
-            <div
+            <PoseCard
               key={pose.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group"
+              pose={pose as Pose}
               onClick={() => onViewPose(pose.id)}
-            >
-              {/* Image */}
-              <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                {pose.imageUrl ? (
-                  <img
-                    src={pose.imageUrl}
-                    alt={pose.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <svg
-                      className="w-16 h-16"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                )}
-
-                {/* Difficulty Badge */}
-                <div className="absolute top-3 right-3">
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(
-                      pose.difficulty
-                    )}`}
-                  >
-                    {pose.difficulty.charAt(0).toUpperCase() +
-                      pose.difficulty.slice(1)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                  {pose.name}
-                </h3>
-                <p className="text-sm text-gray-600 line-clamp-2">
-                  {pose.description}
-                </p>
-              </div>
-
-              {/* Gradient Border */}
-              <div
-                className={`h-1 bg-gradient-to-r ${getDifficultyGradient(pose.difficulty)}`}
-              />
-            </div>
+              showAddButton={false}
+              onShowDetails={() => onViewPose(pose.id)}
+              isFavorited={isFavorited(pose.id)}
+              onToggleFavorite={toggleFavorite}
+            />
           ))}
         </div>
       )}

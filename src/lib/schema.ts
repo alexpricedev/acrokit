@@ -56,6 +56,10 @@ export const schema = i.schema({
       forward: { on: 'comments', has: 'one', label: 'author' },
       reverse: { on: 'profiles', has: 'many', label: 'comments' },
     },
+    userFavoritePoses: {
+      forward: { on: '$users', has: 'many', label: 'favoritePoses' },
+      reverse: { on: 'poses', has: 'many', label: 'favoritedByUsers' },
+    },
   },
 });
 

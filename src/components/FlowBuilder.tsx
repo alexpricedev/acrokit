@@ -7,6 +7,7 @@ import { PoseDetailModal } from './PoseDetailModal';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { useFlowData } from '../hooks';
+import { useFavoritePoses } from '../hooks/useFavoritePoses';
 
 interface FlowBuilderProps {
   initialFlow?: FlowStep[];
@@ -25,10 +26,14 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
   const { transitions, isLoading, hasError } = flowData;
+
+  // Use favorite poses hook
+  const { favoritePoses, toggleFavorite, isFavorited } = useFavoritePoses();
 
   // Database is now seeded via Node.js script: npm run seed
 
@@ -55,16 +60,36 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   };
 
   const getValidNextPoses = () => {
+    let options;
+
     if (isStartingPose) {
       // Use the helper from the hook for starting poses
-      return flowData.getStartingPoses();
+      options = flowData.getStartingPoses();
+    } else {
+      if (currentFlow.length === 0) return [];
+      const lastPose = currentFlow[currentFlow.length - 1].pose;
+      // Use the helper from the hook for next valid poses
+      options = flowData.getValidNextPoses(lastPose.id);
     }
 
-    if (currentFlow.length === 0) return [];
+    // Filter by favorites if enabled
+    if (showFavoritesOnly && user && favoritePoses.length > 0) {
+      const favoritePoseIds = new Set(favoritePoses.map(p => p.id));
 
-    const lastPose = currentFlow[currentFlow.length - 1].pose;
-    // Use the helper from the hook for next valid poses
-    return flowData.getValidNextPoses(lastPose.id);
+      if (isStartingPose) {
+        // Filter starting poses
+        options = (options as Pose[]).filter(pose =>
+          favoritePoseIds.has(pose.id)
+        );
+      } else {
+        // Filter next poses with transitions
+        options = (options as { pose: Pose; transition: Transition }[]).filter(
+          ({ pose }) => favoritePoseIds.has(pose.id)
+        );
+      }
+    }
+
+    return options;
   };
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
@@ -325,17 +350,44 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               </div>
             </div>
 
-            {/* Difficulty Filter Pills - Mobile Friendly */}
-            <div className="flex flex-wrap gap-2 justify-start">
-              <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
-                Easy
-              </span>
-              <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">
-                Medium
-              </span>
-              <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
-                Hard
-              </span>
+            {/* Filters */}
+            <div className="space-y-3">
+              {/* Favorites Filter - Only show if user is logged in */}
+              {user && (
+                <div className="flex justify-start">
+                  <button
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                    className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      showFavoritesOnly
+                        ? 'bg-red-100 text-red-800 border border-red-200'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 512 512"
+                      fill="currentColor"
+                    >
+                      <path d="m47.6 300.4 180.7 168.7c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                    </svg>
+                    {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
+                  </button>
+                </div>
+              )}
+
+              {/* Difficulty Filter Pills - Mobile Friendly */}
+              <div className="flex flex-wrap gap-2 justify-start">
+                <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+                  Easy
+                </span>
+                <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">
+                  Medium
+                </span>
+                <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+                  Hard
+                </span>
+              </div>
             </div>
           </div>
 
@@ -357,6 +409,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
                       onShowDetails={handleShowPoseDetails}
+                      isFavorited={isFavorited(pose.id)}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ))
                 : (
@@ -370,6 +424,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                         pose={pose}
                         onClick={() => addPoseToFlow(pose, transition)}
                         onShowDetails={handleShowPoseDetails}
+                        isFavorited={isFavorited(pose.id)}
+                        onToggleFavorite={toggleFavorite}
                       />
                     </div>
                   ))}
