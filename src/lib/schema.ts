@@ -37,10 +37,9 @@ export const schema = i.schema({
       createdAt: i.number(),
       updatedAt: i.number(),
     }),
-    userFavoritePoses: i.entity({
+    favorites: i.entity({
       profileId: i.string(),
       poseId: i.string(),
-      createdAt: i.number(),
     }),
     comments: i.entity({
       content: i.string(),
@@ -61,13 +60,13 @@ export const schema = i.schema({
       forward: { on: 'comments', has: 'one', label: 'author' },
       reverse: { on: 'profiles', has: 'many', label: 'comments' },
     },
-    profileFavoritePoses: {
-      forward: { on: 'userFavoritePoses', has: 'one', label: 'profile' },
-      reverse: { on: 'profiles', has: 'many', label: 'favoritePoses' },
+    profileFavorites: {
+      forward: { on: 'favorites', has: 'one', label: 'profile' },
+      reverse: { on: 'profiles', has: 'many', label: 'favorites' },
     },
-    poseFavoritedBy: {
-      forward: { on: 'userFavoritePoses', has: 'one', label: 'pose' },
-      reverse: { on: 'poses', has: 'many', label: 'favoritedBy' },
+    poseFavorites: {
+      forward: { on: 'favorites', has: 'one', label: 'pose' },
+      reverse: { on: 'poses', has: 'many', label: 'favorites' },
     },
   },
 });
@@ -122,11 +121,10 @@ export type Schema = {
     createdAt: number;
     updatedAt: number;
   };
-  userFavoritePoses: {
+  favorites: {
     id: string;
     profileId: string;
     poseId: string;
-    createdAt: number;
   };
 };
 

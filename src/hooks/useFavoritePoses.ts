@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { db, id } from '../lib/instant';
+import { db } from '../lib/instant';
 import { useAuth } from '../components/AuthProvider';
 import { Pose } from '../lib/instant';
 
@@ -16,7 +16,7 @@ export function useFavoritePoses() {
       ? {
           profiles: {
             $: { where: { id: profile.id } },
-            favoritePoses: {
+            favorites: {
               pose: {},
             },
           },
@@ -45,8 +45,8 @@ export function useFavoritePoses() {
       // For fake auth, return empty array since we only track IDs locally
       return [];
     }
-    if (!data?.profiles?.[0]?.favoritePoses) return [];
-    return data.profiles[0].favoritePoses
+    if (!data?.profiles?.[0]?.favorites) return [];
+    return data.profiles[0].favorites
       .map(fav => fav.pose)
       .filter(pose => pose !== undefined);
   }, [data, isFakeAuth]);
@@ -83,28 +83,22 @@ export function useFavoritePoses() {
         }
 
         if (isFavorited) {
-          // Remove from favorites - find and delete the userFavoritePoses entity
-          const favoriteRecord = data?.profiles?.[0]?.favoritePoses?.find(
+          // Remove from favorites - find and delete the favorites entity
+          const favoriteRecord = data?.profiles?.[0]?.favorites?.find(
             fav => fav.pose?.id === pose.id
           );
           if (favoriteRecord) {
-            console.log('Removing from favorites...');
-            await db.transact(
-              db.tx.userFavoritePoses[favoriteRecord.id].delete()
-            );
+            await db.transact([db.tx.favorites[favoriteRecord.id].delete()]);
           }
         } else {
-          // Add to favorites - create new userFavoritePoses entity
-          console.log('Adding to favorites...');
-          await db.transact(
-            db.tx.userFavoritePoses[id()].update({
+          // Add to favorites - create new favorites entity
+          await db.transact([
+            db.tx.favorites[crypto.randomUUID()].update({
               profileId: profile.id,
               poseId: pose.id,
-              createdAt: Date.now(),
             })
-          );
+          ]);
         }
-        console.log('InstantDB favorite toggle completed successfully');
       }
     } catch (err) {
       console.error('Error toggling favorite:', err);
