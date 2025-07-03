@@ -74,7 +74,9 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
 
     // Filter by favorites if enabled
     if (showFavoritesOnly && user && favoritePoses.length > 0) {
-      const favoritePoseIds = new Set(favoritePoses.map(p => p.id));
+      const favoritePoseIds = new Set(
+        favoritePoses.map(p => p?.id).filter(id => id !== undefined)
+      );
 
       if (isStartingPose) {
         // Filter starting poses

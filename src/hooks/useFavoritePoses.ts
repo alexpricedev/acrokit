@@ -1,31 +1,62 @@
-import { useMemo } from 'react';
-import { db } from '../lib/instant';
+import { useMemo, useState, useEffect } from 'react';
+import { db, id } from '../lib/instant';
 import { useAuth } from '../components/AuthProvider';
 import { Pose } from '../lib/instant';
 
 export function useFavoritePoses() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const [localFavorites, setLocalFavorites] = useState<string[]>([]);
 
-  // Query user's favorite poses
+  // Check if we're using fake auth
+  const isFakeAuth = window.location.search.includes('fake-auth');
+
+  // Query user's favorite poses via profile (only for real users)
   const { data, isLoading, error } = db.useQuery(
-    user
+    user && profile && !isFakeAuth
       ? {
-          $users: {
-            $: { where: { id: user.id } },
-            favoritePoses: {},
+          profiles: {
+            $: { where: { id: profile.id } },
+            favoritePoses: {
+              pose: {},
+            },
           },
         }
       : null
   );
 
+  // Load local favorites for fake auth
+  useEffect(() => {
+    if (isFakeAuth && user) {
+      const stored = localStorage.getItem(`fake-favorites-${user.id}`);
+      if (stored) {
+        try {
+          setLocalFavorites(JSON.parse(stored));
+        } catch (err) {
+          console.error('Error loading local favorites:', err);
+          setLocalFavorites([]);
+        }
+      }
+    }
+  }, [isFakeAuth, user]);
+
+
   const favoritePoses = useMemo(() => {
-    if (!data?.$users?.[0]?.favoritePoses) return [];
-    return data.$users[0].favoritePoses;
-  }, [data]);
+    if (isFakeAuth) {
+      // For fake auth, return empty array since we only track IDs locally
+      return [];
+    }
+    if (!data?.profiles?.[0]?.favoritePoses) return [];
+    return data.profiles[0].favoritePoses
+      .map(fav => fav.pose)
+      .filter(pose => pose !== undefined);
+  }, [data, isFakeAuth]);
 
   const favoritePoseIds = useMemo(() => {
+    if (isFakeAuth) {
+      return new Set(localFavorites);
+    }
     return new Set(favoritePoses.map(pose => pose.id));
-  }, [favoritePoses]);
+  }, [favoritePoses, localFavorites, isFakeAuth]);
 
   const toggleFavorite = async (pose: Pose) => {
     if (!user) return;
@@ -33,19 +64,52 @@ export function useFavoritePoses() {
     try {
       const isFavorited = favoritePoseIds.has(pose.id);
 
-      if (isFavorited) {
-        // Remove from favorites
-        await db.transact(
-          db.tx.$users[user.id].unlink({ favoritePoses: pose.id })
+      if (isFakeAuth) {
+        // Handle fake auth with localStorage
+        const newFavorites = isFavorited
+          ? localFavorites.filter(id => id !== pose.id)
+          : [...localFavorites, pose.id];
+
+        setLocalFavorites(newFavorites);
+        localStorage.setItem(
+          `fake-favorites-${user.id}`,
+          JSON.stringify(newFavorites)
         );
       } else {
-        // Add to favorites
-        await db.transact(
-          db.tx.$users[user.id].link({ favoritePoses: pose.id })
-        );
+        // Handle real auth with InstantDB using the new schema
+        if (!profile) {
+          console.error('No profile found for user');
+          return;
+        }
+
+        if (isFavorited) {
+          // Remove from favorites - find and delete the userFavoritePoses entity
+          const favoriteRecord = data?.profiles?.[0]?.favoritePoses?.find(
+            fav => fav.pose?.id === pose.id
+          );
+          if (favoriteRecord) {
+            console.log('Removing from favorites...');
+            await db.transact(
+              db.tx.userFavoritePoses[favoriteRecord.id].delete()
+            );
+          }
+        } else {
+          // Add to favorites - create new userFavoritePoses entity
+          console.log('Adding to favorites...');
+          await db.transact(
+            db.tx.userFavoritePoses[id()].update({
+              profileId: profile.id,
+              poseId: pose.id,
+              createdAt: Date.now(),
+            })
+          );
+        }
+        console.log('InstantDB favorite toggle completed successfully');
       }
     } catch (err) {
       console.error('Error toggling favorite:', err);
+      console.error('User ID:', user.id);
+      console.error('Pose ID:', pose.id);
     }
   };
 
@@ -55,8 +119,8 @@ export function useFavoritePoses() {
 
   return {
     favoritePoses,
-    isLoading,
-    error,
+    isLoading: isFakeAuth ? false : isLoading,
+    error: isFakeAuth ? null : error,
     toggleFavorite,
     isFavorited,
   };

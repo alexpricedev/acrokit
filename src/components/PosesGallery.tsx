@@ -49,7 +49,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
 
   // Filter by favorites if enabled
   if (showFavoritesOnly && user) {
-    const favoritePoseIds = new Set(favoritePoses.map(p => p.id));
+    const favoritePoseIds = new Set(
+      favoritePoses.map(p => p?.id).filter(id => id !== undefined)
+    );
     poses = poses.filter(pose => favoritePoseIds.has(pose.id));
   }
 

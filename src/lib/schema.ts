@@ -37,6 +37,11 @@ export const schema = i.schema({
       createdAt: i.number(),
       updatedAt: i.number(),
     }),
+    userFavoritePoses: i.entity({
+      profileId: i.string(),
+      poseId: i.string(),
+      createdAt: i.number(),
+    }),
     comments: i.entity({
       content: i.string(),
       createdAt: i.number().indexed(),
@@ -56,9 +61,13 @@ export const schema = i.schema({
       forward: { on: 'comments', has: 'one', label: 'author' },
       reverse: { on: 'profiles', has: 'many', label: 'comments' },
     },
-    userFavoritePoses: {
-      forward: { on: '$users', has: 'many', label: 'favoritePoses' },
-      reverse: { on: 'poses', has: 'many', label: 'favoritedByUsers' },
+    profileFavoritePoses: {
+      forward: { on: 'userFavoritePoses', has: 'one', label: 'profile' },
+      reverse: { on: 'profiles', has: 'many', label: 'favoritePoses' },
+    },
+    poseFavoritedBy: {
+      forward: { on: 'userFavoritePoses', has: 'one', label: 'pose' },
+      reverse: { on: 'poses', has: 'many', label: 'favoritedBy' },
     },
   },
 });
@@ -112,6 +121,12 @@ export type Schema = {
     content: string;
     createdAt: number;
     updatedAt: number;
+  };
+  userFavoritePoses: {
+    id: string;
+    profileId: string;
+    poseId: string;
+    createdAt: number;
   };
 };
 
