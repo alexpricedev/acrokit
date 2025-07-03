@@ -148,17 +148,25 @@ await db.auth.sendMagicCode({ email })
 ### Current Schema (InstantDB)
 ```typescript
 type Schema = {
-  poses: { id, name, description, difficulty, imageUrl?, createdAt }
+  $users: { id, email }
+  poses: { id, name, description, difficulty, imageUrl?, baseImageUrl?, flyerImageUrl?, createdAt, isStartingPose? }
   transitions: { id, name, description?, fromPoseId, toPoseId, createdAt }
   flows: { id, name, description?, isPublic, userId, stepsData, createdAt, updatedAt }
-  users: { id, email, createdAt }
+  profiles: { id, displayName, createdAt, updatedAt }
+  favorites: { id, profileId, poseId }
+  comments: { id, content, createdAt, updatedAt }
 }
 ```
 
 ### Data Relationships
+- **Profiles** ↔ **$users** (one-to-one)
 - **Poses** ↔ **Transitions** (many-to-many via fromPoseId/toPoseId)
 - **Users** → **Flows** (one-to-many)
 - **Flows** contain serialized `stepsData` (JSON of FlowStep[])
+- **Favorites** → **Profiles** (many-to-one) ✨ **NEW SIMPLIFIED SYSTEM**
+- **Favorites** → **Poses** (many-to-one) ✨ **NEW SIMPLIFIED SYSTEM**
+- **Comments** → **Poses** (many-to-one)
+- **Comments** → **Profiles** (many-to-one)
 
 ## 🎯 Testing Guidelines
 
