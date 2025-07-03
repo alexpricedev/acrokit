@@ -59,6 +59,19 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     }
   }, [showUserMenu, showNavMenu]);
 
+  // Prevent body scroll when nav menu is open on mobile
+  useEffect(() => {
+    if (showNavMenu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showNavMenu]);
+
   const openLoginModal = (mode: 'login' | 'signup') => {
     setLoginMode(mode);
     setShowLoginModal(true);
