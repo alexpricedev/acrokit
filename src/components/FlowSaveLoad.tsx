@@ -83,10 +83,10 @@ export function FlowSaveLoad({ currentFlow, onLoadFlow }: FlowSaveLoadProps) {
     navigator.clipboard
       .writeText(shareUrl)
       .then(() => {
-        console.log('Shareable link copied to clipboard!');
+        // Successfully copied to clipboard
       })
       .catch(() => {
-        console.log('Share link:', shareUrl);
+        // Failed to copy - user can still see the URL in browser
       });
   };
 

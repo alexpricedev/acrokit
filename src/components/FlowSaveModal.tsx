@@ -69,16 +69,7 @@ export function FlowSaveModal({
           updatedAt: now,
         };
 
-        console.log('Updating existing flow:', {
-          id: editingFlowId,
-          ...updateData,
-        });
-
-        const result = await db.transact(
-          db.tx.flows[editingFlowId].update(updateData)
-        );
-
-        console.log('Flow updated successfully:', result);
+        await db.transact(db.tx.flows[editingFlowId].update(updateData));
         showToast('Flow updated successfully!', 'success');
       } else {
         // Create new flow
@@ -94,14 +85,7 @@ export function FlowSaveModal({
           updatedAt: now,
         };
 
-        console.log('Saving new flow to InstantDB:', {
-          id: flowId,
-          ...flowData,
-        });
-
-        const result = await db.transact(db.tx.flows[flowId].update(flowData));
-
-        console.log('Flow saved successfully:', result);
+        await db.transact(db.tx.flows[flowId].update(flowData));
         showToast('Flow saved successfully!', 'success');
       }
 

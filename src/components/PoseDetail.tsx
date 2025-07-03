@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { db, id } from '../lib/instant';
 import { useAuth } from './AuthProvider';
+import { useToast } from './ToastProvider';
 
 interface PoseDetailProps {
   poseId: string;
@@ -9,6 +10,7 @@ interface PoseDetailProps {
 
 export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
   const { user, profile } = useAuth();
+  const { showToast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -63,7 +65,7 @@ export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
       setNewComment('');
     } catch (error) {
       console.error('Error adding comment:', error);
-      alert('Failed to add comment. Please try again.');
+      showToast('Failed to add comment. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);
     }

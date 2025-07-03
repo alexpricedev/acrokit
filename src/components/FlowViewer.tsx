@@ -121,7 +121,6 @@ export function FlowViewer({ flowId, onBack, onLoadFlow }: FlowViewerProps) {
           'Failed to copy to clipboard. Check console for link.',
           'error'
         );
-        console.log('Flow link:', shareUrl);
       });
   };
 

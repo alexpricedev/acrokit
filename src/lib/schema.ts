@@ -7,7 +7,7 @@ export const schema = i.schema({
       email: i.string().unique().indexed(),
     }),
     poses: i.entity({
-      name: i.string(),
+      name: i.string().indexed(),
       description: i.string(),
       difficulty: i.string(),
       isStartingPose: i.boolean().optional(),
@@ -33,7 +33,7 @@ export const schema = i.schema({
       updatedAt: i.number(),
     }),
     profiles: i.entity({
-      displayName: i.string(),
+      displayName: i.string().unique().indexed(),
       createdAt: i.number(),
       updatedAt: i.number(),
     }),

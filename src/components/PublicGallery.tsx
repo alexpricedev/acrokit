@@ -120,7 +120,6 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
           'Failed to copy to clipboard. Check console for link.',
           'error'
         );
-        console.log('Flow link:', shareUrl);
       });
   };
 
