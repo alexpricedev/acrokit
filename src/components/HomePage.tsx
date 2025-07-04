@@ -196,8 +196,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;Finally, a tool that prevents me from creating flows with
-                  impossible transitions. Game changer!&rdquo;
+                  &ldquo;Finally, a tool that prevents me from creating flows
+                  with impossible transitions. Game changer!&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">Sarah Chen</div>
                 <div className="text-sm text-gray-500">Acroyoga Instructor</div>
@@ -206,8 +206,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;The constraint-based approach taught me so much about proper
-                  flow design. Love it!&rdquo;
+                  &ldquo;The constraint-based approach taught me so much about
+                  proper flow design. Love it!&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">
                   Marcus Rodriguez
@@ -218,8 +218,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;My students love practicing the flows I create with AcroKit.
-                  Everything just works!&rdquo;
+                  &ldquo;My students love practicing the flows I create with
+                  AcroKit. Everything just works!&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">Emma Thompson</div>
                 <div className="text-sm text-gray-500">Acro Teacher</div>

@@ -18,20 +18,20 @@ export function AboutPage() {
 
         <div className="prose prose-lg max-w-none">
           <p className="text-gray-700 leading-relaxed mb-6">
-            Hi, I&apos;m the creator of AcroKit. Like many acroyoga practitioners, I
-            spent years frustrated with flow builders that let you create
-            impossible sequences. You&apos;d spend time crafting what looked like a
-            beautiful flow, only to discover during practice that half the
-            transitions were physically impossible or awkward.
+            Hi, I&apos;m the creator of AcroKit. Like many acroyoga
+            practitioners, I spent years frustrated with flow builders that let
+            you create impossible sequences. You&apos;d spend time crafting what
+            looked like a beautiful flow, only to discover during practice that
+            half the transitions were physically impossible or awkward.
           </p>
 
           <p className="text-gray-700 leading-relaxed mb-6">
             The breaking point came during a workshop where I spent 30 minutes
-            building a &ldquo;perfect&rdquo; flow for my students, only to realize
-            mid-session that there was no logical way to get from Bird Pose to
-            Standing Hand-to-Hand without an uncomfortable dismount and reset.
-            My students were confused, I was embarrassed, and the flow was
-            ruined.
+            building a &ldquo;perfect&rdquo; flow for my students, only to
+            realize mid-session that there was no logical way to get from Bird
+            Pose to Standing Hand-to-Hand without an uncomfortable dismount and
+            reset. My students were confused, I was embarrassed, and the flow
+            was ruined.
           </p>
 
           <p className="text-gray-700 leading-relaxed mb-6">
@@ -44,9 +44,9 @@ export function AboutPage() {
           <p className="text-gray-700 leading-relaxed">
             AcroKit was born from that frustration and that insight. Every
             transition has been carefully curated to ensure it actually works in
-            practice. Every pose suggestion is filtered by what's physically
-            possible from your current position. The result? Flows that work the
-            first time, every time.
+            practice. Every pose suggestion is filtered by what&apos;s
+            physically possible from your current position. The result? Flows
+            that work the first time, every time.
           </p>
         </div>
       </div>
