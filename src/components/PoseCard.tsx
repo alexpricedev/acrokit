@@ -73,35 +73,8 @@ export function PoseCard({
       `}
       onClick={!isDisabled ? onClick : undefined}
     >
-      {/* Top right controls - difficulty tag and favorite button */}
-      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
-        {onToggleFavorite && (
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              onToggleFavorite(pose);
-            }}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
-              isFavorited
-                ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'
-            }`}
-            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill={isFavorited ? 'currentColor' : 'none'}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m12 21.35-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
-        )}
+      {/* Difficulty tag - positioned absolutely in top right */}
+      <div className="absolute top-3 right-3 z-10">
         <span
           className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(pose.difficulty)}`}
         >
@@ -138,6 +111,30 @@ export function PoseCard({
               }}
             >
               Add to Flow
+            </button>
+          )}
+
+          {onToggleFavorite && (
+            <button
+              className={`w-10 h-10 rounded-lg transition-colors flex items-center justify-center ${
+                isFavorited
+                  ? 'bg-red-100 hover:bg-red-200 text-red-600'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-400'
+              }`}
+              onClick={e => {
+                e.stopPropagation();
+                onToggleFavorite(pose);
+              }}
+              title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 512 512"
+                fill="currentColor"
+              >
+                <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+              </svg>
             </button>
           )}
 
