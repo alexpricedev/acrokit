@@ -7,7 +7,7 @@ import { LoginModal } from './LoginModal';
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
-  onPageChange: (page: 'builder' | 'gallery') => void;
+  onPageChange: (page: 'home' | 'builder' | 'gallery') => void;
   onPracticeFlow?: (flowId: string) => void;
 }
 

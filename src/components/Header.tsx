@@ -4,6 +4,7 @@ import { LoginModal } from './LoginModal';
 
 interface HeaderProps {
   currentPage:
+    | 'home'
     | 'builder'
     | 'gallery'
     | 'public-gallery'
@@ -14,6 +15,7 @@ interface HeaderProps {
     | 'account';
   onPageChange: (
     page:
+      | 'home'
       | 'builder'
       | 'gallery'
       | 'public-gallery'
@@ -78,6 +80,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
 
   const handleNavClick = (
     page:
+      | 'home'
       | 'builder'
       | 'gallery'
       | 'public-gallery'
@@ -144,7 +147,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
             {/* Logo and Brand */}
             <div className="flex items-center">
               <button
-                onClick={() => handleNavClick('builder')}
+                onClick={() => handleNavClick('home')}
                 className="text-xl sm:text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
               >
                 AcroKit<span className="text-blue-600">.</span>

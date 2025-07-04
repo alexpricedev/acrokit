@@ -6,8 +6,49 @@ export function AboutPage() {
           About AcroKit
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Your companion for building seamless, connected acroyoga flows
+          Born from frustration with broken flows and impossible transitions
         </p>
+      </div>
+
+      {/* Personal Story Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-12 border border-gray-200">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          The Story Behind AcroKit
+        </h2>
+
+        <div className="prose prose-lg max-w-none">
+          <p className="text-gray-700 leading-relaxed mb-6">
+            Hi, I&apos;m the creator of AcroKit. Like many acroyoga practitioners, I
+            spent years frustrated with flow builders that let you create
+            impossible sequences. You&apos;d spend time crafting what looked like a
+            beautiful flow, only to discover during practice that half the
+            transitions were physically impossible or awkward.
+          </p>
+
+          <p className="text-gray-700 leading-relaxed mb-6">
+            The breaking point came during a workshop where I spent 30 minutes
+            building a &ldquo;perfect&rdquo; flow for my students, only to realize
+            mid-session that there was no logical way to get from Bird Pose to
+            Standing Hand-to-Hand without an uncomfortable dismount and reset.
+            My students were confused, I was embarrassed, and the flow was
+            ruined.
+          </p>
+
+          <p className="text-gray-700 leading-relaxed mb-6">
+            That night, I had a simple idea: what if the tool only showed you
+            poses you could actually transition to? What if building flows was
+            constrained by real biomechanics and physics, not just wishful
+            thinking?
+          </p>
+
+          <p className="text-gray-700 leading-relaxed">
+            AcroKit was born from that frustration and that insight. Every
+            transition has been carefully curated to ensure it actually works in
+            practice. Every pose suggestion is filtered by what's physically
+            possible from your current position. The result? Flows that work the
+            first time, every time.
+          </p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -102,7 +143,7 @@ export function AboutPage() {
           Ready to start building safer, more connected flows?
         </p>
         <button
-          onClick={() => (window.location.href = '/')}
+          onClick={() => (window.location.href = '/builder')}
           className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg"
         >
           Start Building Flows
