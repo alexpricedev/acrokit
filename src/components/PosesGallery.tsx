@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { db } from '../lib/instant';
+import { db, Pose } from '../lib/instant';
+import { useAuth } from './AuthProvider';
+import { useFavorites } from '../hooks';
 
 interface PosesGalleryProps {
   onViewPose: (poseId: string) => void;
 }
 
 export function PosesGallery({ onViewPose }: PosesGalleryProps) {
+  const { profile } = useAuth();
+  const { isFavorited, toggleFavorite } = useFavorites(profile);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   const { isLoading, data, error } = db.useQuery({
     poses: {
@@ -38,7 +43,12 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
     );
   }
 
-  const poses = data?.poses || [];
+  const allPoses = data?.poses || [];
+  
+  // Apply favorites filtering
+  const poses = showOnlyFavorites 
+    ? allPoses.filter(pose => isFavorited(pose.id))
+    : allPoses;
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -79,8 +89,29 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
         </p>
       </div>
 
-      {/* Difficulty Filter */}
+      {/* Filters */}
       <div className="flex flex-wrap justify-center gap-2 mb-8">
+        {profile && (
+          <button
+            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border ${
+              showOnlyFavorites
+                ? 'bg-red-100 text-red-700 border-red-300'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+            }`}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+            >
+              <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+            </svg>
+            Favorites
+          </button>
+        )}
+        
         <button
           onClick={() => setSelectedDifficulty('all')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
@@ -127,7 +158,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
       {poses.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-600">
-            No poses found for the selected difficulty.
+            {showOnlyFavorites 
+              ? "No favorite poses found. Start adding poses to your favorites!"
+              : "No poses found for the selected difficulty."}
           </p>
         </div>
       ) : (
@@ -162,8 +195,34 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
                   </div>
                 )}
 
-                {/* Difficulty Badge */}
-                <div className="absolute top-3 right-3">
+                {/* Top controls */}
+                <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
+                  {/* Heart button */}
+                  {profile && (
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        toggleFavorite(pose as Pose);
+                      }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                        isFavorited(pose.id)
+                          ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                          : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'
+                      }`}
+                      title={isFavorited(pose.id) ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 512 512"
+                        fill="currentColor"
+                      >
+                        <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* Difficulty Badge */}
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(
                       pose.difficulty
