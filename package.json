@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "seed": "node scripts/seed.js",
     "test-schema": "node scripts/test-schema.js",
-    "verify-schema": "node scripts/verify-schema.js"
+    "verify-schema": "node scripts/verify-schema.js",
+    "check-permissions": "node scripts/configure-permissions.js"
   },
   "dependencies": {
     "@instantdb/admin": "^0.20.4",

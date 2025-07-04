@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug Favorites</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .test-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .log-area {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .error {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+      .success {
+        color: #155724;
+        background: #d4edda;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+      .status {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+        background: #e9ecef;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Debug Favorites Functionality</h1>
+
+      <div class="test-section">
+        <h3>Test 1: Check Application Status</h3>
+        <button onclick="checkAppStatus()">Check App Status</button>
+        <div id="app-status" class="status"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>Test 2: Test Fake Authentication</h3>
+        <button onclick="testFakeAuth()">Test Fake Auth</button>
+        <div id="fake-auth-status" class="status"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>Test 3: Navigate to Poses Gallery</h3>
+        <button onclick="navigateToPosesGallery()">
+          Navigate to Poses Gallery
+        </button>
+        <div id="poses-gallery-status" class="status"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>Test 4: Test Heart Button</h3>
+        <button onclick="testHeartButton()">Test Heart Button</button>
+        <div id="heart-button-status" class="status"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>Console Logs</h3>
+        <div id="console-logs" class="log-area"></div>
+      </div>
+    </div>
+
+    <script>
+      // Capture console logs
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      const logContainer = document.getElementById('console-logs');
+
+      function addLog(type, message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const logLine = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+        logContainer.textContent += logLine;
+        logContainer.scrollTop = logContainer.scrollHeight;
+      }
+
+      console.log = function (...args) {
+        addLog(
+          'log',
+          args
+            .map(arg =>
+              typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            )
+            .join(' ')
+        );
+        originalLog.apply(console, args);
+      };
+
+      console.error = function (...args) {
+        addLog(
+          'error',
+          args
+            .map(arg =>
+              typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            )
+            .join(' ')
+        );
+        originalError.apply(console, args);
+      };
+
+      console.warn = function (...args) {
+        addLog(
+          'warn',
+          args
+            .map(arg =>
+              typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            )
+            .join(' ')
+        );
+        originalWarn.apply(console, args);
+      };
+
+      async function checkAppStatus() {
+        const statusDiv = document.getElementById('app-status');
+        try {
+          const response = await fetch('http://localhost:3002/?fake-auth');
+          if (response.ok) {
+            statusDiv.innerHTML =
+              '<div class="success">App is running on localhost:3002</div>';
+            console.log('App status check: SUCCESS');
+          } else {
+            statusDiv.innerHTML =
+              '<div class="error">App responded with status: ' +
+              response.status +
+              '</div>';
+            console.error('App status check: ERROR - Status', response.status);
+          }
+        } catch (error) {
+          statusDiv.innerHTML =
+            '<div class="error">Cannot connect to app: ' +
+            error.message +
+            '</div>';
+          console.error('App status check: ERROR -', error.message);
+        }
+      }
+
+      async function testFakeAuth() {
+        const statusDiv = document.getElementById('fake-auth-status');
+        try {
+          // Open app in new window for testing
+          const appWindow = window.open(
+            'http://localhost:3002/?fake-auth',
+            '_blank'
+          );
+          statusDiv.innerHTML =
+            '<div class="success">Opened app in new window. Check for fake login functionality.</div>';
+          console.log('Fake auth test: Opened app window');
+
+          // Instructions for manual testing
+          setTimeout(() => {
+            statusDiv.innerHTML +=
+              '<div>Manual test: Look for fake login button in the new window and click it.</div>';
+          }, 2000);
+        } catch (error) {
+          statusDiv.innerHTML =
+            '<div class="error">Error opening app: ' + error.message + '</div>';
+          console.error('Fake auth test: ERROR -', error.message);
+        }
+      }
+
+      async function navigateToPosesGallery() {
+        const statusDiv = document.getElementById('poses-gallery-status');
+        statusDiv.innerHTML =
+          '<div>Opening poses gallery in new window...</div>';
+
+        try {
+          // Open poses gallery directly
+          const appWindow = window.open(
+            'http://localhost:3002/?fake-auth',
+            '_blank'
+          );
+          statusDiv.innerHTML =
+            '<div class="success">Opened app. Navigate to poses gallery manually.</div>';
+          console.log('Poses gallery test: Opened app window');
+
+          setTimeout(() => {
+            statusDiv.innerHTML +=
+              '<div>Manual test: 1. Use fake login 2. Navigate to poses gallery 3. Look for heart buttons</div>';
+          }, 2000);
+        } catch (error) {
+          statusDiv.innerHTML =
+            '<div class="error">Error: ' + error.message + '</div>';
+          console.error('Poses gallery test: ERROR -', error.message);
+        }
+      }
+
+      async function testHeartButton() {
+        const statusDiv = document.getElementById('heart-button-status');
+        statusDiv.innerHTML =
+          '<div>Testing heart button functionality...</div>';
+
+        try {
+          // Open app for heart button testing
+          const appWindow = window.open(
+            'http://localhost:3002/?fake-auth',
+            '_blank'
+          );
+          statusDiv.innerHTML =
+            '<div class="success">Opened app for heart button testing.</div>';
+          console.log('Heart button test: Opened app window');
+
+          statusDiv.innerHTML +=
+            '<div><strong>Manual test instructions:</strong></div>';
+          statusDiv.innerHTML +=
+            '<div>1. Use fake login in the new window</div>';
+          statusDiv.innerHTML += '<div>2. Navigate to poses gallery</div>';
+          statusDiv.innerHTML +=
+            '<div>3. Look for heart buttons (♥) on pose cards</div>';
+          statusDiv.innerHTML += '<div>4. Click a heart button</div>';
+          statusDiv.innerHTML +=
+            '<div>5. Check browser console for debug logs</div>';
+          statusDiv.innerHTML +=
+            '<div>6. Report any errors or unexpected behavior</div>';
+
+          console.log(
+            'Heart button test: Manual testing instructions provided'
+          );
+        } catch (error) {
+          statusDiv.innerHTML =
+            '<div class="error">Error: ' + error.message + '</div>';
+          console.error('Heart button test: ERROR -', error.message);
+        }
+      }
+
+      // Auto-run app status check on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('Debug page loaded, checking app status...');
+        checkAppStatus();
+      });
+    </script>
+  </body>
+</html>
