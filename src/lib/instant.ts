@@ -15,6 +15,7 @@ export type {
   User,
   Profile,
   Comment,
+  Favorite,
   FlowStep,
 } from './schema';
 export { id };

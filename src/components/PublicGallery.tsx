@@ -159,10 +159,10 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
           {flows.map(flow => (
             <div
               key={flow.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
             >
-              <div className="p-6">
-                <div className="mb-4">
+              <div className="p-6 flex flex-col flex-1">
+                <div className="flex-1">
                   <div className="mb-2">
                     <h3 className="font-bold text-gray-900 text-lg">
                       {flow.name}
@@ -182,7 +182,7 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                     {getFlowPreview(flow.stepsData)}
                   </p>
 
-                  <div className="flex items-center justify-between text-xs text-gray-400">
+                  <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                     <span>{getFlowLength(flow.stepsData)}</span>
                     <span>
                       Updated: {new Date(flow.updatedAt).toLocaleDateString()}
@@ -190,7 +190,7 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => onViewFlow(flow.id)}
                     className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"

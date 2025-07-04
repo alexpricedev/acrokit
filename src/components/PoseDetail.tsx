@@ -5,10 +5,9 @@ import { useToast } from './ToastProvider';
 
 interface PoseDetailProps {
   poseId: string;
-  onBack: () => void;
 }
 
-export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
+export function PoseDetail({ poseId }: PoseDetailProps) {
   const { user, profile } = useAuth();
   const { showToast } = useToast();
   const [newComment, setNewComment] = useState('');
@@ -99,12 +98,6 @@ export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
           <p className="text-red-600">
             {error ? `Error: ${error.message}` : 'Pose not found'}
           </p>
-          <button
-            onClick={onBack}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Go Back
-          </button>
         </div>
       </div>
     );
@@ -112,27 +105,6 @@ export function PoseDetail({ poseId, onBack }: PoseDetailProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-      >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back to Gallery
-      </button>
-
       {/* Pose Header */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
         <div className="grid md:grid-cols-2 gap-6 p-6">

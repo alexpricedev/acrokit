@@ -6,7 +6,7 @@ import { RandomFlowModal } from './RandomFlowModal';
 import { PoseDetailModal } from './PoseDetailModal';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
-import { useFlowData } from '../hooks';
+import { useFlowData, useFavorites } from '../hooks';
 
 interface FlowBuilderProps {
   initialFlow?: FlowStep[];
@@ -14,7 +14,7 @@ interface FlowBuilderProps {
 }
 
 export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { showToast } = useToast();
   const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || []);
   const [originalFlow, setOriginalFlow] = useState<FlowStep[]>(
@@ -25,10 +25,17 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
+    null
+  );
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
   const { transitions, isLoading, hasError } = flowData;
+
+  // Favorites functionality
+  const { isFavorited, toggleFavorite } = useFavorites(profile);
 
   // Database is now seeded via Node.js script: npm run seed
 
@@ -65,6 +72,36 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     const lastPose = currentFlow[currentFlow.length - 1].pose;
     // Use the helper from the hook for next valid poses
     return flowData.getValidNextPoses(lastPose.id);
+  };
+
+  const getFilteredOptions = () => {
+    let options = getValidNextPoses();
+
+    // Apply favorites filter
+    if (showOnlyFavorites) {
+      if (isStartingPose) {
+        options = (options as Pose[]).filter(pose => isFavorited(pose.id));
+      } else {
+        options = (options as { pose: Pose; transition: Transition }[]).filter(
+          ({ pose }) => isFavorited(pose.id)
+        );
+      }
+    }
+
+    // Apply difficulty filter
+    if (selectedDifficulty) {
+      if (isStartingPose) {
+        options = (options as Pose[]).filter(
+          pose => pose.difficulty === selectedDifficulty
+        );
+      } else {
+        options = (options as { pose: Pose; transition: Transition }[]).filter(
+          ({ pose }) => pose.difficulty === selectedDifficulty
+        );
+      }
+    }
+
+    return options;
   };
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
@@ -154,6 +191,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   };
 
   const validOptions = getValidNextPoses();
+  const filteredOptions = getFilteredOptions();
 
   // Show loading state while data is being fetched
   if (isLoading) {
@@ -320,47 +358,112 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                   {isStartingPose ? 'Starting moves' : 'Available next moves'}
                 </h2>
                 <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
-                  {validOptions.length}
+                  {showOnlyFavorites
+                    ? filteredOptions.length
+                    : validOptions.length}
                 </span>
               </div>
             </div>
 
-            {/* Difficulty Filter Pills - Mobile Friendly */}
+            {/* Filter Pills - Mobile Friendly */}
             <div className="flex flex-wrap gap-2 justify-start">
-              <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+              {profile && (
+                <button
+                  onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                  className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
+                    showOnlyFavorites
+                      ? 'bg-red-100 text-red-700 border border-red-300'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                  }`}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 512 512"
+                    fill="currentColor"
+                  >
+                    <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                  </svg>
+                  Favorites
+                </button>
+              )}
+
+              <button
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'beginner' ? null : 'beginner'
+                  )
+                }
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'beginner'
+                    ? 'bg-green-100 text-green-800 border-green-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Easy
-              </span>
-              <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">
+              </button>
+
+              <button
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'intermediate'
+                      ? null
+                      : 'intermediate'
+                  )
+                }
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'intermediate'
+                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Medium
-              </span>
-              <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+              </button>
+
+              <button
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'advanced' ? null : 'advanced'
+                  )
+                }
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'advanced'
+                    ? 'bg-purple-100 text-purple-800 border-purple-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Hard
-              </span>
+              </button>
             </div>
           </div>
 
-          {validOptions.length === 0 ? (
+          {filteredOptions.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-gray-400 text-4xl mb-3">🤸‍♀️</div>
               <p className="text-gray-600">
-                {isStartingPose
-                  ? 'Loading poses...'
-                  : 'No valid transitions available from current pose.'}
+                {(showOnlyFavorites || selectedDifficulty) &&
+                validOptions.length > 0
+                  ? 'No poses match the current filters'
+                  : isStartingPose
+                    ? 'Loading poses...'
+                    : 'No valid transitions available from current pose.'}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {isStartingPose
-                ? (validOptions as Pose[]).map(pose => (
+                ? (filteredOptions as Pose[]).map(pose => (
                     <PoseCard
                       key={pose.id}
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
                       onShowDetails={handleShowPoseDetails}
+                      isFavorited={profile ? isFavorited(pose.id) : false}
+                      onToggleFavorite={profile ? toggleFavorite : undefined}
                     />
                   ))
                 : (
-                    validOptions as { pose: Pose; transition: Transition }[]
+                    filteredOptions as { pose: Pose; transition: Transition }[]
                   ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">
                       <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">
@@ -370,6 +473,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                         pose={pose}
                         onClick={() => addPoseToFlow(pose, transition)}
                         onShowDetails={handleShowPoseDetails}
+                        isFavorited={profile ? isFavorited(pose.id) : false}
+                        onToggleFavorite={profile ? toggleFavorite : undefined}
                       />
                     </div>
                   ))}

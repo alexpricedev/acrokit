@@ -112,6 +112,13 @@ screenshots/
 !docs/screenshots/
 !docs/screenshots/*.png
 
-# Test artifacts
+# Test artifacts and debug files
 test-results/
 playwright-report/
+*test*.png
+*test*.jpg
+*test*.jpeg
+debug-*.png
+debug-*.jpg
+temp-*.png
+temp-*.jpg

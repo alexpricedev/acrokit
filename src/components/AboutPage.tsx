@@ -60,6 +60,19 @@ export function AboutPage() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="text-3xl mb-4">❤️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            Favorite Poses
+          </h2>
+          <p className="text-gray-600">
+            Mark your favorite poses with a heart to build your personal
+            collection. Filter flows to show only your favorites, making it easy
+            to find and use your go-to poses. Sign in to start building your
+            favorites collection.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-3xl mb-4">🔗</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             Named Transitions

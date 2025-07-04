@@ -13,7 +13,7 @@ import { Header } from './components/Header';
 import { AuthProvider } from './components/AuthProvider';
 import { ToastProvider } from './components/ToastProvider';
 import { useAuth } from './components/AuthProvider';
-import { FlowStep } from './lib/instant';
+import { FlowStep, Flow } from './lib/instant';
 
 // Inner component that has access to auth context
 function AppContent() {
@@ -120,6 +120,15 @@ function AppRouter() {
     window.history.pushState({}, '', '/');
   };
 
+  const handleEditFlow = (flow: Flow) => {
+    try {
+      const steps = JSON.parse(flow.stepsData) as FlowStep[];
+      handleLoadFlow(steps, flow.id);
+    } catch (error) {
+      console.error('Error parsing flow data:', error);
+    }
+  };
+
   const handlePageChange = (
     page:
       | 'builder'
@@ -169,13 +178,6 @@ function AppRouter() {
     window.history.pushState({}, '', '/public');
   };
 
-  const handleBackFromPoseDetail = () => {
-    setViewingPoseId(null);
-    // Go back to poses gallery by default
-    setCurrentPage('poses-gallery');
-    window.history.pushState({}, '', '/poses');
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header currentPage={currentPage} onPageChange={handlePageChange} />
@@ -196,15 +198,13 @@ function AppRouter() {
         ) : currentPage === 'poses-gallery' ? (
           <PosesGallery onViewPose={handleViewPose} />
         ) : currentPage === 'pose-detail' && viewingPoseId ? (
-          <PoseDetail
-            poseId={viewingPoseId}
-            onBack={handleBackFromPoseDetail}
-          />
+          <PoseDetail poseId={viewingPoseId} />
         ) : currentPage === 'flow-viewer' && viewingFlowId ? (
           <FlowViewer
             flowId={viewingFlowId}
             onBack={handleBackFromViewer}
             onLoadFlow={handleLoadFlow}
+            onEditFlow={handleEditFlow}
           />
         ) : currentPage === 'about' ? (
           <AboutPage />
