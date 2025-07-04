@@ -137,7 +137,7 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
                     setCode(pastedText);
                     // Submit form after a brief delay to allow state to update
                     setTimeout(() => {
-                      const form = e.target.closest('form');
+                      const form = (e.target as HTMLElement).closest('form');
                       if (form) {
                         form.requestSubmit();
                       }

@@ -25,11 +25,8 @@ export function FlowsGallery({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginMode, setLoginMode] = useState<'login' | 'signup'>('login');
 
-  // Check if we're using fake auth for testing
-  const useFakeAuth = window.location.search.includes('fake-auth');
-
-  // Load flows from InstantDB (only if not using fake auth)
-  const shouldSkipQuery = useFakeAuth || !user;
+  // Load flows from InstantDB
+  const shouldSkipQuery = !user;
   const { isLoading: dbLoading, data } = db.useQuery(
     shouldSkipQuery
       ? {}
@@ -50,49 +47,11 @@ export function FlowsGallery({
       return;
     }
 
-    if (useFakeAuth) {
-      // Load fake flows for testing
-      const fakeFlows: Flow[] = [
-        {
-          id: 'fake-flow-1',
-          name: 'My Test Flow',
-          description: 'A test flow for demonstrating the delete confirmation',
-          isPublic: false,
-          userId: 'fake-user-id',
-          stepsData: JSON.stringify([
-            { pose: { name: 'Bird' }, transition: null },
-            {
-              pose: { name: 'Throne' },
-              transition: { name: 'Bird to Throne' },
-            },
-          ]),
-          createdAt: Date.now() - 86400000, // 1 day ago
-          updatedAt: Date.now() - 86400000,
-        },
-        {
-          id: 'fake-flow-2',
-          name: 'Another Flow',
-          description: 'Another flow to test with',
-          isPublic: true,
-          userId: 'fake-user-id',
-          stepsData: JSON.stringify([
-            { pose: { name: 'Throne' }, transition: null },
-            { pose: { name: 'Star' }, transition: { name: 'Throne to Star' } },
-          ]),
-          createdAt: Date.now() - 172800000, // 2 days ago
-          updatedAt: Date.now() - 172800000,
-        },
-      ];
-      setFlows(fakeFlows);
-      setIsLoading(false);
-      return;
-    }
-
     if (!dbLoading && data?.flows) {
       setFlows(data.flows as Flow[]);
       setIsLoading(false);
     }
-  }, [user, dbLoading, data, useFakeAuth]);
+  }, [user, dbLoading, data]);
 
   const handleLoadFlow = (flow: Flow) => {
     try {
@@ -106,13 +65,6 @@ export function FlowsGallery({
 
   const handleDeleteFlow = async (flowId: string) => {
     try {
-      if (useFakeAuth) {
-        // For fake auth, just remove from local state
-        setFlows(prev => prev.filter(flow => flow.id !== flowId));
-        showToast('Flow deleted successfully', 'success');
-        return;
-      }
-
       await db.transact(db.tx.flows[flowId].delete());
       showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
@@ -149,18 +101,6 @@ export function FlowsGallery({
     try {
       const flow = flows.find(f => f.id === flowId);
       if (!flow) return;
-
-      if (useFakeAuth) {
-        // For fake auth, just update local state
-        setFlows(prev =>
-          prev.map(f =>
-            f.id === flowId
-              ? { ...f, isPublic: !f.isPublic, updatedAt: Date.now() }
-              : f
-          )
-        );
-        return;
-      }
 
       await db.transact(
         db.tx.flows[flowId].update({
