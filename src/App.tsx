@@ -64,7 +64,7 @@ function AppRouter() {
       setCurrentPage('builder');
       setViewingFlowId(null);
       setViewingPoseId(null);
-    } else if (path === '/public') {
+    } else if (path === '/community') {
       setCurrentPage('public-gallery');
       setViewingFlowId(null);
       setViewingPoseId(null);
@@ -160,7 +160,7 @@ function AppRouter() {
       setEditingFlowId(undefined); // Clear editing flow ID
       window.history.pushState({}, '', '/builder');
     } else if (page === 'public-gallery') {
-      window.history.pushState({}, '', '/public');
+      window.history.pushState({}, '', '/community');
     } else if (page === 'gallery') {
       window.history.pushState({}, '', '/flows');
     } else if (page === 'poses-gallery') {
@@ -188,7 +188,7 @@ function AppRouter() {
     setViewingFlowId(null);
     // Go back to public gallery by default - users can navigate if needed
     setCurrentPage('public-gallery');
-    window.history.pushState({}, '', '/public');
+    window.history.pushState({}, '', '/community');
   };
 
   return (

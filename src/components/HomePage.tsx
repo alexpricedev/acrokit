@@ -70,7 +70,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
                   onClick={handleExploreFlows}
                   className="w-full sm:w-auto bg-white text-gray-700 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-medium text-lg border border-gray-200 shadow-sm"
                 >
-                  Explore Community Flows
+                  Explore Community
                 </button>
               </div>
 
@@ -299,7 +299,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
                       onClick={() => onPageChange('public-gallery')}
                       className="hover:text-white transition-colors"
                     >
-                      Public Flows
+                      Community
                     </button>
                   </li>
                   <li>

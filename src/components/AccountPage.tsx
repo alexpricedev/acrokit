@@ -178,7 +178,7 @@ export function AccountPage() {
                   <div className="text-2xl font-bold text-green-600">
                     {publicFlows}
                   </div>
-                  <div className="text-sm text-gray-600">Public Flows</div>
+                  <div className="text-sm text-gray-600">Community Flows</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-2xl font-bold text-purple-600">

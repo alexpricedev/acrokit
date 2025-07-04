@@ -79,7 +79,7 @@ export function AboutPage() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-3xl mb-4">🌟</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            Public Flows
+            Community
           </h2>
           <p className="text-gray-600">
             Discover flows shared by the community. Browse, practice, and remix
