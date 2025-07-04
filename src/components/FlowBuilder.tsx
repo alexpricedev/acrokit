@@ -6,7 +6,7 @@ import { RandomFlowModal } from './RandomFlowModal';
 import { PoseDetailModal } from './PoseDetailModal';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
-import { useFlowData } from '../hooks';
+import { useFlowData, useFavorites } from '../hooks';
 
 interface FlowBuilderProps {
   initialFlow?: FlowStep[];
@@ -14,7 +14,7 @@ interface FlowBuilderProps {
 }
 
 export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { showToast } = useToast();
   const [currentFlow, setCurrentFlow] = useState<FlowStep[]>(initialFlow || []);
   const [originalFlow, setOriginalFlow] = useState<FlowStep[]>(
@@ -25,10 +25,14 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
   const { transitions, isLoading, hasError } = flowData;
+
+  // Favorites functionality
+  const { isFavorited, toggleFavorite } = useFavorites(profile);
 
   // Database is now seeded via Node.js script: npm run seed
 
@@ -65,6 +69,23 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     const lastPose = currentFlow[currentFlow.length - 1].pose;
     // Use the helper from the hook for next valid poses
     return flowData.getValidNextPoses(lastPose.id);
+  };
+
+  const getFilteredOptions = () => {
+    const options = getValidNextPoses();
+
+    if (!showOnlyFavorites) {
+      return options;
+    }
+
+    // Filter based on whether it's starting poses or pose+transition combinations
+    if (isStartingPose) {
+      return (options as Pose[]).filter(pose => isFavorited(pose.id));
+    } else {
+      return (options as { pose: Pose; transition: Transition }[]).filter(
+        ({ pose }) => isFavorited(pose.id)
+      );
+    }
   };
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
@@ -154,6 +175,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   };
 
   const validOptions = getValidNextPoses();
+  const filteredOptions = getFilteredOptions();
 
   // Show loading state while data is being fetched
   if (isLoading) {
@@ -320,13 +342,27 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                   {isStartingPose ? 'Starting moves' : 'Available next moves'}
                 </h2>
                 <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
-                  {validOptions.length}
+                  {showOnlyFavorites
+                    ? filteredOptions.length
+                    : validOptions.length}
                 </span>
               </div>
             </div>
 
-            {/* Difficulty Filter Pills - Mobile Friendly */}
+            {/* Filter Pills - Mobile Friendly */}
             <div className="flex flex-wrap gap-2 justify-start">
+              {profile && (
+                <button
+                  onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                  className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${
+                    showOnlyFavorites
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  ❤️ Favorites only
+                </button>
+              )}
               <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
                 Easy
               </span>
@@ -339,28 +375,32 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
             </div>
           </div>
 
-          {validOptions.length === 0 ? (
+          {filteredOptions.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-gray-400 text-4xl mb-3">🤸‍♀️</div>
               <p className="text-gray-600">
-                {isStartingPose
-                  ? 'Loading poses...'
-                  : 'No valid transitions available from current pose.'}
+                {showOnlyFavorites && validOptions.length > 0
+                  ? 'No favorite poses match the current filter'
+                  : isStartingPose
+                    ? 'Loading poses...'
+                    : 'No valid transitions available from current pose.'}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {isStartingPose
-                ? (validOptions as Pose[]).map(pose => (
+                ? (filteredOptions as Pose[]).map(pose => (
                     <PoseCard
                       key={pose.id}
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
                       onShowDetails={handleShowPoseDetails}
+                      isFavorited={isFavorited(pose.id)}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ))
                 : (
-                    validOptions as { pose: Pose; transition: Transition }[]
+                    filteredOptions as { pose: Pose; transition: Transition }[]
                   ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">
                       <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">
@@ -370,6 +410,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                         pose={pose}
                         onClick={() => addPoseToFlow(pose, transition)}
                         onShowDetails={handleShowPoseDetails}
+                        isFavorited={isFavorited(pose.id)}
+                        onToggleFavorite={toggleFavorite}
                       />
                     </div>
                   ))}

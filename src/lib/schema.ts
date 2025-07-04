@@ -42,6 +42,10 @@ export const schema = i.schema({
       createdAt: i.number().indexed(),
       updatedAt: i.number().indexed(),
     }),
+    favorites: i.entity({
+      poseId: i.string(),
+      profileId: i.string(),
+    }),
   },
   links: {
     profileUser: {
@@ -55,6 +59,14 @@ export const schema = i.schema({
     commentsAuthor: {
       forward: { on: 'comments', has: 'one', label: 'author' },
       reverse: { on: 'profiles', has: 'many', label: 'comments' },
+    },
+    favoritesPose: {
+      forward: { on: 'favorites', has: 'one', label: 'pose' },
+      reverse: { on: 'poses', has: 'many', label: 'favorites' },
+    },
+    favoritesProfile: {
+      forward: { on: 'favorites', has: 'one', label: 'profile' },
+      reverse: { on: 'profiles', has: 'many', label: 'favorites' },
     },
   },
 });
@@ -109,6 +121,11 @@ export type Schema = {
     createdAt: number;
     updatedAt: number;
   };
+  favorites: {
+    id: string;
+    poseId: string;
+    profileId: string;
+  };
 };
 
 export type Pose = Schema['poses'];
@@ -116,6 +133,7 @@ export type Transition = Schema['transitions'];
 export type Flow = Schema['flows'];
 export type Profile = Schema['profiles'];
 export type Comment = Schema['comments'];
+export type Favorite = Schema['favorites'];
 export type User = {
   id: string;
   email: string;

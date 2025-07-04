@@ -7,6 +7,8 @@ interface PoseCardProps {
   isDisabled?: boolean;
   showAddButton?: boolean;
   onShowDetails?: (pose: Pose) => void;
+  isFavorited?: boolean;
+  onToggleFavorite?: (pose: Pose) => void;
 }
 
 export function PoseCard({
@@ -16,6 +18,8 @@ export function PoseCard({
   isDisabled,
   showAddButton = true,
   onShowDetails,
+  isFavorited = false,
+  onToggleFavorite,
 }: PoseCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -69,8 +73,35 @@ export function PoseCard({
       `}
       onClick={!isDisabled ? onClick : undefined}
     >
-      {/* Difficulty tag - positioned absolutely in top right */}
-      <div className="absolute top-3 right-3 z-10">
+      {/* Top right controls - difficulty tag and favorite button */}
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+        {onToggleFavorite && (
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onToggleFavorite(pose);
+            }}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+              isFavorited
+                ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'
+            }`}
+            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill={isFavorited ? 'currentColor' : 'none'}
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m12 21.35-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </button>
+        )}
         <span
           className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(pose.difficulty)}`}
         >
