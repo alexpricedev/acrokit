@@ -273,7 +273,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     <button
                       onClick={() => handleShowPoseDetails(step.pose)}
                       className="p-1 hover:bg-gray-100 rounded transition-colors"
-                      title="View pose details"
+                      title="View Pose Details"
                     >
                       <svg
                         width="16"
@@ -335,13 +335,13 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     onClick={removeLastPose}
                     className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
                   >
-                    Remove last
+                    Remove Last
                   </button>
                   <button
                     onClick={clearFlow}
                     className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                   >
-                    Clear all
+                    Clear All
                   </button>
                 </div>
               )}

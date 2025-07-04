@@ -158,7 +158,7 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
                 disabled={isLoading || code.length !== 6}
                 className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Verifying...' : 'Verify code'}
+                {isLoading ? 'Verifying...' : 'Verify Code'}
               </button>
               <button
                 type="button"

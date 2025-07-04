@@ -125,7 +125,7 @@ export function PoseCard({
                 e.stopPropagation();
                 onToggleFavorite(pose);
               }}
-              title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+              title={isFavorited ? 'Remove From Favorites' : 'Add to Favorites'}
             >
               <svg
                 width="16"

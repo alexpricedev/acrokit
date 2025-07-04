@@ -351,7 +351,7 @@ export function FlowViewer({
           <button
             onClick={shareFlow}
             className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            title="Share flow"
+            title="Share Flow"
           >
             <svg
               width="20"

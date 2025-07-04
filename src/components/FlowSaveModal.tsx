@@ -122,7 +122,7 @@ export function FlowSaveModal({
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {editingFlowId ? 'Update flow' : 'Save flow'}
+            {editingFlowId ? 'Update Flow' : 'Save Flow'}
           </h2>
           <button
             onClick={handleClose}
@@ -206,8 +206,8 @@ export function FlowSaveModal({
                 ? 'Updating...'
                 : 'Saving...'
               : editingFlowId
-                ? 'Update flow'
-                : 'Save flow'}
+                ? 'Update Flow'
+                : 'Save Flow'}
           </button>
           <button
             onClick={handleClose}

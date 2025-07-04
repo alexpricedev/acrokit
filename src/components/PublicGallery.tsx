@@ -195,13 +195,13 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                     onClick={() => onViewFlow(flow.id)}
                     className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                   >
-                    Practice flow
+                    Practice Flow
                   </button>
 
                   <button
                     onClick={() => shareFlow(flow)}
                     className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-                    title="Share flow"
+                    title="Share Flow"
                   >
                     <svg
                       width="16"

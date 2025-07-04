@@ -279,7 +279,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
                   onClick={() => onPageChange('about')}
                   className="text-blue-400 hover:text-blue-300 transition-colors"
                 >
-                  Learn more about AcroKit →
+                  Learn More About AcroKit →
                 </button>
               </div>
 
