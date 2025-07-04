@@ -24,8 +24,7 @@ interface HeaderProps {
 }
 
 export function Header({ currentPage, onPageChange }: HeaderProps) {
-  const { user, profile, signOut, fakeLogin } = useAuth();
-  const useFakeAuth = window.location.search.includes('fake-auth');
+  const { user, profile, signOut } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginMode, setLoginMode] = useState<'login' | 'signup'>('login');
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -314,16 +313,6 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                     </div>
                   )}
                 </div>
-              )}
-
-              {/* Fake login for development */}
-              {!user && useFakeAuth && fakeLogin && (
-                <button
-                  onClick={fakeLogin}
-                  className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm"
-                >
-                  🧪 Fake Login
-                </button>
               )}
             </div>
           </div>
