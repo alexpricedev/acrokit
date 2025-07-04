@@ -106,7 +106,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     },
     {
       id: 'gallery',
-      label: 'Community',
+      label: 'Community Flows',
       description: 'Discover flows shared by the community',
       icon: (
         <svg width="20" height="20" viewBox="0 0 576 512" fill="currentColor">
