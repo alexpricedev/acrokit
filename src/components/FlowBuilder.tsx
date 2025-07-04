@@ -26,6 +26,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
@@ -72,20 +73,31 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   };
 
   const getFilteredOptions = () => {
-    const options = getValidNextPoses();
+    let options = getValidNextPoses();
 
-    if (!showOnlyFavorites) {
-      return options;
+    // Apply favorites filter
+    if (showOnlyFavorites) {
+      if (isStartingPose) {
+        options = (options as Pose[]).filter(pose => isFavorited(pose.id));
+      } else {
+        options = (options as { pose: Pose; transition: Transition }[]).filter(
+          ({ pose }) => isFavorited(pose.id)
+        );
+      }
     }
 
-    // Filter based on whether it's starting poses or pose+transition combinations
-    if (isStartingPose) {
-      return (options as Pose[]).filter(pose => isFavorited(pose.id));
-    } else {
-      return (options as { pose: Pose; transition: Transition }[]).filter(
-        ({ pose }) => isFavorited(pose.id)
-      );
+    // Apply difficulty filter
+    if (selectedDifficulty) {
+      if (isStartingPose) {
+        options = (options as Pose[]).filter(pose => pose.difficulty === selectedDifficulty);
+      } else {
+        options = (options as { pose: Pose; transition: Transition }[]).filter(
+          ({ pose }) => pose.difficulty === selectedDifficulty
+        );
+      }
     }
+
+    return options;
   };
 
   const addPoseToFlow = (pose: Pose, transition?: Transition) => {
@@ -354,24 +366,56 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               {profile && (
                 <button
                   onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-                  className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${
+                  className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
                     showOnlyFavorites
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'bg-red-100 text-red-700 border border-red-300'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                   }`}
                 >
-                  ❤️ Favorites only
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 512 512"
+                    fill="currentColor"
+                  >
+                    <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                  </svg>
+                  Favorites
                 </button>
               )}
-              <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+
+              <button
+                onClick={() => setSelectedDifficulty(selectedDifficulty === 'beginner' ? null : 'beginner')}
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'beginner'
+                    ? 'bg-green-100 text-green-800 border-green-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Easy
-              </span>
-              <span className="px-3 py-1 bg-blue-500 text-white text-sm font-medium rounded-full">
+              </button>
+
+              <button
+                onClick={() => setSelectedDifficulty(selectedDifficulty === 'intermediate' ? null : 'intermediate')}
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'intermediate'
+                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Medium
-              </span>
-              <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+              </button>
+
+              <button
+                onClick={() => setSelectedDifficulty(selectedDifficulty === 'advanced' ? null : 'advanced')}
+                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
+                  selectedDifficulty === 'advanced'
+                    ? 'bg-purple-100 text-purple-800 border-purple-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
+                }`}
+              >
                 Hard
-              </span>
+              </button>
             </div>
           </div>
 
@@ -379,8 +423,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
             <div className="text-center py-12">
               <div className="text-gray-400 text-4xl mb-3">🤸‍♀️</div>
               <p className="text-gray-600">
-                {showOnlyFavorites && validOptions.length > 0
-                  ? 'No favorite poses match the current filter'
+                {(showOnlyFavorites || selectedDifficulty) && validOptions.length > 0
+                  ? 'No poses match the current filters'
                   : isStartingPose
                     ? 'Loading poses...'
                     : 'No valid transitions available from current pose.'}
