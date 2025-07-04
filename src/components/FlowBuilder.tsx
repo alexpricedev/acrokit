@@ -26,7 +26,9 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
+    null
+  );
 
   // Use the new well-architected hook for data loading
   const flowData = useFlowData();
@@ -89,7 +91,9 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     // Apply difficulty filter
     if (selectedDifficulty) {
       if (isStartingPose) {
-        options = (options as Pose[]).filter(pose => pose.difficulty === selectedDifficulty);
+        options = (options as Pose[]).filter(
+          pose => pose.difficulty === selectedDifficulty
+        );
       } else {
         options = (options as { pose: Pose; transition: Transition }[]).filter(
           ({ pose }) => pose.difficulty === selectedDifficulty
@@ -385,7 +389,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               )}
 
               <button
-                onClick={() => setSelectedDifficulty(selectedDifficulty === 'beginner' ? null : 'beginner')}
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'beginner' ? null : 'beginner'
+                  )
+                }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
                   selectedDifficulty === 'beginner'
                     ? 'bg-green-100 text-green-800 border-green-300'
@@ -396,7 +404,13 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               </button>
 
               <button
-                onClick={() => setSelectedDifficulty(selectedDifficulty === 'intermediate' ? null : 'intermediate')}
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'intermediate'
+                      ? null
+                      : 'intermediate'
+                  )
+                }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
                   selectedDifficulty === 'intermediate'
                     ? 'bg-blue-100 text-blue-800 border-blue-300'
@@ -407,7 +421,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               </button>
 
               <button
-                onClick={() => setSelectedDifficulty(selectedDifficulty === 'advanced' ? null : 'advanced')}
+                onClick={() =>
+                  setSelectedDifficulty(
+                    selectedDifficulty === 'advanced' ? null : 'advanced'
+                  )
+                }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
                   selectedDifficulty === 'advanced'
                     ? 'bg-purple-100 text-purple-800 border-purple-300'
@@ -423,7 +441,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
             <div className="text-center py-12">
               <div className="text-gray-400 text-4xl mb-3">🤸‍♀️</div>
               <p className="text-gray-600">
-                {(showOnlyFavorites || selectedDifficulty) && validOptions.length > 0
+                {(showOnlyFavorites || selectedDifficulty) &&
+                validOptions.length > 0
                   ? 'No poses match the current filters'
                   : isStartingPose
                     ? 'Loading poses...'
