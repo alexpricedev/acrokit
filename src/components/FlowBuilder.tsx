@@ -439,8 +439,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                       pose={pose}
                       onClick={() => addPoseToFlow(pose)}
                       onShowDetails={handleShowPoseDetails}
-                      isFavorited={isFavorited(pose.id)}
-                      onToggleFavorite={toggleFavorite}
+                      isFavorited={profile ? isFavorited(pose.id) : false}
+                      onToggleFavorite={profile ? toggleFavorite : undefined}
                     />
                   ))
                 : (
@@ -454,8 +454,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                         pose={pose}
                         onClick={() => addPoseToFlow(pose, transition)}
                         onShowDetails={handleShowPoseDetails}
-                        isFavorited={isFavorited(pose.id)}
-                        onToggleFavorite={toggleFavorite}
+                        isFavorited={profile ? isFavorited(pose.id) : false}
+                        onToggleFavorite={profile ? toggleFavorite : undefined}
                       />
                     </div>
                   ))}
