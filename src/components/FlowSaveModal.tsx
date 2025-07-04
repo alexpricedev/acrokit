@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as React from 'react';
-import { FlowStep, db } from '../lib/instant';
+import { FlowStep, db, User } from '../lib/instant';
 import { id } from '@instantdb/react';
 import { useToast } from './ToastProvider';
 
@@ -8,7 +8,7 @@ interface FlowSaveModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentFlow: FlowStep[];
-  user: any;
+  user: User | null;
   editingFlowId?: string;
   onSaveComplete?: () => void;
 }

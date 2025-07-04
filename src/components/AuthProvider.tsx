@@ -7,10 +7,11 @@ import {
 } from 'react';
 import { db } from '../lib/instant';
 import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { User, Profile } from '../lib/instant';
 
 interface AuthContextType {
-  user: any | null;
-  profile: any | null;
+  user: User | null;
+  profile: Profile | null;
   isLoading: boolean;
   signInWithEmail: (email: string) => Promise<void>;
   verifyCode: (email: string, code: string) => Promise<void>;
