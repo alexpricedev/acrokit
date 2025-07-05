@@ -63,7 +63,6 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
         );
       }
     } catch (err) {
-      console.error('Error toggling favorite:', err);
       setError(
         err instanceof Error ? err : new Error('An unknown error occurred')
       );

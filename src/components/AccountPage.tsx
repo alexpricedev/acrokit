@@ -64,7 +64,6 @@ export function AccountPage() {
 
       showToast('Display name updated successfully!', 'success');
     } catch (error: unknown) {
-      console.error('Error updating display name:', error);
       if (error instanceof Error && error.message?.includes('unique')) {
         setError('This display name is already taken. Please choose another.');
       } else {

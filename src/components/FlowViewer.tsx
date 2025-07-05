@@ -45,7 +45,6 @@ export function FlowViewer({
   useEffect(() => {
     if (!dbLoading) {
       if (error) {
-        console.error('Error loading flow:', error);
         showToast('Failed to load flow', 'error');
         return;
       }
@@ -67,7 +66,6 @@ export function FlowViewer({
           const steps = JSON.parse(flowData.stepsData) as FlowStep[];
           setFlowSteps(steps);
         } catch (parseError) {
-          console.error('Error parsing flow data:', parseError);
           showToast('Invalid flow data', 'error');
           onBack();
           return;
@@ -108,7 +106,6 @@ export function FlowViewer({
       // Navigate to flow builder with the remixed flow loaded
       onLoadFlow(flowSteps);
     } catch (error) {
-      console.error('Error remixing flow:', error);
       showToast('Failed to remix flow. Please try again.', 'error');
     }
   };

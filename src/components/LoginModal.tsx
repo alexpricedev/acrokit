@@ -25,7 +25,6 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
       await signInWithEmail(email);
       setIsCodeSent(true);
     } catch (error: unknown) {
-      console.error('Error sending magic code:', error);
       setError(
         error instanceof Error
           ? error.message
@@ -46,7 +45,6 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
       await verifyCode(email, code);
       onClose(); // Close modal on successful sign-in
     } catch (error: unknown) {
-      console.error('Error verifying code:', error);
       setError(
         error instanceof Error
           ? error.message

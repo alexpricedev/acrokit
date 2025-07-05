@@ -49,8 +49,6 @@ export function DisplayNameModal({
       showToast('Display name saved successfully!', 'success');
       onClose(displayName.trim());
     } catch (error: unknown) {
-      console.error('Error saving display name:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
       if (error instanceof Error && error.message?.includes('unique')) {
         setError('This display name is already taken. Please choose another.');
       } else {

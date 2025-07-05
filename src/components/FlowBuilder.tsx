@@ -43,9 +43,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   useEffect(() => {
     if (hasError) {
       showToast('Failed to load poses and transitions from database', 'error');
-      console.error('Database query errors:', { error: flowData.error });
     }
-  }, [hasError, flowData.error, showToast]);
+  }, [hasError, showToast]);
 
   // Update flow state when initialFlow changes
   useEffect(() => {
@@ -185,7 +184,6 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
         'success'
       );
     } catch (error) {
-      console.error('Error generating random flow:', error);
       showToast('Error generating random flow. Please try again.', 'error');
     }
   };

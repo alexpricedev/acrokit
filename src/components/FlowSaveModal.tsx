@@ -100,7 +100,6 @@ export function FlowSaveModal({
         onSaveComplete();
       }
     } catch (error) {
-      console.error('Error saving flow:', error);
       showToast('Error saving flow. Please try again.', 'error');
     } finally {
       setIsSaving(false);

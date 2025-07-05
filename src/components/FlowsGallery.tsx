@@ -59,7 +59,7 @@ export function FlowsGallery({
       onLoadFlow(steps, flow.id); // Pass the flow ID for editing
       // Don't call onPageChange - onLoadFlow already handles page navigation
     } catch (error) {
-      console.error('Error loading flow:', error);
+      // Silently ignore flow loading errors
     }
   };
 
@@ -69,7 +69,6 @@ export function FlowsGallery({
       showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
-      console.error('Error deleting flow:', error);
       showToast('Error deleting flow. Please try again.', 'error');
     }
   };
@@ -110,7 +109,6 @@ export function FlowsGallery({
       );
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
-      console.error('Error updating flow:', error);
       showToast('Error updating flow. Please try again.', 'error');
     }
   };

@@ -103,7 +103,6 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
       // Navigate to flow builder with the remixed flow loaded
       onLoadFlow(steps);
     } catch (error) {
-      console.error('Error remixing flow:', error);
       showToast('Failed to remix flow. Please try again.', 'error');
     }
   };

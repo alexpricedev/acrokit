@@ -135,7 +135,7 @@ function AppRouter() {
       const steps = JSON.parse(flow.stepsData) as FlowStep[];
       handleLoadFlow(steps, flow.id);
     } catch (error) {
-      console.error('Error parsing flow data:', error);
+      // Silently ignore parsing errors - flow will not load
     }
   };
 

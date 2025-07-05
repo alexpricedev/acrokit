@@ -48,10 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [needsDisplayName]);
 
-  const handleDisplayNameSet = (displayName: string) => {
+  const handleDisplayNameSet = (_displayName: string) => {
     setShowDisplayNameModal(false);
     // The display name is handled by the useAuthWithProfile hook
-    console.log('Display name set:', displayName);
   };
 
   return (
