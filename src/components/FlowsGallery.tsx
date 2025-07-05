@@ -7,7 +7,7 @@ import { LoginModal } from './LoginModal';
 
 interface FlowsGalleryProps {
   onLoadFlow: (flow: FlowStep[], flowId?: string) => void;
-  onPageChange: (page: 'builder' | 'gallery') => void;
+  onPageChange: (page: 'home' | 'builder' | 'gallery') => void;
   onPracticeFlow?: (flowId: string) => void;
 }
 
@@ -59,7 +59,7 @@ export function FlowsGallery({
       onLoadFlow(steps, flow.id); // Pass the flow ID for editing
       // Don't call onPageChange - onLoadFlow already handles page navigation
     } catch (error) {
-      console.error('Error loading flow:', error);
+      // Silently ignore flow loading errors
     }
   };
 
@@ -69,7 +69,6 @@ export function FlowsGallery({
       showToast('Flow deleted successfully', 'success');
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
-      console.error('Error deleting flow:', error);
       showToast('Error deleting flow. Please try again.', 'error');
     }
   };
@@ -110,7 +109,6 @@ export function FlowsGallery({
       );
       // The flows will be automatically updated through the real-time subscription
     } catch (error) {
-      console.error('Error updating flow:', error);
       showToast('Error updating flow. Please try again.', 'error');
     }
   };
@@ -322,7 +320,7 @@ export function FlowsGallery({
                   <button
                     onClick={() => handleLoadFlow(flow)}
                     className="px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors flex items-center justify-center"
-                    title="Edit flow"
+                    title="Edit Flow"
                   >
                     <svg
                       width="14"
@@ -338,7 +336,7 @@ export function FlowsGallery({
                     <button
                       onClick={() => shareFlow(flow)}
                       className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                      title="Share flow"
+                      title="Share Flow"
                     >
                       <svg
                         width="16"
@@ -358,7 +356,7 @@ export function FlowsGallery({
                   <button
                     onClick={() => handleDeleteClick(flow)}
                     className="px-3 py-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors text-sm"
-                    title="Delete flow"
+                    title="Delete Flow"
                   >
                     <svg
                       width="16"

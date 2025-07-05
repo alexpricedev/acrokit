@@ -7,10 +7,11 @@ import {
 } from 'react';
 import { db } from '../lib/instant';
 import { useAuthWithProfile } from '../hooks/useAuthWithProfile';
+import { User, Profile } from '../lib/instant';
 
 interface AuthContextType {
-  user: any | null;
-  profile: any | null;
+  user: User | null;
+  profile: Profile | null;
   isLoading: boolean;
   signInWithEmail: (email: string) => Promise<void>;
   verifyCode: (email: string, code: string) => Promise<void>;
@@ -47,10 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [needsDisplayName]);
 
-  const handleDisplayNameSet = (displayName: string) => {
+  const handleDisplayNameSet = (_displayName: string) => {
     setShowDisplayNameModal(false);
     // The display name is handled by the useAuthWithProfile hook
-    console.log('Display name set:', displayName);
   };
 
   return (

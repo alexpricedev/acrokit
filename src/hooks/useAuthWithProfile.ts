@@ -1,8 +1,8 @@
-import { db } from '../lib/instant';
+import { db, User, Profile } from '../lib/instant';
 
 interface AuthWithProfile {
-  user: any | null;
-  profile: any | null;
+  user: User | null;
+  profile: Profile | null;
   isLoading: boolean;
   needsDisplayName: boolean;
 }
@@ -36,7 +36,7 @@ export function useAuthWithProfile(): AuthWithProfile {
   const needsDisplayName = Boolean(user && !isLoading && !profile);
 
   return {
-    user,
+    user: user || null,
     profile,
     isLoading,
     needsDisplayName,

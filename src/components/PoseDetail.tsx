@@ -63,7 +63,6 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
 
       setNewComment('');
     } catch (error) {
-      console.error('Error adding comment:', error);
       showToast('Failed to add comment. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);

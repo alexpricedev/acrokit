@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as React from 'react';
-import { FlowStep, db } from '../lib/instant';
+import { FlowStep, db, User } from '../lib/instant';
 import { id } from '@instantdb/react';
 import { useToast } from './ToastProvider';
 
@@ -8,7 +8,7 @@ interface FlowSaveModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentFlow: FlowStep[];
-  user: any;
+  user: User | null;
   editingFlowId?: string;
   onSaveComplete?: () => void;
 }
@@ -100,7 +100,6 @@ export function FlowSaveModal({
         onSaveComplete();
       }
     } catch (error) {
-      console.error('Error saving flow:', error);
       showToast('Error saving flow. Please try again.', 'error');
     } finally {
       setIsSaving(false);
@@ -122,7 +121,7 @@ export function FlowSaveModal({
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {editingFlowId ? 'Update flow' : 'Save flow'}
+            {editingFlowId ? 'Update Flow' : 'Save Flow'}
           </h2>
           <button
             onClick={handleClose}
@@ -206,8 +205,8 @@ export function FlowSaveModal({
                 ? 'Updating...'
                 : 'Saving...'
               : editingFlowId
-                ? 'Update flow'
-                : 'Save flow'}
+                ? 'Update Flow'
+                : 'Save Flow'}
           </button>
           <button
             onClick={handleClose}

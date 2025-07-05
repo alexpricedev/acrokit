@@ -34,7 +34,6 @@ export function SharedFlowLoader({
   useEffect(() => {
     if (!dbLoading) {
       if (error) {
-        console.error('Error loading shared flow:', error);
         showToast('Failed to load shared flow', 'error');
         onError();
         return;
@@ -56,7 +55,6 @@ export function SharedFlowLoader({
           onFlowLoad(steps);
           showToast(`Loaded shared flow: "${sharedFlow.name}"`, 'success');
         } catch (parseError) {
-          console.error('Error parsing flow data:', parseError);
           showToast('Invalid flow data', 'error');
           onError();
         }

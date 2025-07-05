@@ -57,7 +57,7 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     }
   };
 
-  const getCreatorName = (flow: any) => {
+  const getCreatorName = (flow: { userId: string }) => {
     // Check if the flow is by the current user
     if (user && flow.userId === user.id) {
       return profile?.displayName || user.email || 'You';
@@ -65,7 +65,7 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
 
     // Find the creator's profile
     const creatorData = data?.$users?.find(
-      (userData: any) => userData.id === flow.userId
+      (userData: { id: string }) => userData.id === flow.userId
     );
     if (creatorData?.profile?.displayName) {
       return creatorData.profile.displayName;
@@ -103,7 +103,6 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
       // Navigate to flow builder with the remixed flow loaded
       onLoadFlow(steps);
     } catch (error) {
-      console.error('Error remixing flow:', error);
       showToast('Failed to remix flow. Please try again.', 'error');
     }
   };
@@ -137,7 +136,9 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Public Flows</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Community Flows
+        </h1>
         <p className="text-gray-600">
           Discover acroyoga flows shared by the community. Click any flow to
           practice it, or remix it to your collection.
@@ -195,13 +196,13 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
                     onClick={() => onViewFlow(flow.id)}
                     className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                   >
-                    Practice flow
+                    Practice Flow
                   </button>
 
                   <button
                     onClick={() => shareFlow(flow)}
                     className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-                    title="Share flow"
+                    title="Share Flow"
                   >
                     <svg
                       width="16"

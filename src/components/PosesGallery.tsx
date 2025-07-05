@@ -200,8 +200,8 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
                       }`}
                       title={
                         isFavorited(pose.id)
-                          ? 'Remove from favorites'
-                          : 'Add to favorites'
+                          ? 'Remove From Favorites'
+                          : 'Add to Favorites'
                       }
                     >
                       <svg

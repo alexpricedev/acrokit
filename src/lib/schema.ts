@@ -78,7 +78,7 @@ export const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0';
 export type Schema = {
   $users: {
     id: string;
-    email: string;
+    email?: string; // Optional per InstantDB schema
   };
   poses: {
     id: string;
@@ -136,8 +136,7 @@ export type Comment = Schema['comments'];
 export type Favorite = Schema['favorites'];
 export type User = {
   id: string;
-  email: string;
-  createdAt: number;
+  email?: string; // Optional per InstantDB schema
 };
 
 // Local flow step interface for the builder
