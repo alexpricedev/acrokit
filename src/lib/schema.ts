@@ -57,14 +57,6 @@ export const schema = i.schema({
       forward: { on: 'poses', has: 'one', label: 'imageFile' },
       reverse: { on: '$files', has: 'many', label: 'posesWithImage' },
     },
-    poseBaseImageFile: {
-      forward: { on: 'poses', has: 'one', label: 'baseImageFile' },
-      reverse: { on: '$files', has: 'many', label: 'posesWithBaseImage' },
-    },
-    poseFlyerImageFile: {
-      forward: { on: 'poses', has: 'one', label: 'flyerImageFile' },
-      reverse: { on: '$files', has: 'many', label: 'posesWithFlyerImage' },
-    },
     commentsPose: {
       forward: { on: 'comments', has: 'one', label: 'pose' },
       reverse: { on: 'poses', has: 'many', label: 'comments' },
@@ -150,8 +142,6 @@ export type File = Schema['$files'];
 // Extended types with linked data for components
 export type PoseWithFiles = Pose & {
   imageFile?: File;
-  baseImageFile?: File;
-  flyerImageFile?: File;
 };
 export type Transition = Schema['transitions'];
 export type Flow = Schema['flows'];

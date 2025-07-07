@@ -8,8 +8,6 @@ export function usePoses() {
   const { data, isLoading, error } = db.useQuery({
     poses: {
       imageFile: {},
-      baseImageFile: {},
-      flyerImageFile: {},
     },
   });
 

@@ -20,8 +20,6 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
           ? { where: { difficulty: selectedDifficulty } }
           : {},
       imageFile: {},
-      baseImageFile: {},
-      flyerImageFile: {},
     },
   });
 

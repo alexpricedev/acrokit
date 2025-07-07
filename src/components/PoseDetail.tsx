@@ -17,8 +17,6 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
     poses: {
       $: { where: { id: poseId } },
       imageFile: {},
-      baseImageFile: {},
-      flyerImageFile: {},
       comments: {
         $: { order: { createdAt: 'desc' } },
         author: {},
@@ -138,26 +136,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
             </div>
 
             {/* Additional Images */}
-            <div className="grid grid-cols-2 gap-2">
-              {pose.baseImageFile?.url && (
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src={pose.baseImageFile.url}
-                    alt={`${pose.name} - Base view`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              {pose.flyerImageFile?.url && (
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src={pose.flyerImageFile.url}
-                    alt={`${pose.name} - Flyer view`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-2"></div>
           </div>
 
           {/* Details */}

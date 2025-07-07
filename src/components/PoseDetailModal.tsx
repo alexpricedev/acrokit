@@ -138,36 +138,6 @@ export function PoseDetailModal({
                   </span>
                 )}
               </div>
-
-              {/* Additional images if available */}
-              {(pose.baseImageFile?.url || pose.flyerImageFile?.url) && (
-                <div className="grid grid-cols-2 gap-4">
-                  {pose.baseImageFile?.url && (
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={pose.baseImageFile.url}
-                        alt={`${pose.name} - Base position`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="p-2 bg-gray-900 bg-opacity-75 text-white text-sm">
-                        Base position
-                      </div>
-                    </div>
-                  )}
-                  {pose.flyerImageFile?.url && (
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={pose.flyerImageFile.url}
-                        alt={`${pose.name} - Flyer position`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="p-2 bg-gray-900 bg-opacity-75 text-white text-sm">
-                        Flyer position
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
 
