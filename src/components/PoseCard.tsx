@@ -85,8 +85,8 @@ export function PoseCard({
       <div className="p-4">
         <h3 className="font-bold text-gray-900 text-lg mb-3">{pose.name}</h3>
 
-        {/* Image placeholder area */}
-        <div className="h-32 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+        {/* Image placeholder area - square aspect ratio */}
+        <div className="aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
           {pose.imageFile?.url ? (
             <img
               src={pose.imageFile.url}

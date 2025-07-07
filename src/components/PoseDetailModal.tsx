@@ -124,8 +124,8 @@ export function PoseDetailModal({
           {/* Image Section */}
           <div className="mb-6">
             <div className="grid gap-4">
-              {/* Main image */}
-              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+              {/* Main image - square aspect ratio */}
+              <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center max-w-md mx-auto">
                 {pose.imageFile?.url ? (
                   <img
                     src={pose.imageFile.url}
