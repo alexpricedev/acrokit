@@ -94,8 +94,8 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
           isPublic: false,
           userId: user.id,
           stepsData: flow.stepsData,
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         })
       );
 

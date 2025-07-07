@@ -19,6 +19,7 @@ export type {
   Profile,
   Comment,
   Favorite,
+  FavoriteWithLinkedData,
   FlowStep,
 } from './schema';
 export { id };

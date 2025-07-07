@@ -395,11 +395,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'beginner' ? null : 'beginner'
+                    selectedDifficulty === 'Easy' ? null : 'Easy'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'beginner'
+                  selectedDifficulty === 'Easy'
                     ? 'bg-green-100 text-green-800 border-green-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}
@@ -410,13 +410,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'intermediate'
-                      ? null
-                      : 'intermediate'
+                    selectedDifficulty === 'Medium' ? null : 'Medium'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'intermediate'
+                  selectedDifficulty === 'Medium'
                     ? 'bg-blue-100 text-blue-800 border-blue-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}
@@ -427,11 +425,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'advanced' ? null : 'advanced'
+                    selectedDifficulty === 'Hard' ? null : 'Hard'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'advanced'
+                  selectedDifficulty === 'Hard'
                     ? 'bg-purple-100 text-purple-800 border-purple-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}

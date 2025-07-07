@@ -57,7 +57,7 @@ export function FlowSaveModal({
     setIsSaving(true);
 
     try {
-      const now = Date.now();
+      const now = new Date().toISOString();
 
       if (editingFlowId) {
         // Update existing flow

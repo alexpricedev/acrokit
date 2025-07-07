@@ -27,7 +27,7 @@ export function useAuthWithProfile(): AuthWithProfile {
   );
 
   // Extract profile from the linked data
-  const profile = data?.$users?.[0]?.profile || null;
+  const profile = (data?.$users?.[0]?.profile || null) as Profile | null;
 
   // Overall loading state
   const isLoading = authLoading || Boolean(user && profileLoading);

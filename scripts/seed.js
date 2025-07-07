@@ -35,60 +35,60 @@ const poses = [
     id: poseIds.shinToShin,
     name: 'Shin to Shin',
     description: 'Base and flyer connect shin to shin in standing position',
-    difficulty: 'beginner',
-    createdAt: Date.now(),
+    difficulty: 'Easy',
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.bird,
     name: 'Bird',
     description: "Classic L-basing pose with flyer's hips on base's feet",
-    difficulty: 'beginner',
+    difficulty: 'Easy',
     isStartingPose: true,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.throne,
     name: 'Throne',
     description:
       "Flyer sits on base's feet with back supported by base's hands",
-    difficulty: 'beginner',
+    difficulty: 'Easy',
     isStartingPose: true,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.foldedLeaf,
     name: 'Folded Leaf',
     description: "Flyer in forward fold position balancing on base's feet",
-    difficulty: 'beginner',
-    createdAt: Date.now(),
+    difficulty: 'Easy',
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.whale,
     name: 'Whale',
     description: "Flyer lies on base's feet in prone position, arms extended",
-    difficulty: 'intermediate',
-    createdAt: Date.now(),
+    difficulty: 'Medium',
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.star,
     name: 'Star',
     description: 'Flyer in backbend with arms and legs extended',
-    difficulty: 'intermediate',
-    createdAt: Date.now(),
+    difficulty: 'Medium',
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.reverseBird,
     name: 'Reverse Bird',
     description: 'Bird position with flyer facing away from base',
-    difficulty: 'intermediate',
-    createdAt: Date.now(),
+    difficulty: 'Medium',
+    createdAt: new Date().toISOString(),
   },
   {
     id: poseIds.highFlyingWhale,
     name: 'High Flying Whale',
     description: 'Advanced whale position with extended arms and legs',
-    difficulty: 'advanced',
-    createdAt: Date.now(),
+    difficulty: 'Hard',
+    createdAt: new Date().toISOString(),
   },
 ];
 
@@ -100,7 +100,7 @@ const transitions = [
     description: 'Initial mount from ground to bird position',
     fromPoseId: poseIds.shinToShin,
     toPoseId: poseIds.bird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -108,7 +108,7 @@ const transitions = [
     description: 'Transition from bird to throne by sitting up',
     fromPoseId: poseIds.bird,
     toPoseId: poseIds.throne,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -116,7 +116,7 @@ const transitions = [
     description: 'Return from throne to bird by leaning forward',
     fromPoseId: poseIds.throne,
     toPoseId: poseIds.bird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -124,7 +124,7 @@ const transitions = [
     description: 'Forward fold from bird position',
     fromPoseId: poseIds.bird,
     toPoseId: poseIds.foldedLeaf,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -132,7 +132,7 @@ const transitions = [
     description: 'Return from folded leaf to bird',
     fromPoseId: poseIds.foldedLeaf,
     toPoseId: poseIds.bird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -140,7 +140,7 @@ const transitions = [
     description: 'Transition to prone whale position',
     fromPoseId: poseIds.bird,
     toPoseId: poseIds.whale,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -148,7 +148,7 @@ const transitions = [
     description: 'Return from whale to bird position',
     fromPoseId: poseIds.whale,
     toPoseId: poseIds.bird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -156,7 +156,7 @@ const transitions = [
     description: 'Prasarita twist from whale to throne',
     fromPoseId: poseIds.whale,
     toPoseId: poseIds.throne,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -164,7 +164,7 @@ const transitions = [
     description: 'Backbend transition to star position',
     fromPoseId: poseIds.throne,
     toPoseId: poseIds.star,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -172,7 +172,7 @@ const transitions = [
     description: 'Return from star to throne',
     fromPoseId: poseIds.star,
     toPoseId: poseIds.throne,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -180,7 +180,7 @@ const transitions = [
     description: 'Turn around to face away from base',
     fromPoseId: poseIds.bird,
     toPoseId: poseIds.reverseBird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -188,7 +188,7 @@ const transitions = [
     description: 'Turn around to face the base',
     fromPoseId: poseIds.reverseBird,
     toPoseId: poseIds.bird,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: randomUUID(),
@@ -196,7 +196,7 @@ const transitions = [
     description: 'Extend to advanced whale position',
     fromPoseId: poseIds.whale,
     toPoseId: poseIds.highFlyingWhale,
-    createdAt: Date.now(),
+    createdAt: new Date().toISOString(),
   },
 ];
 

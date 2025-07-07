@@ -23,11 +23,11 @@ export function PoseCard({
 }: PoseCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-500 text-white';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-500 text-white';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-500 text-white';
@@ -35,25 +35,17 @@ export function PoseCard({
   };
 
   const getDifficultyLabel = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'Easy';
-      case 'intermediate':
-        return 'Medium';
-      case 'advanced':
-        return 'Hard';
-      default:
-        return difficulty;
-    }
+    // Difficulty is already the display label (Easy/Medium/Hard)
+    return difficulty;
   };
 
   const getCardBorderGradient = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'from-green-400 to-green-600';
-      case 'intermediate':
+      case 'Medium':
         return 'from-blue-400 to-blue-600';
-      case 'advanced':
+      case 'Hard':
         return 'from-purple-400 to-purple-600';
       default:
         return 'from-gray-400 to-gray-600';

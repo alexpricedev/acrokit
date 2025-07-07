@@ -42,8 +42,7 @@ export const schema = i.schema({
       updatedAt: i.date().indexed(),
     }),
     favorites: i.entity({
-      poseId: i.string(),
-      profileId: i.string(),
+      createdAt: i.date().optional(),
     }),
   },
   links: {
@@ -101,15 +100,15 @@ export type Schema = {
     id: string;
     name: string;
     description: string;
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
+    difficulty: 'Easy' | 'Medium' | 'Hard';
     isStartingPose?: boolean;
-    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   transitions: {
     id: string;
     name: string;
     description?: string;
-    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   flows: {
     id: string;
@@ -118,25 +117,24 @@ export type Schema = {
     isPublic: boolean;
     userId: string;
     stepsData: string;
-    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
-    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   profiles: {
     id: string;
     displayName: string;
-    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
-    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   comments: {
     id: string;
     content: string;
-    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
-    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   favorites: {
     id: string;
-    poseId: string;
-    profileId: string;
+    createdAt?: string; // ISO date string like "2025-07-07T20:50:38.091Z", optional field
   };
 };
 
@@ -151,6 +149,10 @@ export type Transition = Schema['transitions'];
 export type TransitionWithPoses = Transition & {
   fromPose?: Pose;
   toPose?: Pose;
+};
+export type FavoriteWithLinkedData = Favorite & {
+  pose?: PoseWithFiles;
+  profile?: Profile;
 };
 export type Flow = Schema['flows'];
 export type Profile = Schema['profiles'];

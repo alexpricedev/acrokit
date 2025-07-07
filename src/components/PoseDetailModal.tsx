@@ -52,11 +52,11 @@ export function PoseDetailModal({
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-500 text-white';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-500 text-white';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-500 text-white';
@@ -65,11 +65,11 @@ export function PoseDetailModal({
 
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'Easy';
-      case 'intermediate':
+      case 'Medium':
         return 'Medium';
-      case 'advanced':
+      case 'Hard':
         return 'Hard';
       default:
         return difficulty;
