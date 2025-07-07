@@ -192,7 +192,17 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
                     <button
                       onClick={e => {
                         e.stopPropagation();
-                        toggleFavorite(pose as Pose);
+                        toggleFavorite({
+                          id: pose.id,
+                          name: pose.name,
+                          description: pose.description,
+                          difficulty: pose.difficulty as
+                            | 'beginner'
+                            | 'intermediate'
+                            | 'advanced',
+                          isStartingPose: pose.isStartingPose,
+                          createdAt: pose.createdAt,
+                        } as Pose);
                       }}
                       className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                         isFavorited(pose.id)

@@ -7,8 +7,12 @@ import { db, TransitionWithPoses } from '../lib/instant';
 export function useTransitions() {
   const { data, isLoading, error } = db.useQuery({
     transitions: {
-      fromPose: {},
-      toPose: {},
+      fromPose: {
+        imageFile: {},
+      },
+      toPose: {
+        imageFile: {},
+      },
     },
   });
 

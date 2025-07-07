@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flow, FlowStep, db, id, Pose } from '../lib/instant';
+import { Flow, FlowStep, db, id, PoseWithFiles } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { PoseCard } from './PoseCard';
@@ -24,7 +24,7 @@ export function FlowViewer({
   const [flowSteps, setFlowSteps] = useState<FlowStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [selectedPose, setSelectedPose] = useState<PoseWithFiles | null>(null);
   const [isPoseModalOpen, setIsPoseModalOpen] = useState(false);
 
   // Query the specific flow by ID
@@ -143,7 +143,7 @@ export function FlowViewer({
     setCurrentStep(stepIndex);
   };
 
-  const handleShowPoseDetails = (pose: Pose) => {
+  const handleShowPoseDetails = (pose: PoseWithFiles) => {
     setSelectedPose(pose);
     setIsPoseModalOpen(true);
   };
