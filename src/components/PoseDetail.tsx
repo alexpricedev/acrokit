@@ -72,7 +72,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
     }
   };
 
-  const formatDate = (timestamp: number) => {
+  const formatDate = (timestamp: string | number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

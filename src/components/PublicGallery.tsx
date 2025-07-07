@@ -32,7 +32,8 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     if (!dbLoading && data?.flows) {
       // Sort by most recently updated first
       const sortedFlows = (data.flows as Flow[]).sort(
-        (a, b) => b.updatedAt - a.updatedAt
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       setFlows(sortedFlows);
       setIsLoading(false);

@@ -15,14 +15,14 @@ export const schema = i.schema({
       description: i.string(),
       difficulty: i.string(),
       isStartingPose: i.boolean().optional(),
-      createdAt: i.number(),
+      createdAt: i.date(),
     }),
     transitions: i.entity({
       name: i.string(),
       description: i.string().optional(),
       fromPoseId: i.string(),
       toPoseId: i.string(),
-      createdAt: i.number(),
+      createdAt: i.date(),
     }),
     flows: i.entity({
       name: i.string(),
@@ -30,18 +30,18 @@ export const schema = i.schema({
       isPublic: i.boolean(),
       userId: i.string(),
       stepsData: i.string(),
-      createdAt: i.number(),
-      updatedAt: i.number(),
+      createdAt: i.date(),
+      updatedAt: i.date(),
     }),
     profiles: i.entity({
       displayName: i.string().unique().indexed(),
-      createdAt: i.number(),
-      updatedAt: i.number(),
+      createdAt: i.date(),
+      updatedAt: i.date(),
     }),
     comments: i.entity({
       content: i.string(),
-      createdAt: i.number().indexed(),
-      updatedAt: i.number().indexed(),
+      createdAt: i.date().indexed(),
+      updatedAt: i.date().indexed(),
     }),
     favorites: i.entity({
       poseId: i.string(),
@@ -88,6 +88,7 @@ export const schema = i.schema({
 export const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0';
 
 // TypeScript types derived from schema
+// Note: InstantDB returns dates as strings in queries, but we define them as Date for type safety
 export type Schema = {
   $users: {
     id: string;
@@ -104,7 +105,7 @@ export type Schema = {
     description: string;
     difficulty: 'beginner' | 'intermediate' | 'advanced';
     isStartingPose?: boolean;
-    createdAt: number;
+    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   transitions: {
     id: string;
@@ -112,7 +113,7 @@ export type Schema = {
     description?: string;
     fromPoseId: string;
     toPoseId: string;
-    createdAt: number;
+    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   flows: {
     id: string;
@@ -121,20 +122,20 @@ export type Schema = {
     isPublic: boolean;
     userId: string;
     stepsData: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   profiles: {
     id: string;
     displayName: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   comments: {
     id: string;
     content: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
+    updatedAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   favorites: {
     id: string;
