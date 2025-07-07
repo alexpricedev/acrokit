@@ -20,8 +20,6 @@ export const schema = i.schema({
     transitions: i.entity({
       name: i.string(),
       description: i.string().optional(),
-      fromPoseId: i.string(),
-      toPoseId: i.string(),
       createdAt: i.date(),
     }),
     flows: i.entity({
@@ -73,6 +71,14 @@ export const schema = i.schema({
       forward: { on: 'favorites', has: 'one', label: 'profile' },
       reverse: { on: 'profiles', has: 'many', label: 'favorites' },
     },
+    transitionFromPose: {
+      forward: { on: 'transitions', has: 'one', label: 'fromPose' },
+      reverse: { on: 'poses', has: 'many', label: 'transitionsFrom' },
+    },
+    transitionToPose: {
+      forward: { on: 'transitions', has: 'one', label: 'toPose' },
+      reverse: { on: 'poses', has: 'many', label: 'transitionsTo' },
+    },
   },
 });
 
@@ -103,8 +109,6 @@ export type Schema = {
     id: string;
     name: string;
     description?: string;
-    fromPoseId: string;
-    toPoseId: string;
     createdAt: string | number; // InstantDB returns as string/number despite i.date() schema
   };
   flows: {
@@ -144,6 +148,10 @@ export type PoseWithFiles = Pose & {
   imageFile?: File;
 };
 export type Transition = Schema['transitions'];
+export type TransitionWithPoses = Transition & {
+  fromPose?: Pose;
+  toPose?: Pose;
+};
 export type Flow = Schema['flows'];
 export type Profile = Schema['profiles'];
 export type Comment = Schema['comments'];
@@ -156,5 +164,5 @@ export type User = {
 // Local flow step interface for the builder
 export interface FlowStep {
   pose: PoseWithFiles;
-  transition?: Transition;
+  transition?: TransitionWithPoses;
 }

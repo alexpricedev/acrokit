@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PoseWithFiles, Transition, FlowStep } from '../lib/instant';
+import { PoseWithFiles, TransitionWithPoses, FlowStep } from '../lib/instant';
 import { PoseCard } from './PoseCard';
 import { FlowSaveModal } from './FlowSaveModal';
 import { RandomFlowModal } from './RandomFlowModal';
@@ -84,7 +84,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
         );
       } else {
         options = (
-          options as { pose: PoseWithFiles; transition: Transition }[]
+          options as { pose: PoseWithFiles; transition: TransitionWithPoses }[]
         ).filter(({ pose }) => isFavorited(pose.id));
       }
     }
@@ -97,7 +97,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
         );
       } else {
         options = (
-          options as { pose: PoseWithFiles; transition: Transition }[]
+          options as { pose: PoseWithFiles; transition: TransitionWithPoses }[]
         ).filter(({ pose }) => pose.difficulty === selectedDifficulty);
       }
     }
@@ -105,7 +105,10 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     return options;
   };
 
-  const addPoseToFlow = (pose: PoseWithFiles, transition?: Transition) => {
+  const addPoseToFlow = (
+    pose: PoseWithFiles,
+    transition?: TransitionWithPoses
+  ) => {
     setCurrentFlow(prev => [...prev, { pose, transition }]);
     setIsStartingPose(false);
   };
@@ -162,11 +165,12 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
           ];
 
         // Find transition for this pose (if not the first pose)
-        let transition: Transition | undefined;
+        let transition: TransitionWithPoses | undefined;
         if (newFlow.length > 0) {
           const lastPose = newFlow[newFlow.length - 1].pose;
           transition = transitions.find(
-            t => t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
+            t =>
+              t.fromPose?.id === lastPose.id && t.toPose?.id === randomPose.id
           );
         }
 
@@ -465,7 +469,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                 : (
                     filteredOptions as {
                       pose: PoseWithFiles;
-                      transition: Transition;
+                      transition: TransitionWithPoses;
                     }[]
                   ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">

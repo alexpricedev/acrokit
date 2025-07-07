@@ -13,6 +13,7 @@ export type {
   PoseWithFiles,
   File,
   Transition,
+  TransitionWithPoses,
   Flow,
   User,
   Profile,
