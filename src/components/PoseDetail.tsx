@@ -16,6 +16,9 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
   const { isLoading, data, error } = db.useQuery({
     poses: {
       $: { where: { id: poseId } },
+      imageFile: {},
+      baseImageFile: {},
+      flyerImageFile: {},
       comments: {
         $: { order: { createdAt: 'desc' } },
         author: {},
@@ -111,9 +114,9 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
           <div className="space-y-4">
             {/* Primary Image */}
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              {pose.imageUrl ? (
+              {pose.imageFile?.url ? (
                 <img
-                  src={pose.imageUrl}
+                  src={pose.imageFile.url}
                   alt={pose.name}
                   className="w-full h-full object-cover"
                 />
@@ -136,19 +139,19 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
 
             {/* Additional Images */}
             <div className="grid grid-cols-2 gap-2">
-              {pose.baseImageUrl && (
+              {pose.baseImageFile?.url && (
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                   <img
-                    src={pose.baseImageUrl}
+                    src={pose.baseImageFile.url}
                     alt={`${pose.name} - Base view`}
                     className="w-full h-full object-cover"
                   />
                 </div>
               )}
-              {pose.flyerImageUrl && (
+              {pose.flyerImageFile?.url && (
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                   <img
-                    src={pose.flyerImageUrl}
+                    src={pose.flyerImageFile.url}
                     alt={`${pose.name} - Flyer view`}
                     className="w-full h-full object-cover"
                   />

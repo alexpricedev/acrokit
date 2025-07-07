@@ -6,14 +6,15 @@ export const schema = i.schema({
     $users: i.entity({
       email: i.string().unique().indexed(),
     }),
+    $files: i.entity({
+      path: i.string().unique().indexed(),
+      url: i.string(),
+    }),
     poses: i.entity({
       name: i.string().indexed(),
       description: i.string(),
       difficulty: i.string(),
       isStartingPose: i.boolean().optional(),
-      imageUrl: i.string().optional(),
-      baseImageUrl: i.string().optional(),
-      flyerImageUrl: i.string().optional(),
       createdAt: i.number(),
     }),
     transitions: i.entity({
@@ -52,6 +53,18 @@ export const schema = i.schema({
       forward: { on: 'profiles', has: 'one', label: '$user' },
       reverse: { on: '$users', has: 'one', label: 'profile' },
     },
+    poseImageFile: {
+      forward: { on: 'poses', has: 'one', label: 'imageFile' },
+      reverse: { on: '$files', has: 'many', label: 'posesWithImage' },
+    },
+    poseBaseImageFile: {
+      forward: { on: 'poses', has: 'one', label: 'baseImageFile' },
+      reverse: { on: '$files', has: 'many', label: 'posesWithBaseImage' },
+    },
+    poseFlyerImageFile: {
+      forward: { on: 'poses', has: 'one', label: 'flyerImageFile' },
+      reverse: { on: '$files', has: 'many', label: 'posesWithFlyerImage' },
+    },
     commentsPose: {
       forward: { on: 'comments', has: 'one', label: 'pose' },
       reverse: { on: 'poses', has: 'many', label: 'comments' },
@@ -80,15 +93,17 @@ export type Schema = {
     id: string;
     email?: string; // Optional per InstantDB schema
   };
+  $files: {
+    id: string;
+    path: string;
+    url: string;
+  };
   poses: {
     id: string;
     name: string;
     description: string;
     difficulty: 'beginner' | 'intermediate' | 'advanced';
     isStartingPose?: boolean;
-    imageUrl?: string;
-    baseImageUrl?: string;
-    flyerImageUrl?: string;
     createdAt: number;
   };
   transitions: {
@@ -129,6 +144,14 @@ export type Schema = {
 };
 
 export type Pose = Schema['poses'];
+export type File = Schema['$files'];
+
+// Extended types with linked data for components
+export type PoseWithFiles = Pose & {
+  imageFile?: File;
+  baseImageFile?: File;
+  flyerImageFile?: File;
+};
 export type Transition = Schema['transitions'];
 export type Flow = Schema['flows'];
 export type Profile = Schema['profiles'];
@@ -141,6 +164,6 @@ export type User = {
 
 // Local flow step interface for the builder
 export interface FlowStep {
-  pose: Pose;
+  pose: PoseWithFiles;
   transition?: Transition;
 }

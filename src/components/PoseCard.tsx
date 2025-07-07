@@ -1,14 +1,14 @@
-import { Pose } from '../lib/instant';
+import { PoseWithFiles } from '../lib/instant';
 
 interface PoseCardProps {
-  pose: Pose;
+  pose: PoseWithFiles;
   onClick?: () => void;
   isSelected?: boolean;
   isDisabled?: boolean;
   showAddButton?: boolean;
-  onShowDetails?: (pose: Pose) => void;
+  onShowDetails?: (pose: PoseWithFiles) => void;
   isFavorited?: boolean;
-  onToggleFavorite?: (pose: Pose) => void;
+  onToggleFavorite?: (pose: PoseWithFiles) => void;
 }
 
 export function PoseCard({
@@ -87,9 +87,9 @@ export function PoseCard({
 
         {/* Image placeholder area */}
         <div className="h-32 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-          {pose.imageUrl ? (
+          {pose.imageFile?.url ? (
             <img
-              src={pose.imageUrl}
+              src={pose.imageFile.url}
               alt={pose.name}
               className="w-full h-full object-cover rounded-lg"
             />

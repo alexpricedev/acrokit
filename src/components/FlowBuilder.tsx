@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Pose, Transition, FlowStep } from '../lib/instant';
+import { PoseWithFiles, Transition, FlowStep } from '../lib/instant';
 import { PoseCard } from './PoseCard';
 import { FlowSaveModal } from './FlowSaveModal';
 import { RandomFlowModal } from './RandomFlowModal';
@@ -24,7 +24,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [selectedPose, setSelectedPose] = useState<PoseWithFiles | null>(null);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
     null
@@ -79,31 +79,33 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     // Apply favorites filter
     if (showOnlyFavorites) {
       if (isStartingPose) {
-        options = (options as Pose[]).filter(pose => isFavorited(pose.id));
-      } else {
-        options = (options as { pose: Pose; transition: Transition }[]).filter(
-          ({ pose }) => isFavorited(pose.id)
+        options = (options as PoseWithFiles[]).filter(pose =>
+          isFavorited(pose.id)
         );
+      } else {
+        options = (
+          options as { pose: PoseWithFiles; transition: Transition }[]
+        ).filter(({ pose }) => isFavorited(pose.id));
       }
     }
 
     // Apply difficulty filter
     if (selectedDifficulty) {
       if (isStartingPose) {
-        options = (options as Pose[]).filter(
+        options = (options as PoseWithFiles[]).filter(
           pose => pose.difficulty === selectedDifficulty
         );
       } else {
-        options = (options as { pose: Pose; transition: Transition }[]).filter(
-          ({ pose }) => pose.difficulty === selectedDifficulty
-        );
+        options = (
+          options as { pose: PoseWithFiles; transition: Transition }[]
+        ).filter(({ pose }) => pose.difficulty === selectedDifficulty);
       }
     }
 
     return options;
   };
 
-  const addPoseToFlow = (pose: Pose, transition?: Transition) => {
+  const addPoseToFlow = (pose: PoseWithFiles, transition?: Transition) => {
     setCurrentFlow(prev => [...prev, { pose, transition }]);
     setIsStartingPose(false);
   };
@@ -131,7 +133,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     setShowSaveModal(true);
   };
 
-  const handleShowPoseDetails = (pose: Pose) => {
+  const handleShowPoseDetails = (pose: PoseWithFiles) => {
     setSelectedPose(pose);
     setShowDetailModal(true);
   };
@@ -450,7 +452,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {isStartingPose
-                ? (filteredOptions as Pose[]).map(pose => (
+                ? (filteredOptions as PoseWithFiles[]).map(pose => (
                     <PoseCard
                       key={pose.id}
                       pose={pose}
@@ -461,7 +463,10 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     />
                   ))
                 : (
-                    filteredOptions as { pose: Pose; transition: Transition }[]
+                    filteredOptions as {
+                      pose: PoseWithFiles;
+                      transition: Transition;
+                    }[]
                   ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">
                       <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">

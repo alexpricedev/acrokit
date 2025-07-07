@@ -10,6 +10,8 @@ export const db = init({
 export type {
   Schema,
   Pose,
+  PoseWithFiles,
+  File,
   Transition,
   Flow,
   User,

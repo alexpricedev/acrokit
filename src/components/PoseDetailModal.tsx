@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { Pose } from '../lib/instant';
+import { PoseWithFiles } from '../lib/instant';
 
 interface PoseDetailModalProps {
-  pose: Pose | null;
+  pose: PoseWithFiles | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -126,9 +126,9 @@ export function PoseDetailModal({
             <div className="grid gap-4">
               {/* Main image */}
               <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                {pose.imageUrl ? (
+                {pose.imageFile?.url ? (
                   <img
-                    src={pose.imageUrl}
+                    src={pose.imageFile.url}
                     alt={pose.name}
                     className="w-full h-full object-cover"
                   />
@@ -140,12 +140,12 @@ export function PoseDetailModal({
               </div>
 
               {/* Additional images if available */}
-              {(pose.baseImageUrl || pose.flyerImageUrl) && (
+              {(pose.baseImageFile?.url || pose.flyerImageFile?.url) && (
                 <div className="grid grid-cols-2 gap-4">
-                  {pose.baseImageUrl && (
+                  {pose.baseImageFile?.url && (
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={pose.baseImageUrl}
+                        src={pose.baseImageFile.url}
                         alt={`${pose.name} - Base position`}
                         className="w-full h-full object-cover"
                       />
@@ -154,10 +154,10 @@ export function PoseDetailModal({
                       </div>
                     </div>
                   )}
-                  {pose.flyerImageUrl && (
+                  {pose.flyerImageFile?.url && (
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={pose.flyerImageUrl}
+                        src={pose.flyerImageFile.url}
                         alt={`${pose.name} - Flyer position`}
                         className="w-full h-full object-cover"
                       />

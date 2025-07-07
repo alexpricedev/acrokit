@@ -19,6 +19,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
         selectedDifficulty !== 'all'
           ? { where: { difficulty: selectedDifficulty } }
           : {},
+      imageFile: {},
+      baseImageFile: {},
+      flyerImageFile: {},
     },
   });
 
@@ -163,9 +166,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
             >
               {/* Image */}
               <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                {pose.imageUrl ? (
+                {pose.imageFile?.url ? (
                   <img
-                    src={pose.imageUrl}
+                    src={pose.imageFile.url}
                     alt={pose.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
