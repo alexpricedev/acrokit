@@ -4,14 +4,14 @@ import { db, id, Pose, Favorite, Profile } from '../lib/instant';
 interface UseFavoritesResult {
   favorites: Favorite[];
   isLoading: boolean;
-  error: any;
+  error: Error | null;
   isFavorited: (poseId: string) => boolean;
   toggleFavorite: (pose: Pose) => void;
 }
 
 export function useFavorites(profile: Profile | null): UseFavoritesResult {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   // Query favorites for the current profile
   const {
@@ -63,8 +63,9 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
         );
       }
     } catch (err) {
-      console.error('Error toggling favorite:', err);
-      setError(err);
+      setError(
+        err instanceof Error ? err : new Error('An unknown error occurred')
+      );
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +74,7 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
   return {
     favorites,
     isLoading: queryLoading || isLoading,
-    error: queryError || error,
+    error: (queryError instanceof Error ? queryError : null) || error,
     isFavorited,
     toggleFavorite,
   };

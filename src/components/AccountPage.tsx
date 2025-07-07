@@ -63,9 +63,8 @@ export function AccountPage() {
       }
 
       showToast('Display name updated successfully!', 'success');
-    } catch (error: any) {
-      console.error('Error updating display name:', error);
-      if (error.message?.includes('unique')) {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message?.includes('unique')) {
         setError('This display name is already taken. Please choose another.');
       } else {
         setError('Failed to update display name. Please try again.');
@@ -178,7 +177,7 @@ export function AccountPage() {
                   <div className="text-2xl font-bold text-green-600">
                     {publicFlows}
                   </div>
-                  <div className="text-sm text-gray-600">Public Flows</div>
+                  <div className="text-sm text-gray-600">Community Flows</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-2xl font-bold text-purple-600">

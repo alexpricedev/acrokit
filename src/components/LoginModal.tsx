@@ -24,9 +24,12 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
     try {
       await signInWithEmail(email);
       setIsCodeSent(true);
-    } catch (error: any) {
-      console.error('Error sending magic code:', error);
-      setError(error.message || 'Failed to send code. Please try again.');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to send code. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -41,9 +44,12 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
     try {
       await verifyCode(email, code);
       onClose(); // Close modal on successful sign-in
-    } catch (error: any) {
-      console.error('Error verifying code:', error);
-      setError(error.message || 'Invalid code. Please try again.');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Invalid code. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +164,7 @@ export function LoginModal({ isOpen, mode, onClose }: LoginModalProps) {
                 disabled={isLoading || code.length !== 6}
                 className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Verifying...' : 'Verify code'}
+                {isLoading ? 'Verifying...' : 'Verify Code'}
               </button>
               <button
                 type="button"

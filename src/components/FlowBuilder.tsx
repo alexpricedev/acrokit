@@ -43,9 +43,8 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   useEffect(() => {
     if (hasError) {
       showToast('Failed to load poses and transitions from database', 'error');
-      console.error('Database query errors:', { error: flowData.error });
     }
-  }, [hasError, flowData.error, showToast]);
+  }, [hasError, showToast]);
 
   // Update flow state when initialFlow changes
   useEffect(() => {
@@ -185,7 +184,6 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
         'success'
       );
     } catch (error) {
-      console.error('Error generating random flow:', error);
       showToast('Error generating random flow. Please try again.', 'error');
     }
   };
@@ -273,7 +271,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     <button
                       onClick={() => handleShowPoseDetails(step.pose)}
                       className="p-1 hover:bg-gray-100 rounded transition-colors"
-                      title="View pose details"
+                      title="View Pose Details"
                     >
                       <svg
                         width="16"
@@ -335,13 +333,13 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     onClick={removeLastPose}
                     className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
                   >
-                    Remove last
+                    Remove Last
                   </button>
                   <button
                     onClick={clearFlow}
                     className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                   >
-                    Clear all
+                    Clear All
                   </button>
                 </div>
               )}
