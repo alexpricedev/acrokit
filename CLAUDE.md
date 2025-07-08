@@ -44,19 +44,32 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 
 ## 🧪 Testing Strategy
 
-### Playwright Visual Testing
+### Playwright Visual Testing (Firefox Optimized)
 - **Purpose**: Test UI and user flows, validate design matches prototype
+- **Browser**: Firefox only (ARM64 Linux compatible)
+- **Setup**: Optimized configuration for reliable testing on ARM64 architecture
 - **Key Commands**:
   ```bash
-  npm run dev  # Start server (usually localhost:3000)
-  npx playwright install  # Install browsers (one-time setup)
+  npm run dev            # Start server (usually localhost:3000)
+  npm run test:install   # Install Firefox browser (one-time setup)
+  npm run test           # Run all tests with Firefox
+  npm run test:visual    # Run visual regression tests
+  npm run test:basic     # Run basic functionality tests
+  npm run test:headed    # Run tests with visible browser
+  npm run test:fallback  # Fallback testing when MCP doesn't work
+  npm run test:clean     # Clean up test results
   ```
+- **MCP Configuration**: Updated `.mcp.json` to use Microsoft Playwright MCP with Firefox
 - **Testing Pattern**: Navigate → Screenshot → Interact → Screenshot
 - **Example Usage**:
   ```typescript
+  // MCP Playwright (when working)
   await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
-  await mcp__playwright__browser_screenshot({ name: "homepage" })
-  await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
+  await mcp__playwright__browser_take_screenshot({ filename: "homepage.png" })
+  await mcp__playwright__browser_click({ element: "Sign In button", ref: "button[class*='bg-blue-500']" })
+  
+  // Regular Playwright (fallback)
+  npm run test:fallback  # Runs comprehensive testing script
   ```
 
 ### Design Validation
@@ -214,25 +227,37 @@ type Schema = {
 
 **MANDATORY**: Before and after ANY code changes, you MUST:
 
-1. **Test with Playwright**: Use the browser tools to validate functionality
+1. **Test with Playwright**: Use Firefox browser tools to validate functionality
 2. **Take screenshots**: Document current state vs expected state
 3. **Test core flows**: Authentication → Flow Building → Saving → Loading
 
 ### Essential Testing Commands
-```typescript
-// Navigate to app
-await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
+```bash
+# Quick testing (use this first)
+npm run test:basic     # Test core functionality
+npm run test:visual    # Test responsive design
 
-// Take screenshots for validation
-await mcp__playwright__browser_screenshot({ name: "current-state" })
+# When MCP Playwright works
+npm run test:headed    # Debug with visible browser
 
-// Test interactions
-await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
-await mcp__playwright__browser_fill({ selector: "input[type='email']", value: "test@example.com" })
-
-// Execute JavaScript for complex interactions
-await mcp__playwright__browser_evaluate({ script: "document.querySelector('button').click()" })
+# When MCP Playwright doesn't work
+npm run test:fallback  # Comprehensive fallback testing
 ```
+
+```typescript
+// MCP Playwright commands (when available)
+await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
+await mcp__playwright__browser_take_screenshot({ filename: "current-state.png" })
+await mcp__playwright__browser_click({ element: "button", ref: "button[class*='bg-blue-500']" })
+await mcp__playwright__browser_type({ element: "email input", ref: "input[type='email']", text: "test@example.com" })
+```
+
+### Testing Reliability
+- **Firefox Only**: Optimized for ARM64 Linux, Chrome not supported
+- **Minimal Launch Args**: Simplified configuration prevents browser startup issues
+- **Fallback System**: `npm run test:fallback` when MCP is unreliable
+- **Auto-retry**: Built-in retry logic for flaky tests
+- **Comprehensive Coverage**: Desktop, tablet, mobile responsive testing
 
 ### Why This Matters
 - **User Experience**: Every interaction must be smooth and intuitive  

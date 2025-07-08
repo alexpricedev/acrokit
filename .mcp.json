@@ -8,7 +8,9 @@
       "command": "npx",
       "args": [
         "-y",
-        "@automatalabs/mcp-server-playwright"
+        "@playwright/mcp@latest",
+        "--config",
+        "/home/adp/projects/acrokit/playwright-mcp.config.json"
       ]
     },
     "puppeteer": {

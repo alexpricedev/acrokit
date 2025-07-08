@@ -58,7 +58,9 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     }
   };
 
-  const getCreatorName = (flow: { $user?: { id: string; profile?: { displayName?: string } } }) => {
+  const getCreatorName = (flow: {
+    $user?: { id: string; profile?: { displayName?: string } };
+  }) => {
     // Check if the flow is by the current user
     if (user && flow.$user?.id === user.id) {
       return profile?.displayName || user.email || 'You';

@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Flow, FlowStep, FlowWithUser, db, id, PoseWithFiles } from '../lib/instant';
+import {
+  Flow,
+  FlowStep,
+  FlowWithUser,
+  db,
+  id,
+  PoseWithFiles,
+} from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { PoseCard } from './PoseCard';
