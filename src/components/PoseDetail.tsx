@@ -16,6 +16,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
   const { isLoading, data, error } = db.useQuery({
     poses: {
       $: { where: { id: poseId } },
+      imageFile: {},
       comments: {
         $: { order: { createdAt: 'desc' } },
         author: {},
@@ -28,11 +29,11 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -46,7 +47,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
     setIsSubmitting(true);
     try {
       const commentId = id();
-      const now = Date.now();
+      const now = new Date().toISOString();
 
       await db.transact([
         db.tx.comments[commentId]
@@ -69,7 +70,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
     }
   };
 
-  const formatDate = (timestamp: number) => {
+  const formatDate = (timestamp: string | number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -111,9 +112,9 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
           <div className="space-y-4">
             {/* Primary Image */}
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              {pose.imageUrl ? (
+              {pose.imageFile?.url ? (
                 <img
-                  src={pose.imageUrl}
+                  src={pose.imageFile.url}
                   alt={pose.name}
                   className="w-full h-full object-cover"
                 />
@@ -135,26 +136,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
             </div>
 
             {/* Additional Images */}
-            <div className="grid grid-cols-2 gap-2">
-              {pose.baseImageUrl && (
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src={pose.baseImageUrl}
-                    alt={`${pose.name} - Base view`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              {pose.flyerImageUrl && (
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src={pose.flyerImageUrl}
-                    alt={`${pose.name} - Flyer view`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-2"></div>
           </div>
 
           {/* Details */}

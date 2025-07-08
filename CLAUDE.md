@@ -35,10 +35,12 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 ### InstantDB Integration
 - **Database**: Real-time database with optimistic updates and real auth
 - **App ID**: `63c65c15-20c2-418f-b504-a823ecadb2d0` (production)
-- **Schema**: Poses, transitions, and flows with proper relationships
+- **Schema**: Poses, transitions, favorites, and flows with proper entity relationships
+- **Data Standards**: Difficulty levels use "Easy", "Medium", "Hard"; All dates use ISO string format "2025-07-07T20:50:38.091Z"
 - **Documentation**: Check `INSTANT.md` for InstantDB API reference, syntax, and best practices
 - **Key Features**: Magic code auth, real-time queries, transactions, proper error handling
 - **MCP**: You have access to the instant MCP server and can read data, push schema changes etc as you need
+- **Entity Linking**: All relationships use proper InstantDB entity linking (transitions ↔ poses, favorites ↔ poses/profiles) instead of foreign keys
 
 ## 🧪 Testing Strategy
 

@@ -10,12 +10,17 @@ export const db = init({
 export type {
   Schema,
   Pose,
+  PoseWithFiles,
+  File,
   Transition,
+  TransitionWithPoses,
   Flow,
+  FlowWithUser,
   User,
   Profile,
   Comment,
   Favorite,
+  FavoriteWithLinkedData,
   FlowStep,
 } from './schema';
 export { id };

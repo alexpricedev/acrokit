@@ -13,12 +13,13 @@ export function AccountPage() {
   const { data: flowsData } = db.useQuery(
     user
       ? {
-          flows: {
+          $users: {
             $: {
               where: {
-                userId: user.id,
+                id: user.id,
               },
             },
+            flows: {},
           },
         }
       : {}
@@ -32,9 +33,9 @@ export function AccountPage() {
   }, [profile]);
 
   // Calculate flow statistics
-  const totalFlows = flowsData?.flows?.length || 0;
-  const publicFlows =
-    flowsData?.flows?.filter(flow => flow.isPublic).length || 0;
+  const userFlows = flowsData?.$users?.[0]?.flows || [];
+  const totalFlows = userFlows.length;
+  const publicFlows = userFlows.filter(flow => flow.isPublic).length;
 
   const handleUpdateDisplayName = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +58,7 @@ export function AccountPage() {
         await db.transact(
           db.tx.profiles[profile.id].update({
             displayName: displayName.trim(),
-            updatedAt: Date.now(),
+            updatedAt: new Date().toISOString(),
           })
         );
       }

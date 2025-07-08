@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Pose, Transition, FlowStep } from '../lib/instant';
+import { PoseWithFiles, TransitionWithPoses, FlowStep } from '../lib/instant';
 import { PoseCard } from './PoseCard';
 import { FlowSaveModal } from './FlowSaveModal';
 import { RandomFlowModal } from './RandomFlowModal';
@@ -24,7 +24,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedPose, setSelectedPose] = useState<Pose | null>(null);
+  const [selectedPose, setSelectedPose] = useState<PoseWithFiles | null>(null);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
     null
@@ -79,31 +79,36 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     // Apply favorites filter
     if (showOnlyFavorites) {
       if (isStartingPose) {
-        options = (options as Pose[]).filter(pose => isFavorited(pose.id));
-      } else {
-        options = (options as { pose: Pose; transition: Transition }[]).filter(
-          ({ pose }) => isFavorited(pose.id)
+        options = (options as PoseWithFiles[]).filter(pose =>
+          isFavorited(pose.id)
         );
+      } else {
+        options = (
+          options as { pose: PoseWithFiles; transition: TransitionWithPoses }[]
+        ).filter(({ pose }) => isFavorited(pose.id));
       }
     }
 
     // Apply difficulty filter
     if (selectedDifficulty) {
       if (isStartingPose) {
-        options = (options as Pose[]).filter(
+        options = (options as PoseWithFiles[]).filter(
           pose => pose.difficulty === selectedDifficulty
         );
       } else {
-        options = (options as { pose: Pose; transition: Transition }[]).filter(
-          ({ pose }) => pose.difficulty === selectedDifficulty
-        );
+        options = (
+          options as { pose: PoseWithFiles; transition: TransitionWithPoses }[]
+        ).filter(({ pose }) => pose.difficulty === selectedDifficulty);
       }
     }
 
     return options;
   };
 
-  const addPoseToFlow = (pose: Pose, transition?: Transition) => {
+  const addPoseToFlow = (
+    pose: PoseWithFiles,
+    transition?: TransitionWithPoses
+  ) => {
     setCurrentFlow(prev => [...prev, { pose, transition }]);
     setIsStartingPose(false);
   };
@@ -131,7 +136,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
     setShowSaveModal(true);
   };
 
-  const handleShowPoseDetails = (pose: Pose) => {
+  const handleShowPoseDetails = (pose: PoseWithFiles) => {
     setSelectedPose(pose);
     setShowDetailModal(true);
   };
@@ -160,11 +165,12 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
           ];
 
         // Find transition for this pose (if not the first pose)
-        let transition: Transition | undefined;
+        let transition: TransitionWithPoses | undefined;
         if (newFlow.length > 0) {
           const lastPose = newFlow[newFlow.length - 1].pose;
           transition = transitions.find(
-            t => t.fromPoseId === lastPose.id && t.toPoseId === randomPose.id
+            t =>
+              t.fromPose?.id === lastPose.id && t.toPose?.id === randomPose.id
           );
         }
 
@@ -389,11 +395,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'beginner' ? null : 'beginner'
+                    selectedDifficulty === 'Easy' ? null : 'Easy'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'beginner'
+                  selectedDifficulty === 'Easy'
                     ? 'bg-green-100 text-green-800 border-green-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}
@@ -404,13 +410,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'intermediate'
-                      ? null
-                      : 'intermediate'
+                    selectedDifficulty === 'Medium' ? null : 'Medium'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'intermediate'
+                  selectedDifficulty === 'Medium'
                     ? 'bg-blue-100 text-blue-800 border-blue-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}
@@ -421,11 +425,11 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
               <button
                 onClick={() =>
                   setSelectedDifficulty(
-                    selectedDifficulty === 'advanced' ? null : 'advanced'
+                    selectedDifficulty === 'Hard' ? null : 'Hard'
                   )
                 }
                 className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors border ${
-                  selectedDifficulty === 'advanced'
+                  selectedDifficulty === 'Hard'
                     ? 'bg-purple-100 text-purple-800 border-purple-300'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                 }`}
@@ -450,7 +454,7 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {isStartingPose
-                ? (filteredOptions as Pose[]).map(pose => (
+                ? (filteredOptions as PoseWithFiles[]).map(pose => (
                     <PoseCard
                       key={pose.id}
                       pose={pose}
@@ -461,7 +465,10 @@ export function FlowBuilder({ initialFlow, editingFlowId }: FlowBuilderProps) {
                     />
                   ))
                 : (
-                    filteredOptions as { pose: Pose; transition: Transition }[]
+                    filteredOptions as {
+                      pose: PoseWithFiles;
+                      transition: TransitionWithPoses;
+                    }[]
                   ).map(({ pose, transition }) => (
                     <div key={pose.id} className="space-y-1 sm:space-y-2">
                       <div className="text-xs sm:text-sm text-gray-500 font-medium px-1">

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { Pose } from '../lib/instant';
+import { PoseWithFiles } from '../lib/instant';
 
 interface PoseDetailModalProps {
-  pose: Pose | null;
+  pose: PoseWithFiles | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -52,11 +52,11 @@ export function PoseDetailModal({
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-500 text-white';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-500 text-white';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-500 text-white';
@@ -65,11 +65,11 @@ export function PoseDetailModal({
 
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'Easy';
-      case 'intermediate':
+      case 'Medium':
         return 'Medium';
-      case 'advanced':
+      case 'Hard':
         return 'Hard';
       default:
         return difficulty;
@@ -124,11 +124,11 @@ export function PoseDetailModal({
           {/* Image Section */}
           <div className="mb-6">
             <div className="grid gap-4">
-              {/* Main image */}
-              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
-                {pose.imageUrl ? (
+              {/* Main image - square aspect ratio */}
+              <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center max-w-md mx-auto">
+                {pose.imageFile?.url ? (
                   <img
-                    src={pose.imageUrl}
+                    src={pose.imageFile.url}
                     alt={pose.name}
                     className="w-full h-full object-cover"
                   />
@@ -138,36 +138,6 @@ export function PoseDetailModal({
                   </span>
                 )}
               </div>
-
-              {/* Additional images if available */}
-              {(pose.baseImageUrl || pose.flyerImageUrl) && (
-                <div className="grid grid-cols-2 gap-4">
-                  {pose.baseImageUrl && (
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={pose.baseImageUrl}
-                        alt={`${pose.name} - Base position`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="p-2 bg-gray-900 bg-opacity-75 text-white text-sm">
-                        Base position
-                      </div>
-                    </div>
-                  )}
-                  {pose.flyerImageUrl && (
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={pose.flyerImageUrl}
-                        alt={`${pose.name} - Flyer position`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="p-2 bg-gray-900 bg-opacity-75 text-white text-sm">
-                        Flyer position
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
 

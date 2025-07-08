@@ -57,7 +57,7 @@ export function FlowSaveModal({
     setIsSaving(true);
 
     try {
-      const now = Date.now();
+      const now = new Date().toISOString();
 
       if (editingFlowId) {
         // Update existing flow
@@ -79,13 +79,14 @@ export function FlowSaveModal({
           name: flowName.trim(),
           description: flowDescription.trim() || undefined,
           isPublic,
-          userId: user.id,
           stepsData: JSON.stringify(currentFlow),
           createdAt: now,
           updatedAt: now,
         };
 
-        await db.transact(db.tx.flows[flowId].update(flowData));
+        await db.transact(
+          db.tx.flows[flowId].update(flowData).link({ $user: user.id })
+        );
         showToast('Flow saved successfully!', 'success');
       }
 

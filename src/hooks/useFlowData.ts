@@ -1,6 +1,6 @@
 import { usePoses } from './usePoses';
 import { useTransitions } from './useTransitions';
-import { Pose, Transition } from '../lib/instant';
+import { PoseWithFiles, TransitionWithPoses } from '../lib/instant';
 
 /**
  * Combined hook for poses and transitions needed for flow building
@@ -17,7 +17,7 @@ export function useFlowData() {
   /**
    * Get poses that are marked as starting poses
    */
-  const getStartingPoses = (): Pose[] => {
+  const getStartingPoses = (): PoseWithFiles[] => {
     const startingPoses = posesResult.poses.filter(
       pose => pose.isStartingPose === true
     );
@@ -30,19 +30,19 @@ export function useFlowData() {
    */
   const getValidNextPoses = (
     fromPoseId: string
-  ): Array<{ pose: Pose; transition: Transition }> => {
+  ): Array<{ pose: PoseWithFiles; transition: TransitionWithPoses }> => {
     const validTransitions = transitionsResult.transitions.filter(
-      t => t.fromPoseId === fromPoseId
+      t => t.fromPose?.id === fromPoseId
     );
 
     return validTransitions
       .map(transition => ({
-        pose: posesResult.poses.find(p => p.id === transition.toPoseId),
+        pose: transition.toPose,
         transition,
       }))
       .filter(item => item.pose) as Array<{
-      pose: Pose;
-      transition: Transition;
+      pose: PoseWithFiles;
+      transition: TransitionWithPoses;
     }>;
   };
 

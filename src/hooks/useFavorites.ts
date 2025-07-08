@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { db, id, Pose, Favorite, Profile } from '../lib/instant';
+import { db, id, Pose, FavoriteWithLinkedData, Profile } from '../lib/instant';
 
 interface UseFavoritesResult {
-  favorites: Favorite[];
+  favorites: FavoriteWithLinkedData[];
   isLoading: boolean;
   error: Error | null;
   isFavorited: (poseId: string) => boolean;
@@ -13,7 +13,7 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Query favorites for the current profile
+  // Query favorites for the current profile using linked entities
   const {
     data: favoritesData,
     isLoading: queryLoading,
@@ -21,23 +21,28 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
   } = db.useQuery(
     profile
       ? {
-          favorites: {
+          profiles: {
             $: {
               where: {
-                profileId: profile.id,
+                id: profile.id,
               },
             },
-            pose: {},
+            favorites: {
+              pose: {
+                imageFile: {},
+              },
+            },
           },
         }
       : null // Defer query if no profile
   );
 
-  const favorites = favoritesData?.favorites || [];
+  const favorites = (favoritesData?.profiles?.[0]?.favorites ||
+    []) as FavoriteWithLinkedData[];
 
   // Check if a pose is favorited
   const isFavorited = (poseId: string): boolean => {
-    return favorites.some(fav => fav.poseId === poseId);
+    return favorites.some(fav => fav.pose?.id === poseId);
   };
 
   // Toggle favorite status
@@ -48,18 +53,23 @@ export function useFavorites(profile: Profile | null): UseFavoritesResult {
     setError(null);
 
     try {
-      const existingFavorite = favorites.find(fav => fav.poseId === pose.id);
+      const existingFavorite = favorites.find(fav => fav.pose?.id === pose.id);
 
       if (existingFavorite) {
         // Remove from favorites
         await db.transact(db.tx.favorites[existingFavorite.id].delete());
       } else {
-        // Add to favorites
+        // Add to favorites using entity linking
+        const favoriteId = id();
         await db.transact(
-          db.tx.favorites[id()].update({
-            poseId: pose.id,
-            profileId: profile.id,
-          })
+          db.tx.favorites[favoriteId]
+            .update({
+              createdAt: new Date().toISOString(),
+            })
+            .link({
+              pose: pose.id,
+              profile: profile.id,
+            })
         );
       }
     } catch (err) {

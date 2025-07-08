@@ -6,51 +6,52 @@ export const schema = i.schema({
     $users: i.entity({
       email: i.string().unique().indexed(),
     }),
+    $files: i.entity({
+      path: i.string().unique().indexed(),
+      url: i.string(),
+    }),
     poses: i.entity({
       name: i.string().indexed(),
       description: i.string(),
       difficulty: i.string(),
       isStartingPose: i.boolean().optional(),
-      imageUrl: i.string().optional(),
-      baseImageUrl: i.string().optional(),
-      flyerImageUrl: i.string().optional(),
-      createdAt: i.number(),
+      createdAt: i.date(),
     }),
     transitions: i.entity({
       name: i.string(),
       description: i.string().optional(),
-      fromPoseId: i.string(),
-      toPoseId: i.string(),
-      createdAt: i.number(),
+      createdAt: i.date(),
     }),
     flows: i.entity({
       name: i.string(),
       description: i.string().optional(),
       isPublic: i.boolean(),
-      userId: i.string(),
       stepsData: i.string(),
-      createdAt: i.number(),
-      updatedAt: i.number(),
+      createdAt: i.date(),
+      updatedAt: i.date(),
     }),
     profiles: i.entity({
       displayName: i.string().unique().indexed(),
-      createdAt: i.number(),
-      updatedAt: i.number(),
+      createdAt: i.date(),
+      updatedAt: i.date(),
     }),
     comments: i.entity({
       content: i.string(),
-      createdAt: i.number().indexed(),
-      updatedAt: i.number().indexed(),
+      createdAt: i.date().indexed(),
+      updatedAt: i.date().indexed(),
     }),
     favorites: i.entity({
-      poseId: i.string(),
-      profileId: i.string(),
+      createdAt: i.date().optional(),
     }),
   },
   links: {
     profileUser: {
       forward: { on: 'profiles', has: 'one', label: '$user' },
       reverse: { on: '$users', has: 'one', label: 'profile' },
+    },
+    poseImageFile: {
+      forward: { on: 'poses', has: 'one', label: 'imageFile' },
+      reverse: { on: '$files', has: 'many', label: 'posesWithImage' },
     },
     commentsPose: {
       forward: { on: 'comments', has: 'one', label: 'pose' },
@@ -68,6 +69,18 @@ export const schema = i.schema({
       forward: { on: 'favorites', has: 'one', label: 'profile' },
       reverse: { on: 'profiles', has: 'many', label: 'favorites' },
     },
+    transitionFromPose: {
+      forward: { on: 'transitions', has: 'one', label: 'fromPose' },
+      reverse: { on: 'poses', has: 'many', label: 'transitionsFrom' },
+    },
+    transitionToPose: {
+      forward: { on: 'transitions', has: 'one', label: 'toPose' },
+      reverse: { on: 'poses', has: 'many', label: 'transitionsTo' },
+    },
+    flowUser: {
+      forward: { on: 'flows', has: 'one', label: '$user' },
+      reverse: { on: '$users', has: 'many', label: 'flows' },
+    },
   },
 });
 
@@ -75,62 +88,78 @@ export const schema = i.schema({
 export const APP_ID = '63c65c15-20c2-418f-b504-a823ecadb2d0';
 
 // TypeScript types derived from schema
+// Note: InstantDB returns dates as strings in queries, but we define them as Date for type safety
 export type Schema = {
   $users: {
     id: string;
     email?: string; // Optional per InstantDB schema
   };
+  $files: {
+    id: string;
+    path: string;
+    url: string;
+  };
   poses: {
     id: string;
     name: string;
     description: string;
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
+    difficulty: 'Easy' | 'Medium' | 'Hard';
     isStartingPose?: boolean;
-    imageUrl?: string;
-    baseImageUrl?: string;
-    flyerImageUrl?: string;
-    createdAt: number;
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   transitions: {
     id: string;
     name: string;
     description?: string;
-    fromPoseId: string;
-    toPoseId: string;
-    createdAt: number;
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   flows: {
     id: string;
     name: string;
     description?: string;
     isPublic: boolean;
-    userId: string;
     stepsData: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   profiles: {
     id: string;
     displayName: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   comments: {
     id: string;
     content: string;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
+    updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
   favorites: {
     id: string;
-    poseId: string;
-    profileId: string;
+    createdAt?: string; // ISO date string like "2025-07-07T20:50:38.091Z", optional field
   };
 };
 
 export type Pose = Schema['poses'];
+export type File = Schema['$files'];
+
+// Extended types with linked data for components
+export type PoseWithFiles = Pose & {
+  imageFile?: File;
+};
 export type Transition = Schema['transitions'];
+export type TransitionWithPoses = Transition & {
+  fromPose?: Pose;
+  toPose?: Pose;
+};
+export type FavoriteWithLinkedData = Favorite & {
+  pose?: PoseWithFiles;
+  profile?: Profile;
+};
 export type Flow = Schema['flows'];
+export type FlowWithUser = Flow & {
+  $user?: User;
+};
 export type Profile = Schema['profiles'];
 export type Comment = Schema['comments'];
 export type Favorite = Schema['favorites'];
@@ -141,6 +170,6 @@ export type User = {
 
 // Local flow step interface for the builder
 export interface FlowStep {
-  pose: Pose;
-  transition?: Transition;
+  pose: PoseWithFiles;
+  transition?: TransitionWithPoses;
 }

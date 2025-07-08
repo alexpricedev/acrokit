@@ -19,6 +19,7 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
         selectedDifficulty !== 'all'
           ? { where: { difficulty: selectedDifficulty } }
           : {},
+      imageFile: {},
     },
   });
 
@@ -52,11 +53,11 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -65,11 +66,11 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
 
   const getDifficultyGradient = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'from-green-200 to-green-300';
-      case 'intermediate':
+      case 'Medium':
         return 'from-blue-200 to-blue-300';
-      case 'advanced':
+      case 'Hard':
         return 'from-red-200 to-red-300';
       default:
         return 'from-gray-200 to-gray-300';
@@ -113,9 +114,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
         )}
 
         <button
-          onClick={() => setSelectedDifficulty('beginner')}
+          onClick={() => setSelectedDifficulty('Easy')}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
-            selectedDifficulty === 'beginner'
+            selectedDifficulty === 'Easy'
               ? 'bg-green-100 text-green-800 border-green-300'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
           }`}
@@ -123,9 +124,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
           Easy
         </button>
         <button
-          onClick={() => setSelectedDifficulty('intermediate')}
+          onClick={() => setSelectedDifficulty('Medium')}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
-            selectedDifficulty === 'intermediate'
+            selectedDifficulty === 'Medium'
               ? 'bg-blue-100 text-blue-800 border-blue-300'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
           }`}
@@ -133,9 +134,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
           Medium
         </button>
         <button
-          onClick={() => setSelectedDifficulty('advanced')}
+          onClick={() => setSelectedDifficulty('Hard')}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
-            selectedDifficulty === 'advanced'
+            selectedDifficulty === 'Hard'
               ? 'bg-purple-100 text-purple-800 border-purple-300'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
           }`}
@@ -163,9 +164,9 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
             >
               {/* Image */}
               <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                {pose.imageUrl ? (
+                {pose.imageFile?.url ? (
                   <img
-                    src={pose.imageUrl}
+                    src={pose.imageFile.url}
                     alt={pose.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -191,7 +192,17 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
                     <button
                       onClick={e => {
                         e.stopPropagation();
-                        toggleFavorite(pose as Pose);
+                        toggleFavorite({
+                          id: pose.id,
+                          name: pose.name,
+                          description: pose.description,
+                          difficulty: pose.difficulty as
+                            | 'Easy'
+                            | 'Medium'
+                            | 'Hard',
+                          isStartingPose: pose.isStartingPose,
+                          createdAt: pose.createdAt,
+                        } as Pose);
                       }}
                       className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                         isFavorited(pose.id)

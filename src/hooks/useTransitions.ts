@@ -1,15 +1,25 @@
-import { db, Transition } from '../lib/instant';
+import { db, TransitionWithPoses } from '../lib/instant';
 
 /**
  * Hook to fetch all transitions from InstantDB
  * Follows InstantDB patterns with proper loading/error handling
  */
 export function useTransitions() {
-  const { data, isLoading, error } = db.useQuery({ transitions: {} });
+  const { data, isLoading, error } = db.useQuery({
+    transitions: {
+      fromPose: {
+        imageFile: {},
+      },
+      toPose: {
+        imageFile: {},
+      },
+    },
+  });
 
   // Extract transitions array from data according to InstantDB query structure
-  // Query { transitions: {} } should return { transitions: [...] }
-  const transitions: Transition[] = (data?.transitions || []) as Transition[];
+  // Query now includes linked poses
+  const transitions: TransitionWithPoses[] = (data?.transitions ||
+    []) as TransitionWithPoses[];
 
   return {
     transitions,

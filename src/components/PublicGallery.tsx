@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flow, FlowStep, db, id } from '../lib/instant';
+import { Flow, FlowStep, FlowWithUser, db, id } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 
@@ -11,10 +11,10 @@ interface PublicGalleryProps {
 export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
   const { user, profile } = useAuth();
   const { showToast } = useToast();
-  const [flows, setFlows] = useState<Flow[]>([]);
+  const [flows, setFlows] = useState<FlowWithUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load public flows from InstantDB with user profiles
+  // Load public flows from InstantDB with linked users and profiles
   const { isLoading: dbLoading, data } = db.useQuery({
     flows: {
       $: {
@@ -22,17 +22,18 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
           isPublic: true,
         },
       },
-    },
-    $users: {
-      profile: {},
+      $user: {
+        profile: {},
+      },
     },
   });
 
   useEffect(() => {
     if (!dbLoading && data?.flows) {
       // Sort by most recently updated first
-      const sortedFlows = (data.flows as Flow[]).sort(
-        (a, b) => b.updatedAt - a.updatedAt
+      const sortedFlows = (data.flows as FlowWithUser[]).sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       setFlows(sortedFlows);
       setIsLoading(false);
@@ -57,18 +58,15 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
     }
   };
 
-  const getCreatorName = (flow: { userId: string }) => {
+  const getCreatorName = (flow: { $user?: { id: string; profile?: { displayName?: string } } }) => {
     // Check if the flow is by the current user
-    if (user && flow.userId === user.id) {
+    if (user && flow.$user?.id === user.id) {
       return profile?.displayName || user.email || 'You';
     }
 
-    // Find the creator's profile
-    const creatorData = data?.$users?.find(
-      (userData: { id: string }) => userData.id === flow.userId
-    );
-    if (creatorData?.profile?.displayName) {
-      return creatorData.profile.displayName;
+    // Use the linked user's profile
+    if (flow.$user?.profile?.displayName) {
+      return flow.$user.profile.displayName;
     }
 
     return 'Community Member';
@@ -84,18 +82,20 @@ export function PublicGallery({ onViewFlow, onLoadFlow }: PublicGalleryProps) {
       // Parse the flow steps for loading into the builder
       const steps = JSON.parse(flow.stepsData) as FlowStep[];
 
+      const flowId = id();
       await db.transact(
-        db.tx.flows[id()].update({
-          name: `Remix of ${flow.name}`,
-          description: flow.description
-            ? `${flow.description} (remixed)`
-            : 'Remixed from public gallery',
-          isPublic: false,
-          userId: user.id,
-          stepsData: flow.stepsData,
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        })
+        db.tx.flows[flowId]
+          .update({
+            name: `Remix of ${flow.name}`,
+            description: flow.description
+              ? `${flow.description} (remixed)`
+              : 'Remixed from public gallery',
+            isPublic: false,
+            stepsData: flow.stepsData,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .link({ $user: user.id })
       );
 
       showToast(`Remixed "${flow.name}" to your flows!`, 'success');

@@ -1,14 +1,14 @@
-import { Pose } from '../lib/instant';
+import { PoseWithFiles } from '../lib/instant';
 
 interface PoseCardProps {
-  pose: Pose;
+  pose: PoseWithFiles;
   onClick?: () => void;
   isSelected?: boolean;
   isDisabled?: boolean;
   showAddButton?: boolean;
-  onShowDetails?: (pose: Pose) => void;
+  onShowDetails?: (pose: PoseWithFiles) => void;
   isFavorited?: boolean;
-  onToggleFavorite?: (pose: Pose) => void;
+  onToggleFavorite?: (pose: PoseWithFiles) => void;
 }
 
 export function PoseCard({
@@ -23,11 +23,11 @@ export function PoseCard({
 }: PoseCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'bg-green-500 text-white';
-      case 'intermediate':
+      case 'Medium':
         return 'bg-blue-500 text-white';
-      case 'advanced':
+      case 'Hard':
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-500 text-white';
@@ -35,25 +35,17 @@ export function PoseCard({
   };
 
   const getDifficultyLabel = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'Easy';
-      case 'intermediate':
-        return 'Medium';
-      case 'advanced':
-        return 'Hard';
-      default:
-        return difficulty;
-    }
+    // Difficulty is already the display label (Easy/Medium/Hard)
+    return difficulty;
   };
 
   const getCardBorderGradient = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner':
+      case 'Easy':
         return 'from-green-400 to-green-600';
-      case 'intermediate':
+      case 'Medium':
         return 'from-blue-400 to-blue-600';
-      case 'advanced':
+      case 'Hard':
         return 'from-purple-400 to-purple-600';
       default:
         return 'from-gray-400 to-gray-600';
@@ -85,11 +77,11 @@ export function PoseCard({
       <div className="p-4">
         <h3 className="font-bold text-gray-900 text-lg mb-3">{pose.name}</h3>
 
-        {/* Image placeholder area */}
-        <div className="h-32 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-          {pose.imageUrl ? (
+        {/* Image placeholder area - square aspect ratio */}
+        <div className="aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+          {pose.imageFile?.url ? (
             <img
-              src={pose.imageUrl}
+              src={pose.imageFile.url}
               alt={pose.name}
               className="w-full h-full object-cover rounded-lg"
             />
