@@ -39,8 +39,8 @@ export function DisplayNameModal({
           db.tx.profiles[profileId]
             .update({
               displayName: displayName.trim(),
-              createdAt: Date.now(),
-              updatedAt: Date.now(),
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             })
             .link({ $user: user.id })
         );

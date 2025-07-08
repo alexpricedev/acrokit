@@ -26,7 +26,6 @@ export const schema = i.schema({
       name: i.string(),
       description: i.string().optional(),
       isPublic: i.boolean(),
-      userId: i.string(),
       stepsData: i.string(),
       createdAt: i.date(),
       updatedAt: i.date(),
@@ -78,6 +77,10 @@ export const schema = i.schema({
       forward: { on: 'transitions', has: 'one', label: 'toPose' },
       reverse: { on: 'poses', has: 'many', label: 'transitionsTo' },
     },
+    flowUser: {
+      forward: { on: 'flows', has: 'one', label: '$user' },
+      reverse: { on: '$users', has: 'many', label: 'flows' },
+    },
   },
 });
 
@@ -115,7 +118,6 @@ export type Schema = {
     name: string;
     description?: string;
     isPublic: boolean;
-    userId: string;
     stepsData: string;
     createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
     updatedAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
@@ -155,6 +157,9 @@ export type FavoriteWithLinkedData = Favorite & {
   profile?: Profile;
 };
 export type Flow = Schema['flows'];
+export type FlowWithUser = Flow & {
+  $user?: User;
+};
 export type Profile = Schema['profiles'];
 export type Comment = Schema['comments'];
 export type Favorite = Schema['favorites'];

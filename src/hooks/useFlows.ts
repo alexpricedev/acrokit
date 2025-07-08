@@ -1,24 +1,27 @@
-import { db, Flow } from '../lib/instant';
+import { db, FlowWithUser } from '../lib/instant';
 
 /**
  * Hook to fetch flows from InstantDB with proper database filtering
  * Supports fetching user-specific flows or public flows
  */
 export function useFlows(userId?: string, includePublic = false) {
-  // For now, fetch all flows and filter client-side due to TypeScript complexity
-  // This can be optimized later with proper InstantDB type definitions
-  const { data, isLoading, error } = db.useQuery({ flows: {} });
+  // Fetch flows with linked user data
+  const { data, isLoading, error } = db.useQuery({
+    flows: {
+      $user: {},
+    },
+  });
 
   // Extract flows array from data
-  const allFlows: Flow[] = (data?.flows || []) as Flow[];
+  const allFlows: FlowWithUser[] = (data?.flows || []) as FlowWithUser[];
 
   // Filter flows based on parameters
   const flows = allFlows.filter(flow => {
     if (userId && includePublic) {
-      return flow.userId === userId || flow.isPublic;
+      return flow.$user?.id === userId || flow.isPublic;
     }
     if (userId) {
-      return flow.userId === userId;
+      return flow.$user?.id === userId;
     }
     if (includePublic) {
       return flow.isPublic;
@@ -28,7 +31,7 @@ export function useFlows(userId?: string, includePublic = false) {
 
   // Compute user-specific and public flows for helper properties
   const userFlows = userId
-    ? allFlows.filter(flow => flow.userId === userId)
+    ? allFlows.filter(flow => flow.$user?.id === userId)
     : [];
   const publicFlows = allFlows.filter(flow => flow.isPublic);
 

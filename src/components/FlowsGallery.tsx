@@ -31,12 +31,13 @@ export function FlowsGallery({
     shouldSkipQuery
       ? {}
       : {
-          flows: {
+          $users: {
             $: {
               where: {
-                userId: user?.id,
+                id: user?.id,
               },
             },
+            flows: {},
           },
         }
   );
@@ -47,8 +48,8 @@ export function FlowsGallery({
       return;
     }
 
-    if (!dbLoading && data?.flows) {
-      setFlows(data.flows as Flow[]);
+    if (!dbLoading && data?.$users?.[0]?.flows) {
+      setFlows(data.$users[0].flows as Flow[]);
       setIsLoading(false);
     }
   }, [user, dbLoading, data]);
@@ -104,7 +105,7 @@ export function FlowsGallery({
       await db.transact(
         db.tx.flows[flowId].update({
           isPublic: !flow.isPublic,
-          updatedAt: Date.now(),
+          updatedAt: new Date().toISOString(),
         })
       );
       // The flows will be automatically updated through the real-time subscription

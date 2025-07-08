@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flow, FlowStep, db, id, PoseWithFiles } from '../lib/instant';
+import { Flow, FlowStep, FlowWithUser, db, id, PoseWithFiles } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
 import { PoseCard } from './PoseCard';
@@ -27,7 +27,7 @@ export function FlowViewer({
   const [selectedPose, setSelectedPose] = useState<PoseWithFiles | null>(null);
   const [isPoseModalOpen, setIsPoseModalOpen] = useState(false);
 
-  // Query the specific flow by ID
+  // Query the specific flow by ID with linked user
   const {
     isLoading: dbLoading,
     data,
@@ -39,6 +39,7 @@ export function FlowViewer({
           id: flowId,
         },
       },
+      $user: {},
     },
   });
 
@@ -50,10 +51,10 @@ export function FlowViewer({
       }
 
       if (data?.flows && data.flows.length > 0) {
-        const flowData = data.flows[0] as Flow;
+        const flowData = data.flows[0] as FlowWithUser;
 
         // Check if flow is public or belongs to current user
-        if (!flowData.isPublic && (!user || flowData.userId !== user.id)) {
+        if (!flowData.isPublic && (!user || flowData.$user?.id !== user.id)) {
           showToast('This flow is private and cannot be viewed', 'error');
           onBack();
           return;
@@ -87,18 +88,20 @@ export function FlowViewer({
     }
 
     try {
+      const flowId = id();
       await db.transact(
-        db.tx.flows[id()].update({
-          name: `Remix of ${flow.name}`,
-          description: flow.description
-            ? `${flow.description} (remixed)`
-            : 'Remixed from public gallery',
-          isPublic: false,
-          userId: user.id,
-          stepsData: flow.stepsData,
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        })
+        db.tx.flows[flowId]
+          .update({
+            name: `Remix of ${flow.name}`,
+            description: flow.description
+              ? `${flow.description} (remixed)`
+              : 'Remixed from public gallery',
+            isPublic: false,
+            stepsData: flow.stepsData,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .link({ $user: user.id })
       );
 
       showToast(`Remixed "${flow.name}" to your flows!`, 'success');
@@ -190,7 +193,7 @@ export function FlowViewer({
           </div>
 
           {/* Edit button for flow owner */}
-          {user && flow.userId === user.id && (
+          {user && (flow as FlowWithUser).$user?.id === user.id && (
             <button
               onClick={() => onEditFlow(flow)}
               className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800 rounded-lg transition-colors"

@@ -15,6 +15,7 @@ export type {
   Transition,
   TransitionWithPoses,
   Flow,
+  FlowWithUser,
   User,
   Profile,
   Comment,
