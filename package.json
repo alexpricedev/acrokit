@@ -12,10 +12,8 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "seed": "node scripts/seed.js",
-    "test": "playwright test --project=firefox",
-    "test:visual": "playwright test tests/visual-regression.spec.ts --project=firefox",
-    "test:headed": "playwright test --project=firefox --headed",
-    "test:report": "playwright show-report"
+    "test": "playwright test",
+    "test:install": "playwright install firefox"
   },
   "dependencies": {
     "@instantdb/admin": "^0.20.4",

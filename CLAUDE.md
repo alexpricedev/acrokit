@@ -44,19 +44,20 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 
 ## 🧪 Testing Strategy
 
-### Playwright Visual Testing
-- **Purpose**: Test UI and user flows, validate design matches prototype
-- **Key Commands**:
+### Playwright Testing (Simple Setup)
+- **Purpose**: Test UI and user flows with Firefox
+- **Browser**: Firefox only (ARM64 Linux compatible)
+- **Setup**: Simple, minimal configuration
+- **Commands**:
   ```bash
-  npm run dev  # Start server (usually localhost:3000)
-  npx playwright install  # Install browsers (one-time setup)
+  npm run test:install   # Install Firefox (one-time setup)
+  npm test               # Run all tests
   ```
-- **Testing Pattern**: Navigate → Screenshot → Interact → Screenshot
-- **Example Usage**:
+- **MCP**: Uses Microsoft Playwright MCP with Firefox
+- **Example**:
   ```typescript
   await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
-  await mcp__playwright__browser_screenshot({ name: "homepage" })
-  await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
+  await mcp__playwright__browser_take_screenshot({ filename: "test.png" })
   ```
 
 ### Design Validation
@@ -214,25 +215,26 @@ type Schema = {
 
 **MANDATORY**: Before and after ANY code changes, you MUST:
 
-1. **Test with Playwright**: Use the browser tools to validate functionality
+1. **Test with Playwright**: Use Firefox browser tools to validate functionality
 2. **Take screenshots**: Document current state vs expected state
 3. **Test core flows**: Authentication → Flow Building → Saving → Loading
 
 ### Essential Testing Commands
-```typescript
-// Navigate to app
-await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
-
-// Take screenshots for validation
-await mcp__playwright__browser_screenshot({ name: "current-state" })
-
-// Test interactions
-await mcp__playwright__browser_click({ selector: "button[class*='bg-blue-500']" })
-await mcp__playwright__browser_fill({ selector: "input[type='email']", value: "test@example.com" })
-
-// Execute JavaScript for complex interactions
-await mcp__playwright__browser_evaluate({ script: "document.querySelector('button').click()" })
+```bash
+npm test  # Run all tests with Firefox
 ```
+
+```typescript
+// MCP Playwright commands
+await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
+await mcp__playwright__browser_take_screenshot({ filename: "test.png" })
+await mcp__playwright__browser_click({ element: "button", ref: "button[class*='bg-blue-500']" })
+```
+
+### Simple Setup
+- **Firefox Only**: Works reliably on ARM64 Linux
+- **Minimal Config**: No complex options or retries
+- **Headless**: Runs without display server requirements
 
 ### Why This Matters
 - **User Experience**: Every interaction must be smooth and intuitive  
