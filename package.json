@@ -12,18 +12,8 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "seed": "node scripts/seed.js",
-    "test": "playwright test --project=firefox",
-    "test:all": "playwright test",
-    "test:visual": "playwright test tests/visual-regression.spec.ts --project=firefox",
-    "test:basic": "playwright test tests/basic.spec.ts --project=firefox",
-    "test:headed": "playwright test --project=firefox --headed",
-    "test:debug": "playwright test --project=firefox --debug",
-    "test:mobile": "playwright test --project=firefox-mobile",
-    "test:report": "playwright show-report",
-    "test:install": "playwright install firefox",
-    "test:clean": "rm -rf test-results playwright-report",
-    "test:ui": "playwright test --ui",
-    "test:fallback": "node scripts/test-fallback.js"
+    "test": "playwright test",
+    "test:install": "playwright install firefox"
   },
   "dependencies": {
     "@instantdb/admin": "^0.20.4",

@@ -10,7 +10,7 @@
         "-y",
         "@playwright/mcp@latest",
         "--config",
-        "/home/adp/projects/acrokit/playwright-mcp.config.json"
+        "/home/adp/projects/acrokit/mcp-playwright.config.json"
       ]
     },
     "puppeteer": {
