@@ -2,16 +2,6 @@
 
 This file contains essential context and guidelines for Claude instances working on the AcroKit project.
 
-## 🎯 Project Overview
-
-AcroKit is a **constrained flow builder** for acroyoga sequences. The core concept is that users can only add poses that have valid transitions from their current sequence, preventing invalid flows.
-
-### Key Principle: **Constraint-Based Building**
-- Users cannot add invalid poses
-- Only valid next moves are shown
-- Each transition has a proper name (e.g., "Prasarita Twist")
-- Sequential building with validation at each step
-
 ## 🏗️ Architecture Decisions
 
 ### Authentication System
@@ -64,24 +54,6 @@ AcroKit is a **constrained flow builder** for acroyoga sequences. The core conce
 - **Key Elements**: Card layouts, gradient borders, difficulty tags
 - **Colors**: Green (Easy), Blue (Medium), Red (Hard), Neutral grays
 
-## 📁 Key Files & Responsibilities
-
-### Core Components
-- **`App.tsx`**: Main app, routing between builder/gallery, auth provider wrapper
-- **`FlowBuilder.tsx`**: Main flow building logic, pose validation, constrained system
-- **`FlowsGallery.tsx`**: Saved flows management, load/delete/share functionality
-- **`AuthProvider.tsx`**: Authentication context, mock auth for demo
-- **`Header.tsx`**: Navigation, user profile, sign in/out
-
-### Data & Configuration  
-- **`lib/instant.ts`**: InstantDB setup, TypeScript schemas
-- **`tailwind.config.js`**: Tailwind CSS configuration
-
-### UI Components
-- **`PoseCard.tsx`**: Individual pose display with difficulty tags and gradients
-- **`LoginModal.tsx`**: Magic link authentication flow
-- **`FlowSaveModal.tsx`**: Flow saving interface with public/private settings
-
 ## 🔧 Development Commands
 
 ### Essential Commands
@@ -102,7 +74,7 @@ npm run format:check # Check code formatting
 - **Configuration Files**: `.eslintrc.cjs`, `.prettierrc`, `.prettierignore`
 
 ### Server Ports
-- **Primary**: localhost:3000
+- **Primary**: localhost:3000 (should always be running, no need to manually run it yourself)
 - **Fallback**: localhost:3001, localhost:3002 (if ports occupied)
 
 ## 🎨 Design System
@@ -122,58 +94,14 @@ npm run format:check # Check code formatting
 - **Body**: Clean sans-serif, good contrast
 - **Interactive**: Proper hover states, transitions
 
-## 🔄 Data Flow Patterns
-
-### Flow Building Process
-1. User starts with empty flow
-2. `getValidNextPoses()` filters available poses based on current flow end
-3. User clicks "Add to flow" → `addPoseToFlow(pose, transition?)`
-4. Flow state updates, UI re-renders with new valid options
-5. Only last pose can be removed via `removeLastPose()`
-
-### Save/Load Cycle
-1. User builds flow → Save button enabled when authenticated
-2. `FlowSaveModal` captures name, description, public setting
-3. Flow serialized to localStorage (demo) or InstantDB (production)
-4. `FlowsGallery` displays saved flows with management options
-5. "Load & Edit" deserializes flow back to builder state
-
-## 🔐 Authentication Patterns
-
-```typescript
-// Real InstantDB auth
-const { user, isLoading } = db.useAuth()
-await db.auth.sendMagicCode({ email })
-```
-
 ## 📊 Database Schema
 
-### Current Schema (InstantDB)
-```typescript
-type Schema = {
-  poses: { id, name, description, difficulty, imageUrl?, createdAt }
-  transitions: { id, name, description?, fromPoseId, toPoseId, createdAt }
-  flows: { id, name, description?, isPublic, userId, stepsData, createdAt, updatedAt }
-  users: { id, email, createdAt }
-}
-```
-
-### Data Relationships
-- **Poses** ↔ **Transitions** (many-to-many via fromPoseId/toPoseId)
-- **Users** → **Flows** (one-to-many)
-- **Flows** contain serialized `stepsData` (JSON of FlowStep[])
+Check the `src/lib/` dir for the schema files and context on the DB set up. Also refer to `INSTANT.md` when making any DB changes.
 
 ## 🎯 Testing Guidelines
 
-### Before Making Changes
-1. **Screenshot current state** with Playwright
-2. **Test core flows**: Build flow → Save → Load → Edit
-3. **Verify design consistency** with acrokit.com prototype
-4. **Check TypeScript** with `npm run build`
-
 ### After Changes
-1. **Visual regression testing** with screenshots
-2. **User flow testing**: Full auth → build → save → load cycle
+1. **Visual regression testing** with Playwright and Firefox
 3. **Responsive testing**: Mobile and desktop views
 4. **Error handling**: Invalid states, network issues
 
@@ -185,29 +113,6 @@ type Schema = {
 - Use specific CSS selectors for interactions
 - Capture screenshots to validate visual states
 - Supports multiple browsers (Chromium, Firefox, WebKit)
-
-### Component Patterns
-- **Conditional rendering** based on auth state
-- **Proper loading states** for async operations
-- **Error boundaries** for graceful failures
-- **Accessible markup** with proper ARIA labels
-
-### State Management
-- Keep auth in Context, local state in components
-- Serialize complex state for persistence
-- Use TypeScript interfaces for type safety
-- Validate data on boundaries (user input, API responses)
-
-## 🚀 Deployment Considerations
-
-### Environment Variables
-- `INSTANTDB_APP_ID`: Real app ID for production
-- Consider environment-specific configurations
-
-### Build Optimizations
-- Tailwind CSS purging enabled
-- TypeScript strict mode
-- Modern browser targets
 
 ## 🚨 CRITICAL DEVELOPMENT WORKFLOW
 
