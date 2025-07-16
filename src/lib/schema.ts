@@ -75,7 +75,6 @@ export const schema = i.schema({
     },
     transitionToPose: {
       forward: { on: 'transitions', has: 'one', label: 'toPose' },
-      reverse: { on: 'poses', has: 'many', label: 'transitionsTo' },
     },
     flowUser: {
       forward: { on: 'flows', has: 'one', label: '$user' },
