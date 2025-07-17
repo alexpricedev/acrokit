@@ -160,7 +160,7 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
             </div>
 
             {/* Also Known As Section */}
-            {pose.alsoKnownAs && pose.alsoKnownAs.length > 0 && (
+            {pose.alsoKnownAs && Array.isArray(pose.alsoKnownAs) && pose.alsoKnownAs.length > 0 && (
               <div className="mb-6">
                 <h3 className="font-semibold text-gray-900 mb-2">
                   🏷️ Also Known As
