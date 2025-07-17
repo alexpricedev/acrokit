@@ -159,15 +159,6 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
               </p>
             </div>
 
-            {/* Tips Section - Placeholder for now */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold text-blue-900 mb-2">💡 Tips</h3>
-              <p className="text-blue-800 text-sm">
-                Practice this pose with a qualified instructor. Focus on
-                communication and safety.
-              </p>
-            </div>
-
             {/* Other Names Section - Placeholder for now */}
             <div className="mb-6">
               <h3 className="font-semibold text-gray-900 mb-2">
