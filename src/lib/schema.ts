@@ -105,7 +105,7 @@ export type Schema = {
     name: string;
     description: string;
     difficulty: 'Easy' | 'Medium' | 'Hard';
-    alsoKnownAs?: string[]; // Array of alternative names for the pose
+    alsoKnownAs?: string[]; // Array of alternative names
     isStartingPose?: boolean;
     createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
