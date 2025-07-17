@@ -14,6 +14,7 @@ export const schema = i.schema({
       name: i.string().indexed(),
       description: i.string(),
       difficulty: i.string(),
+      alsoKnownAs: i.json().optional(),
       isStartingPose: i.boolean().optional(),
       createdAt: i.date(),
     }),
@@ -104,6 +105,7 @@ export type Schema = {
     name: string;
     description: string;
     difficulty: 'Easy' | 'Medium' | 'Hard';
+    alsoKnownAs?: string[]; // Array of alternative names for the pose
     isStartingPose?: boolean;
     createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
