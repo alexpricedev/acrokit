@@ -150,19 +150,6 @@ export function PoseDetailModal({
               {pose.description || 'No description available for this pose.'}
             </p>
           </div>
-
-          {/* Safety Tips */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">
-              💡 Practice Tips
-            </h3>
-            <ul className="text-blue-800 text-sm space-y-2">
-              <li>• Always have a spotter when attempting new poses</li>
-              <li>• Communicate clearly with your partner throughout</li>
-              <li>• Start slowly and build up to the full expression</li>
-              <li>• Listen to your body and don&apos;t force positions</li>
-            </ul>
-          </div>
         </div>
 
         {/* Footer */}
