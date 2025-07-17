@@ -46,10 +46,12 @@ export function PosesGallery({ onViewPose }: PosesGalleryProps) {
 
   const allPoses = data?.poses || [];
 
-  // Apply favorites filtering
-  const poses = showOnlyFavorites
+  // Apply favorites filtering and sort alphabetically
+  const filteredPoses = showOnlyFavorites
     ? allPoses.filter(pose => isFavorited(pose.id))
     : allPoses;
+
+  const poses = filteredPoses.sort((a, b) => a.name.localeCompare(b.name));
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
