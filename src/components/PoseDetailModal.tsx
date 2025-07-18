@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { PoseWithFiles } from '../lib/instant';
+import { TipsAccordion } from './TipsAccordion';
 
 interface PoseDetailModalProps {
   pose: PoseWithFiles | null;
@@ -150,6 +151,13 @@ export function PoseDetailModal({
               {pose.description || 'No description available for this pose.'}
             </p>
           </div>
+
+          {/* Tips Section */}
+          <TipsAccordion
+            flyerTips={pose.flyerTips}
+            baseTips={pose.baseTips}
+            spotterTips={pose.spotterTips}
+          />
         </div>
 
         {/* Footer */}

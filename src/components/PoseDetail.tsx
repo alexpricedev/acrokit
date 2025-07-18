@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { db, id } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
+import { TipsAccordion } from './TipsAccordion';
 
 interface PoseDetailProps {
   poseId: string;
@@ -160,23 +161,32 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
             </div>
 
             {/* Also Known As Section */}
-            {pose.alsoKnownAs && Array.isArray(pose.alsoKnownAs) && pose.alsoKnownAs.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  🏷️ Also Known As
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {pose.alsoKnownAs.map((name: string, index: number) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
-                    >
-                      {name}
-                    </span>
-                  ))}
+            {pose.alsoKnownAs &&
+              Array.isArray(pose.alsoKnownAs) &&
+              pose.alsoKnownAs.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="font-semibold text-gray-900 mb-2">
+                    🏷️ Also Known As
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {pose.alsoKnownAs.map((name: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+            {/* Tips Section */}
+            <TipsAccordion
+              flyerTips={pose.flyerTips}
+              baseTips={pose.baseTips}
+              spotterTips={pose.spotterTips}
+            />
           </div>
         </div>
       </div>
