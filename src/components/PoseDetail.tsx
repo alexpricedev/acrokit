@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { db, id } from '../lib/instant';
 import { useAuth } from './AuthProvider';
 import { useToast } from './ToastProvider';
+import { TipsAccordion } from './TipsAccordion';
 
 interface PoseDetailProps {
   poseId: string;
@@ -179,6 +180,13 @@ export function PoseDetail({ poseId }: PoseDetailProps) {
                   </div>
                 </div>
               )}
+
+            {/* Tips Section */}
+            <TipsAccordion
+              flyerTips={pose.flyerTips}
+              baseTips={pose.baseTips}
+              spotterTips={pose.spotterTips}
+            />
           </div>
         </div>
       </div>

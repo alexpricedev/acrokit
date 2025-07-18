@@ -15,6 +15,9 @@ export const schema = i.schema({
       description: i.string(),
       difficulty: i.string(),
       alsoKnownAs: i.json().optional(),
+      flyerTips: i.json().optional(),
+      baseTips: i.json().optional(),
+      spotterTips: i.json().optional(),
       isStartingPose: i.boolean().optional(),
       createdAt: i.date(),
     }),
@@ -106,6 +109,9 @@ export type Schema = {
     description: string;
     difficulty: 'Easy' | 'Medium' | 'Hard';
     alsoKnownAs?: string[]; // Array of alternative names
+    flyerTips?: string[]; // Array of tips for flyers
+    baseTips?: string[]; // Array of tips for bases
+    spotterTips?: string[]; // Array of tips for spotters
     isStartingPose?: boolean;
     createdAt: string; // ISO date string like "2025-07-07T20:50:38.091Z"
   };
