@@ -225,7 +225,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
               Ready to Build Your First Flow?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands of practitioners creating smarter acroyoga sequences.
+              Start from scratch or check out what the community has already made.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
