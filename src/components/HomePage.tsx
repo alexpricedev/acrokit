@@ -1,6 +1,7 @@
 import { useAuth } from './AuthProvider';
 import { useState } from 'react';
 import { LoginModal } from './LoginModal';
+import flowBuilderImage from '../assets/flow-builder.png';
 
 interface HomePageProps {
   onPageChange: (
@@ -73,7 +74,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="relative max-w-4xl mx-auto">
                 <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
                   <img
-                    src="/flow-builder.png"
+                    src={flowBuilderImage}
                     alt="Interactive Flow Builder showing acro yoga poses and transitions"
                     className="w-full h-auto"
                   />
