@@ -17,9 +17,15 @@ export function useTransitions() {
   });
 
   // Extract transitions array from data according to InstantDB query structure
-  // Query now includes linked poses
-  const transitions: TransitionWithPoses[] = (data?.transitions ||
-    []) as TransitionWithPoses[];
+  // Query now includes linked poses - handle the array relationship for fromPose
+  const transitions: TransitionWithPoses[] = (data?.transitions || []).map(
+    (transition: any) => ({
+      ...transition,
+      fromPose: Array.isArray(transition.fromPose) 
+        ? transition.fromPose[0] 
+        : transition.fromPose,
+    })
+  );
 
   return {
     transitions,

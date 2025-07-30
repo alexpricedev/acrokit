@@ -236,7 +236,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
                 Build Your Flow
               </button>
               <button
-                onClick={() => handlePageChange('public-gallery')}
+                onClick={() => onPageChange('public-gallery')}
                 className="bg-transparent text-white px-8 py-4 rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-colors font-medium text-lg"
               >
                 Explore Community Flows
