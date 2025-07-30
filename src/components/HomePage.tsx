@@ -44,19 +44,14 @@ export function HomePage({ onPageChange }: HomePageProps) {
         <section className="relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-24">
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                Build Perfect
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 pb-2">
+                Build & Share
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 pb-4 leading-tight">
                   AcroYoga Flows
                 </span>
               </h1>
-              <p className="text-xl sm:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto">
-                Create seamless, connected sequences with our constrained flow
-                builder.
-              </p>
-              <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
-                Only add poses that flow naturally together. No more broken
-                transitions or impossible sequences.
+              <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
+                Never wonder 'what comes next?' again. Build flowing sequences, save your favorites, and discover amazing flows from the community.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -64,7 +59,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
                   onClick={handleGetStarted}
                   className="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  {user ? 'Open Flow Builder' : 'Start Building Free'}
+                  Build Your Flow
                 </button>
                 <button
                   onClick={handleExploreFlows}
@@ -74,16 +69,14 @@ export function HomePage({ onPageChange }: HomePageProps) {
                 </button>
               </div>
 
-              {/* Placeholder for hero image */}
+              {/* Hero image */}
               <div className="relative max-w-4xl mx-auto">
-                <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-8 border border-gray-200 shadow-xl">
-                  <div className="text-6xl mb-4">🤸‍♀️</div>
-                  <p className="text-gray-600 font-medium">
-                    Interactive Flow Builder Preview
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Coming soon: Screenshots of the actual builder in action
-                  </p>
+                <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+                  <img
+                    src="/flow-builder.png"
+                    alt="Interactive Flow Builder showing acro yoga poses and transitions"
+                    className="w-full h-auto"
+                  />
                 </div>
               </div>
             </div>
@@ -95,11 +88,10 @@ export function HomePage({ onPageChange }: HomePageProps) {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                Why AcroKit Works Better
+                The AcroKit Difference
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Traditional flow builders let you create impossible sequences.
-                We only show poses that actually connect.
+                Other platforms give you poses and videos. AcroKit gives you the tools to create sequences that are uniquely yours.
               </p>
             </div>
 
@@ -196,18 +188,16 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;Finally, a tool that prevents me from creating flows
-                  with impossible transitions. Game changer!&rdquo;
+                  &ldquo;Taking a flow and remixing it to include the poses I love to do is a game changer!&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">Sarah Chen</div>
-                <div className="text-sm text-gray-500">Acroyoga Instructor</div>
+                <div className="text-sm text-gray-500">Acroyoga Student</div>
               </div>
 
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;The constraint-based approach taught me so much about
-                  proper flow design. Love it!&rdquo;
+                  &ldquo;I love being able to share the flows I create with my students.&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">
                   Marcus Rodriguez
@@ -232,12 +222,10 @@ export function HomePage({ onPageChange }: HomePageProps) {
         <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Ready to Build Better Flows?
+              Ready to Build Your First Flow?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              {user
-                ? 'Jump back into the flow builder and create your next sequence.'
-                : 'Join thousands of practitioners creating smarter acroyoga sequences.'}
+              Join thousands of practitioners creating smarter acroyoga sequences.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -245,23 +233,15 @@ export function HomePage({ onPageChange }: HomePageProps) {
                 onClick={handleGetStarted}
                 className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-lg shadow-lg"
               >
-                {user ? 'Continue Building' : 'Start Free Today'}
+                Build Your Flow
               </button>
-              {!user && (
-                <button
-                  onClick={() => openLoginModal('login')}
-                  className="bg-transparent text-white px-8 py-4 rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-colors font-medium text-lg"
-                >
-                  Sign In
-                </button>
-              )}
+              <button
+                onClick={() => handlePageChange('public-gallery')}
+                className="bg-transparent text-white px-8 py-4 rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-colors font-medium text-lg"
+              >
+                Explore Community Flows
+              </button>
             </div>
-
-            {!user && (
-              <p className="text-blue-100 text-sm mt-4">
-                No credit card required • Free forever • 2-minute setup
-              </p>
-            )}
           </div>
         </section>
 
@@ -271,9 +251,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
             <div className="grid md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
                 <h3 className="text-xl font-bold mb-3">AcroKit</h3>
-                <p className="text-gray-400 mb-4">
-                  The constrained flow builder for acroyoga sequences. Create
-                  flows that actually work.
+                <p className="text-gray-400 mb-4 max-w-[400px]">
+                  The community platform for creating and sharing AcroYoga sequences.
                 </p>
                 <button
                   onClick={() => onPageChange('about')}
@@ -284,7 +263,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-3">Product</h4>
+                <h4 className="font-semibold mb-3">Features</h4>
                 <ul className="space-y-2 text-gray-400">
                   <li>
                     <button
@@ -360,7 +339,7 @@ export function HomePage({ onPageChange }: HomePageProps) {
             </div>
 
             <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>&copy; 2024 AcroKit. Built for the acroyoga community.</p>
+              <p>&copy; {new Date().getFullYear()} AcroKit. Built with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block w-3 h-3 mx-0.5 fill-current"><path d="M241 87.1l15 20.7 15-20.7C296 52.5 336.2 32 378.9 32 452.4 32 512 91.6 512 165.1l0 2.6c0 112.2-139.9 242.5-212.9 298.2-12.4 9.4-27.6 14.1-43.1 14.1s-30.8-4.6-43.1-14.1C139.9 410.2 0 279.9 0 167.7l0-2.6C0 91.6 59.6 32 133.1 32 175.8 32 216 52.5 241 87.1z"/></svg> in Sheffield by <a href="https://github.com/alexpricedev" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">Alex Price</a>.</p>
             </div>
           </div>
         </footer>

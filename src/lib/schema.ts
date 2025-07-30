@@ -13,12 +13,12 @@ export const schema = i.schema({
     poses: i.entity({
       name: i.string().indexed(),
       description: i.string(),
-      difficulty: i.string(),
-      alsoKnownAs: i.json().optional(),
-      flyerTips: i.json().optional(),
-      baseTips: i.json().optional(),
-      spotterTips: i.json().optional(),
+      difficulty: i.string().indexed(),
       isStartingPose: i.boolean().optional(),
+      alsoKnownAs: i.json().optional(),
+      baseTips: i.json().optional(),
+      flyerTips: i.json().optional(),
+      spotterTips: i.json().optional(),
       createdAt: i.date(),
     }),
     transitions: i.entity({
@@ -73,11 +73,11 @@ export const schema = i.schema({
       forward: { on: 'favorites', has: 'one', label: 'profile' },
       reverse: { on: 'profiles', has: 'many', label: 'favorites' },
     },
-    transitionFromPose: {
-      forward: { on: 'transitions', has: 'one', label: 'fromPose' },
-      reverse: { on: 'poses', has: 'many', label: 'transitionsFrom' },
+    transitionsFromPose: {
+      forward: { on: 'transitions', has: 'many', label: 'fromPose' },
+      reverse: { on: 'poses', has: 'many', label: 'transitions' },
     },
-    transitionToPose: {
+    transitionsToPose: {
       forward: { on: 'transitions', has: 'one', label: 'toPose' },
       reverse: { on: 'poses', has: 'many', label: 'transitionsTo' },
     },
