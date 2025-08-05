@@ -21,8 +21,8 @@ export function useTransitions() {
   const transitions: TransitionWithPoses[] = (data?.transitions || []).map(
     (transition: any) => ({
       ...transition,
-      fromPose: Array.isArray(transition.fromPose) 
-        ? transition.fromPose[0] 
+      fromPose: Array.isArray(transition.fromPose)
+        ? transition.fromPose[0]
         : transition.fromPose,
     })
   );

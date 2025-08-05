@@ -34,25 +34,22 @@ This file contains essential context and guidelines for Claude instances working
 
 ## 🧪 Testing Strategy
 
-### Playwright Testing (Simple Setup)
-- **Purpose**: Test UI and user flows with Firefox
-- **Browser**: Firefox only (ARM64 Linux compatible)
-- **Setup**: Simple, minimal configuration
+### Vitest with Mock Service Worker
+- **Testing Framework**: Vitest for fast unit and integration tests
+- **Mocking**: Mock Service Worker (MSW) for API and authentication mocking
+- **Test Environment**: jsdom for DOM simulation
+- **React Testing**: @testing-library/react for component testing
 - **Commands**:
   ```bash
-  npm run test:install   # Install Firefox (one-time setup)
-  npm test               # Run all tests
-  ```
-- **MCP**: Uses Microsoft Playwright MCP with Firefox
-- **Example**:
-  ```typescript
-  await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
-  await mcp__playwright__browser_take_screenshot({ filename: "test.png" })
+  npm test              # Run all tests
+  npm run test:watch    # Run tests in watch mode
+  npm run test:ui       # Run tests with UI
   ```
 
-### Design Validation
-- **Key Elements**: Card layouts, gradient borders, difficulty tags
-- **Colors**: Green (Easy), Blue (Medium), Red (Hard), Neutral grays
+### Testing Authenticated Flows
+- **MSW Handlers**: Mock InstantDB authentication and database operations
+- **Test Utilities**: Helper functions for authenticated user contexts
+- **Integration Tests**: End-to-end user flows with mocked backend
 
 ## 🔧 Development Commands
 
@@ -100,51 +97,14 @@ Check the `src/lib/` dir for the schema files and context on the DB set up. Also
 
 ## 🎯 Testing Guidelines
 
-### After Changes
-1. **Visual regression testing** with Playwright and Firefox
-3. **Responsive testing**: Mobile and desktop views
-4. **Error handling**: Invalid states, network issues
+### Test Coverage Areas
+1. **Authentication flows**: Login, logout, session persistence
+2. **Flow building**: Creating, editing, saving flows
+3. **Component rendering**: UI components with different states
+4. **Data operations**: CRUD operations with mocked InstantDB
 
-## 💡 Development Tips
-
-### Working with Playwright
-- Take screenshots at different viewport sizes for responsive testing
-- Always wait for navigation before screenshots
-- Use specific CSS selectors for interactions
-- Capture screenshots to validate visual states
-- Supports multiple browsers (Chromium, Firefox, WebKit)
-
-## 🚨 CRITICAL DEVELOPMENT WORKFLOW
-
-### ⚠️ ALWAYS TEST IN BROWSER WITH PLAYWRIGHT
-
-**MANDATORY**: Before and after ANY code changes, you MUST:
-
-1. **Test with Playwright**: Use Firefox browser tools to validate functionality
-2. **Take screenshots**: Document current state vs expected state
-3. **Test core flows**: Authentication → Flow Building → Saving → Loading
-
-### Essential Testing Commands
-```bash
-npm test  # Run all tests with Firefox
-```
-
-```typescript
-// MCP Playwright commands
-await mcp__playwright__browser_navigate({ url: "http://localhost:3000" })
-await mcp__playwright__browser_take_screenshot({ filename: "test.png" })
-await mcp__playwright__browser_click({ element: "button", ref: "button[class*='bg-blue-500']" })
-```
-
-### Simple Setup
-- **Firefox Only**: Works reliably on ARM64 Linux
-- **Minimal Config**: No complex options or retries
-- **Headless**: Runs without display server requirements
-
-### Why This Matters
-- **User Experience**: Every interaction must be smooth and intuitive  
-- **Functionality**: Constrained flow system is complex and needs visual validation
-- **Responsive Design**: Must work on mobile and desktop
-- **Authentication Flow**: Multi-step process requires browser testing
-
-**DO NOT** make changes without browser testing - this is a visual, interactive application that requires real browser validation.
+### Best Practices
+- **Mock external dependencies**: Use MSW for all API calls
+- **Test user interactions**: Focus on user behavior rather than implementation
+- **Authenticated contexts**: Test components with logged-in users
+- **Error scenarios**: Test error handling and edge cases

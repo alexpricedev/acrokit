@@ -52,7 +52,9 @@ export function HomePage({ onPageChange }: HomePageProps) {
                 </span>
               </h1>
               <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
-                Never wonder 'what comes next?' again. Build flowing sequences, save your favorites, and discover amazing flows from the community.
+                Never wonder &apos;what comes next?&apos; again. Build flowing sequences,
+                save your favorites, and discover amazing flows from the
+                community.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -92,7 +94,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
                 The AcroKit Difference
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Other platforms give you poses and videos. AcroKit gives you the tools to create sequences that are uniquely yours.
+                Other platforms give you poses and videos. AcroKit gives you the
+                tools to create sequences that are uniquely yours.
               </p>
             </div>
 
@@ -189,7 +192,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;Taking a flow and remixing it to include the poses I love to do is a game changer!&rdquo;
+                  &ldquo;Taking a flow and remixing it to include the poses I
+                  love to do is a game changer!&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">Sarah Chen</div>
                 <div className="text-sm text-gray-500">Acroyoga Student</div>
@@ -198,7 +202,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
                 <p className="text-gray-600 mb-4">
-                  &ldquo;I love being able to share the flows I create with my students.&rdquo;
+                  &ldquo;I love being able to share the flows I create with my
+                  students.&rdquo;
                 </p>
                 <div className="font-medium text-gray-900">
                   Marcus Rodriguez
@@ -226,7 +231,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               Ready to Build Your First Flow?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              Start from scratch or check out what the community has already made.
+              Start from scratch or check out what the community has already
+              made.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -253,7 +259,8 @@ export function HomePage({ onPageChange }: HomePageProps) {
               <div className="md:col-span-2">
                 <h3 className="text-xl font-bold mb-3">AcroKit</h3>
                 <p className="text-gray-400 mb-4 max-w-[400px]">
-                  The community platform for creating and sharing AcroYoga sequences.
+                  The community platform for creating and sharing AcroYoga
+                  sequences.
                 </p>
                 <button
                   onClick={() => onPageChange('about')}
@@ -340,7 +347,26 @@ export function HomePage({ onPageChange }: HomePageProps) {
             </div>
 
             <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>&copy; {new Date().getFullYear()} AcroKit. Built with <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block w-3 h-3 mx-0.5 fill-current"><path d="M241 87.1l15 20.7 15-20.7C296 52.5 336.2 32 378.9 32 452.4 32 512 91.6 512 165.1l0 2.6c0 112.2-139.9 242.5-212.9 298.2-12.4 9.4-27.6 14.1-43.1 14.1s-30.8-4.6-43.1-14.1C139.9 410.2 0 279.9 0 167.7l0-2.6C0 91.6 59.6 32 133.1 32 175.8 32 216 52.5 241 87.1z"/></svg> in Sheffield by <a href="https://github.com/alexpricedev" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">Alex Price</a>.</p>
+              <p>
+                &copy; {new Date().getFullYear()} AcroKit. Built with{' '}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="inline-block w-3 h-3 mx-0.5 fill-current"
+                >
+                  <path d="M241 87.1l15 20.7 15-20.7C296 52.5 336.2 32 378.9 32 452.4 32 512 91.6 512 165.1l0 2.6c0 112.2-139.9 242.5-212.9 298.2-12.4 9.4-27.6 14.1-43.1 14.1s-30.8-4.6-43.1-14.1C139.9 410.2 0 279.9 0 167.7l0-2.6C0 91.6 59.6 32 133.1 32 175.8 32 216 52.5 241 87.1z" />
+                </svg>{' '}
+                in Sheffield by{' '}
+                <a
+                  href="https://github.com/alexpricedev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Alex Price
+                </a>
+                .
+              </p>
             </div>
           </div>
         </footer>
